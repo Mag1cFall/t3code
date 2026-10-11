@@ -4,6 +4,7 @@ import { ZapIcon } from "lucide-react";
 import { UltrafastIcon } from "../Icons";
 import { cn } from "~/lib/utils";
 import { ComposerControlIcon, type ComposerControlSize } from "./ComposerControl";
+import { tr } from "~/i18n";
 
 export function getTraitsSpeedDisplay(
   provider: ProviderDriverKind,
@@ -11,7 +12,7 @@ export function getTraitsSpeedDisplay(
 ): { label: string; speedIcon: "fast" | "ultrafast" | null } | null {
   if (descriptor.id === "fastMode" && descriptor.type === "boolean") {
     return {
-      label: descriptor.currentValue === true ? "Fast" : "Normal",
+      label: descriptor.currentValue === true ? tr("Fast") : tr("Normal"),
       speedIcon: descriptor.currentValue === true ? "fast" : null,
     };
   }
@@ -27,7 +28,7 @@ export function getTraitsSpeedDisplay(
     (ultrafastTier && currentValue === ultrafastTier.id)
   ) {
     return {
-      label: descriptor.options.find(({ id }) => id === currentValue)?.label ?? "Normal",
+      label: descriptor.options.find(({ id }) => id === currentValue)?.label ?? tr("Normal"),
       speedIcon:
         ultrafastTier && currentValue === ultrafastTier.id
           ? "ultrafast"
@@ -63,7 +64,7 @@ export function TraitsSpeedIcon({
         )}
       />
       <span className="sr-only">
-        {speedIcon === "ultrafast" ? "Ultrafast mode on" : "Fast mode on"}
+        {speedIcon === "ultrafast" ? tr("Ultrafast mode on") : tr("Fast mode on")}
       </span>
     </>
   );

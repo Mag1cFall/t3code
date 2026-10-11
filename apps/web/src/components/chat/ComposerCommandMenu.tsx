@@ -29,6 +29,7 @@ import { Command, CommandGroup, CommandItem, CommandList } from "../ui/command";
 import { PierreEntryIcon } from "./PierreEntryIcon";
 import { ComposerBanner } from "./ComposerBanner";
 import { resolvePullRequestState } from "../pullRequest/pullRequestPresentation";
+import { tr } from "~/i18n";
 
 export type ComposerCommandItem =
   | {
@@ -139,16 +140,16 @@ export const ComposerCommandMenu = memo(function ComposerCommandMenu(props: {
             <p className="text-secondary-label text-xs">
               {props.isLoading
                 ? props.triggerKind === "skill"
-                  ? "Searching workspace skills..."
+                  ? tr("Searching workspace skills...")
                   : props.triggerKind === "pull-request"
-                    ? "Finding pull request..."
-                    : "Searching workspace files..."
+                    ? tr("Finding pull request...")
+                    : tr("Searching workspace files...")
                 : (props.emptyStateText ??
                   (props.triggerKind === "skill"
-                    ? "No skills found. Try / to browse provider commands."
+                    ? tr("No skills found. Try / to browse provider commands.")
                     : props.triggerKind === "path"
-                      ? "No matching files or folders."
-                      : "No matching command."))}
+                      ? tr("No matching files or folders.")
+                      : tr("No matching command.")))}
             </p>
           </div>
         )}
@@ -239,7 +240,7 @@ export function composerSuggestionOptionId(listId: string, itemId: string): stri
 
 const LISTBOX_LABEL_BY_TRIGGER: Record<ComposerTriggerKind, string> = {
   path: "Files and folders",
-  "pull-request": "Pull requests",
+  "pull-request": tr("Pull requests"),
   "slash-command": "Commands",
   skill: "Skills",
 };
@@ -268,7 +269,7 @@ function SkillSourceBadge(props: { kind: ProviderSkillSourceKind; showSkillSuffi
     <Badge className="ms-auto" variant="secondary">
       <Icon aria-hidden="true" className="text-current" />
       {SKILL_SOURCE_LABEL_BY_KIND[props.kind]}
-      {props.showSkillSuffix ? " Skill" : null}
+      {props.showSkillSuffix ? tr(" Skill") : null}
     </Badge>
   );
 }

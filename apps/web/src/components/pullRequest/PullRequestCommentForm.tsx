@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { toastManager } from "../ui/toast";
 import { PullRequestGlyph } from "./pullRequestIcons";
+import { tr } from "~/i18n";
 
 export function PullRequestCommentForm({
   environmentId,
@@ -74,7 +75,7 @@ export function PullRequestCommentForm({
     });
     if (result._tag === "Failure") {
       setSubmitting(null);
-      toastManager.add({ type: "error", title: "Could not post the comment" });
+      toastManager.add({ type: "error", title: tr("Could not post the comment") });
       return;
     }
     setBody("");
@@ -92,8 +93,8 @@ export function PullRequestCommentForm({
         disabled={submitting !== null || actionPending}
         value={body}
         rows={3}
-        placeholder="Leave a comment"
-        aria-label="Comment on this pull request"
+        placeholder={tr("Leave a comment")}
+        aria-label={tr("Comment on this pull request")}
         onChange={(event) => setBody(event.target.value)}
         onKeyDown={(event) => {
           if (event.nativeEvent.isComposing || event.keyCode === 229) return;
@@ -124,11 +125,11 @@ export function PullRequestCommentForm({
             )}
             {submitting === followUpAction
               ? followUpAction === "close"
-                ? "Closing..."
-                : "Reopening..."
+                ? tr("Closing...")
+                : tr("Reopening...")
               : followUpAction === "close"
-                ? "Close with comment"
-                : "Reopen with comment"}
+                ? tr("Close with comment")
+                : tr("Reopen with comment")}
           </Button>
         )}
         <Button
@@ -138,7 +139,7 @@ export function PullRequestCommentForm({
           onClick={() => void submit("comment")}
         >
           <SendIcon className="size-3.5" />
-          {submitting === "comment" ? "Posting..." : "Comment"}
+          {submitting === "comment" ? tr("Posting...") : tr("Comment")}
         </Button>
       </div>
     </div>

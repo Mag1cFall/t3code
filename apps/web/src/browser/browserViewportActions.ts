@@ -1,4 +1,5 @@
 import type { PreviewViewportSetting } from "@t3tools/contracts";
+import { tr } from "~/i18n";
 
 type BrowserViewportHandler = (setting: PreviewViewportSetting) => Promise<void>;
 
@@ -8,7 +9,7 @@ class BrowserViewportCommitTimeoutError extends Error {
   override readonly name = "BrowserViewportCommitTimeoutError";
 
   constructor(readonly tabId: string) {
-    super(`Timed out committing the browser viewport for tab ${tabId}`);
+    super(tr("Timed out committing the browser viewport for tab {{tabId}}", { tabId }));
   }
 }
 

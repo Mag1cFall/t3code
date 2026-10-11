@@ -41,6 +41,7 @@ import {
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { InlineButton } from "../ui/button";
 import { resolveProjectSettings } from "@t3tools/shared/projectSettings";
+import { tr } from "~/i18n";
 
 // Picker value for the "Add project" row; real entries are keyed by logical
 // project key.
@@ -184,7 +185,7 @@ export function DraftHeroHeadline({
   const pickerItems = useMemo<readonly PickerItem[]>(
     () => [
       ...menuEntries.map(({ group }) => ({ value: group.projectKey, label: group.displayName })),
-      { value: ADD_PROJECT_VALUE, label: "Add project" },
+      { value: ADD_PROJECT_VALUE, label: tr("Add project") },
     ],
     [menuEntries],
   );
@@ -309,7 +310,9 @@ export function DraftHeroHeadline({
           }
         >
           <span className="min-w-0 truncate">
-            {isScratchDraft ? "No project" : (activeProjectDisplayName ?? "Choose a project")}
+            {isScratchDraft
+              ? tr("No project")
+              : (activeProjectDisplayName ?? tr("Choose a project"))}
           </span>
         </TooltipTrigger>
         {activeProjectDisplayName && !isScratchDraft ? (
@@ -318,12 +321,12 @@ export function DraftHeroHeadline({
       </Tooltip>
       <ComboboxPopup align="center" className="w-72 overflow-hidden">
         <ComboboxSearchInput
-          aria-label="Search projects"
-          placeholder="Search projects..."
+          aria-label={tr("Search projects")}
+          placeholder={tr("Search projects...")}
           value={pickerQuery}
           onChange={(event) => setPickerQuery(event.target.value)}
         />
-        <ComboboxEmpty>No matching projects.</ComboboxEmpty>
+        <ComboboxEmpty>{tr("No matching projects.")}</ComboboxEmpty>
         <ComboboxList>
           {(item: PickerItem) => {
             const entry = projectEntryByKey.get(item.value);
@@ -359,7 +362,7 @@ export function DraftHeroHeadline({
       onClick={openAddProject}
       className="pointer-events-auto inline cursor-pointer border-muted-foreground/35 border-b border-dotted text-muted-foreground/60 transition-colors hover:border-muted-foreground/60 hover:text-muted-foreground/80 focus-visible:rounded-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
     >
-      {activeProjectTitle ?? "Add a project"}
+      {activeProjectTitle ?? tr("Add a project")}
     </button>
   );
 
@@ -368,12 +371,12 @@ export function DraftHeroHeadline({
   // in the h1; without an explicit label its widget state bleeds into the
   // announced phrase.
   const headingLabel = isScratchDraft
-    ? "What should we work on?"
+    ? tr("What should we work on?")
     : hasResolvedProject
-      ? `What should we build in ${activeProjectDisplayName}?`
+      ? tr("What should we build in {{activeProjectDisplayName}}?", { activeProjectDisplayName })
       : canChooseProject
-        ? `${activeProjectDisplayName ?? "Choose a project"} to start`
-        : "Add a project to start";
+        ? `${activeProjectDisplayName ?? tr("Choose a project")} to start`
+        : tr("Add a project to start");
 
   // One click out of the project, phrased as the alternative to the question
   // above it. Focus moves to the project picker once this line has gone.
@@ -396,7 +399,7 @@ export function DraftHeroHeadline({
             />
           }
         >
-          or start without a project
+          {tr("or start without a project")}
         </TooltipTrigger>
         {noProjectShortcut ? <TooltipPopup side="bottom">{noProjectShortcut}</TooltipPopup> : null}
       </Tooltip>
@@ -409,13 +412,13 @@ export function DraftHeroHeadline({
         className="w-full text-center font-normal text-2xl text-foreground tracking-tight sm:text-3xl"
       >
         {isScratchDraft ? (
-          <>What should we work on?</>
+          <>{tr("What should we work on?")}</>
         ) : hasResolvedProject ? (
-          <>What should we build in {projectSelector}?</>
+          <>{tr("What should we build in {{projectSelector}}?", { projectSelector })}</>
         ) : canChooseProject ? (
-          <>{projectSelector} to start</>
+          <>{tr("{{projectSelector}} to start", { projectSelector })}</>
         ) : (
-          <>Add a project to start</>
+          <>{tr("Add a project to start")}</>
         )}
       </h1>
       {/* Reserved whenever threads can skip a project, so the heading does not

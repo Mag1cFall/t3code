@@ -9,6 +9,7 @@ import { useLayoutEffect, useRef } from "react";
 import type { ProviderInstanceEntry } from "../../providerInstances";
 import { Button } from "../ui/button";
 import { ProviderInstanceIcon } from "./ProviderInstanceIcon";
+import { tr } from "~/i18n";
 
 /**
  * Stands in for the composer on a provider-native subagent thread. The
@@ -81,11 +82,13 @@ export function ProviderSubagentBar(props: {
       <span role="status" className="sr-only">
         {`${modelDescription} subagent: ${announcement}`}
       </span>
-      <span className="ms-auto shrink-0 text-muted-foreground max-sm:hidden">Runs on its own</span>
+      <span className="ms-auto shrink-0 text-muted-foreground max-sm:hidden">
+        {tr("Runs on its own")}
+      </span>
       {props.onOpenParent ? (
         <Button size="sm" variant="ghost" onClick={props.onOpenParent}>
           <ArrowUpLeftIcon />
-          Open parent
+          {tr("Open parent")}
         </Button>
       ) : null}
     </div>

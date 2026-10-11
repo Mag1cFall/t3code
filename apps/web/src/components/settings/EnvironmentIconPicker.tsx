@@ -19,6 +19,7 @@ import {
   MenuSubPopup,
   MenuSubTrigger,
 } from "../ui/menu";
+import { tr } from "~/i18n";
 
 /**
  * Why the picker is inert, in the order the user can do something about it.
@@ -29,13 +30,13 @@ export function resolveEnvironmentIconPickerLock(input: {
   readonly operateAccess: "granted" | "denied" | "pending";
 }): string | null {
   if (input.serverConfig === null) {
-    return "Connect to this environment to change its icon.";
+    return tr("Connect to this environment to change its icon.");
   }
   if (input.serverConfig.environment.capabilities.environmentIcon !== true) {
-    return "This environment's server is too old to keep an icon. Update it to choose one.";
+    return tr("This environment's server is too old to keep an icon. Update it to choose one.");
   }
   if (input.operateAccess !== "granted") {
-    return "Your session on this environment cannot change its settings.";
+    return tr("Your session on this environment cannot change its settings.");
   }
   return null;
 }
@@ -68,7 +69,7 @@ export function EnvironmentIconMenu({
     <MenuSub>
       <MenuSubTrigger>
         <EnvironmentMachineIcon kind={resolved} />
-        Icon
+        {tr("Icon")}
       </MenuSubTrigger>
       <MenuSubPopup>
         {lock !== null ? (
@@ -95,7 +96,7 @@ export function EnvironmentIconMenu({
                 </span>
                 {kind === detected ? (
                   <span className="shrink-0 text-xs text-muted-foreground">
-                    {serverConfig?.environment.platform.machine ? "detected" : "default"}
+                    {serverConfig?.environment.platform.machine ? tr("detected") : tr("default")}
                   </span>
                 ) : null}
               </span>

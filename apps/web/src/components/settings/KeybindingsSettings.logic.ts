@@ -14,6 +14,7 @@ import {
 import { shortcutKeyFromEvent } from "../../keybindings";
 import { isMacPlatform } from "../../lib/utils";
 import { METRIC_OPTIONS, WINDOW_OPTIONS } from "../usage/usageShortcuts";
+import { tr } from "~/i18n";
 
 // Every usage.* command needs a rank. An unranked one falls back to the
 // alphabetical compare, which makes the comparator inconsistent and the order
@@ -108,11 +109,11 @@ export function whenAstToExpression(node: KeybindingWhenNode | undefined): strin
 }
 
 export function whenNodeRemoveLabel(node: KeybindingWhenNode, depth: number): string {
-  if (depth === 0) return "Clear all conditions";
+  if (depth === 0) return tr("Clear all conditions");
   if (node.type === "identifier" || (node.type === "not" && node.node.type === "identifier")) {
-    return "Remove condition";
+    return tr("Remove condition");
   }
-  return "Remove group and its conditions";
+  return tr("Remove group and its conditions");
 }
 
 function wrapWhenExpression(node: KeybindingWhenNode): string {
@@ -130,7 +131,7 @@ export function parseWhenExpressionDraft(
   if (!ast) {
     return {
       ok: false,
-      message: "Use variables with !, &&, ||, and parentheses.",
+      message: tr("Use variables with !, &&, ||, and parentheses."),
     };
   }
 
@@ -211,17 +212,17 @@ export interface KeybindingGroup {
 const KEYBINDING_GROUPS = [
   {
     id: "navigation",
-    title: "Navigation",
+    title: tr("Navigation"),
     prefixes: ["sidebar", "rightPanel", "commandPalette", "filePicker", "projectSearch", "editor"],
   },
-  { id: "threads", title: "Threads", prefixes: ["thread", "chat", "pullRequest"] },
-  { id: "composer", title: "Composer", prefixes: ["composer", "modelPicker"] },
-  { id: "terminal", title: "Terminal", prefixes: ["terminal"] },
-  { id: "preview", title: "Preview & diff", prefixes: ["preview", "diff"] },
-  { id: "appearance", title: "Appearance", prefixes: ["theme", "appearance", "themeEditor"] },
-  { id: "scripts", title: "Project scripts", prefixes: ["script"] },
+  { id: "threads", title: tr("Threads"), prefixes: ["thread", "chat", "pullRequest"] },
+  { id: "composer", title: tr("Composer"), prefixes: ["composer", "modelPicker"] },
+  { id: "terminal", title: tr("Terminal"), prefixes: ["terminal"] },
+  { id: "preview", title: tr("Preview & diff"), prefixes: ["preview", "diff"] },
+  { id: "appearance", title: tr("Appearance"), prefixes: ["theme", "appearance", "themeEditor"] },
+  { id: "scripts", title: tr("Project scripts"), prefixes: ["script"] },
 ] as const;
-const OTHER_KEYBINDING_GROUP = { id: "other", title: "Other" } as const;
+const OTHER_KEYBINDING_GROUP = { id: "other", title: tr("Other") } as const;
 
 function keybindingGroupFor(command: KeybindingCommand): { id: string; title: string } {
   const prefix = String(command).split(".")[0] ?? "";
@@ -359,12 +360,13 @@ export function buildKeybindingCommandOptions(
 }
 
 export function commandLabel(command: KeybindingCommand): string {
-  if (command === "composer.sendAlternate") return "Composer: Opposite Queue or Steer Action";
-  if (command === "composer.sendBackground") return "Composer: Start in Background";
-  if (command === "composer.sendAndNewThread") return "Composer: Send and Start New Thread";
-  if (command === "thread.steerQueuedMessage") return "Queue: Send First Queued Message as Steer";
+  if (command === "composer.sendAlternate") return tr("Composer: Opposite Queue or Steer Action");
+  if (command === "composer.sendBackground") return tr("Composer: Start in Background");
+  if (command === "composer.sendAndNewThread") return tr("Composer: Send and Start New Thread");
+  if (command === "thread.steerQueuedMessage")
+    return tr("Queue: Send First Queued Message as Steer");
   if (command === "thread.editQueuedMessage") return "Queue: Edit Last Queued Message";
-  if (command === "thread.copyReference") return "Pull Request: Copy Link or Thread ID";
+  if (command === "thread.copyReference") return tr("Pull Request: Copy Link or Thread ID");
   const usageMetric = METRIC_OPTIONS.find((option) => option.command === command);
   if (usageMetric) return `Usage: ${usageMetric.label}`;
   const usagePeriod = WINDOW_OPTIONS.find((option) => option.command === command);

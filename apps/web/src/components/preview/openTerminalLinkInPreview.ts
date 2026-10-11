@@ -13,6 +13,7 @@ import { isPreviewAvailableFor, previewRuntimeFor } from "~/browser/previewRunti
 import { recordVisitForThread } from "~/browserHistoryStore";
 import { applyPreviewServerSnapshot } from "~/previewStateStore";
 import { useRightPanelStore } from "~/rightPanelStore";
+import { tr } from "~/i18n";
 
 const terminalLinkErrorContext = {
   environmentId: Schema.String,
@@ -26,7 +27,10 @@ export class TerminalLinkPreviewOpenError extends Schema.TaggedError<TerminalLin
   terminalLinkErrorContext,
 ) {
   override get message(): string {
-    return `Failed to open terminal link ${this.targetOrigin} in preview for thread ${this.threadId}.`;
+    return tr("Failed to open terminal link {{targetOrigin}} in preview for thread {{threadId}}.", {
+      targetOrigin: this.targetOrigin,
+      threadId: this.threadId,
+    });
   }
 }
 

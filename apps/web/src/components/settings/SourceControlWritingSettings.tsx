@@ -43,21 +43,25 @@ import {
 } from "./settingsLayout";
 import { BranchNamingSettings } from "./BranchNamingSettings";
 import { searchableSetting } from "./settingsSearch";
+import { tr } from "~/i18n";
 
 const MODE_OPTIONS: Record<SourceControlWritingStyleMode, { label: string; description: string }> =
   {
     repo_conventions: {
-      label: "Repository conventions",
-      description: "In each project, matches recent change descriptions and change request titles.",
+      label: tr("Repository conventions"),
+      description: tr(
+        "In each project, matches recent change descriptions and change request titles.",
+      ),
     },
     conventional_commits: {
-      label: "Conventional Commits",
-      description: "Use Conventional Commit prefixes and keep change request text concise.",
+      label: tr("Conventional Commits"),
+      description: tr("Use Conventional Commit prefixes and keep change request text concise."),
     },
     custom: {
-      label: "Custom instructions",
-      description:
+      label: tr("Custom instructions"),
+      description: tr(
         "Use your instructions for change descriptions and change requests in every project.",
+      ),
     },
   };
 
@@ -152,7 +156,7 @@ export function SourceControlWritingSettingsSection() {
   );
 
   return (
-    <SettingsSection id="source-control-text-generation" title="Text generation">
+    <SettingsSection id="source-control-text-generation" title={tr("Text generation")}>
       <BranchNamingSettings />
       <SettingsRow
         serverScoped
@@ -163,7 +167,7 @@ export function SourceControlWritingSettingsSection() {
         resetAction={
           isSourceControlWritingStyleDirty ? (
             <SettingResetButton
-              label="source control writing style"
+              label={tr("source control writing style")}
               onClick={() =>
                 updateSettings({
                   sourceControlWritingStyle: {
@@ -191,7 +195,7 @@ export function SourceControlWritingSettingsSection() {
             <SelectTrigger
               size="sm"
               className="w-full sm:w-56"
-              aria-label="Source control writing style"
+              aria-label={tr("Source control writing style")}
             >
               <SelectValue>
                 {(value: SourceControlWritingStyleMode | null) =>
@@ -217,8 +221,10 @@ export function SourceControlWritingSettingsSection() {
                   value={allInstructions ?? ""}
                   onChange={(event) => setAllInstructions(event.target.value)}
                   rows={4}
-                  aria-label="Custom source control instructions for all selected environments"
-                  placeholder="Write the instructions each selected environment should use."
+                  aria-label={tr(
+                    "Custom source control instructions for all selected environments",
+                  )}
+                  placeholder={tr("Write the instructions each selected environment should use.")}
                 />
                 <Button
                   size="sm"
@@ -235,7 +241,7 @@ export function SourceControlWritingSettingsSection() {
                     setEditingAllInstructions(false);
                   }}
                 >
-                  Apply instructions to all
+                  {tr("Apply instructions to all")}
                 </Button>
               </>
             ) : (
@@ -247,7 +253,7 @@ export function SourceControlWritingSettingsSection() {
                   setEditingAllInstructions(true);
                 }}
               >
-                Write custom instructions for all
+                {tr("Write custom instructions for all")}
               </Button>
             )}
           </div>
@@ -264,8 +270,8 @@ export function SourceControlWritingSettingsSection() {
                 }
               }}
               rows={4}
-              placeholder="Keep titles concise. Use short bullet points in descriptions."
-              aria-label="Custom source control writing instructions"
+              placeholder={tr("Keep titles concise. Use short bullet points in descriptions.")}
+              aria-label={tr("Custom source control writing instructions")}
             />
           </div>
         ) : null}
@@ -276,12 +282,14 @@ export function SourceControlWritingSettingsSection() {
         settingKeys={["sourceControlWritingStyle"]}
         mixed={templatesMixed}
         {...searchableSetting("follow-change-request-templates")}
-        description="Use the repository's template for change request descriptions when available."
+        description={tr(
+          "Use the repository's template for change request descriptions when available.",
+        )}
         resetAction={
           templatesMixed ||
           style.followChangeRequestTemplates !== defaults.followChangeRequestTemplates ? (
             <SettingResetButton
-              label="change request templates"
+              label={tr("change request templates")}
               onClick={() =>
                 updateSettings({
                   sourceControlWritingStyle: {
@@ -303,7 +311,7 @@ export function SourceControlWritingSettingsSection() {
                 },
               })
             }
-            aria-label="Follow change request templates"
+            aria-label={tr("Follow change request templates")}
           />
         }
       />
@@ -312,17 +320,19 @@ export function SourceControlWritingSettingsSection() {
         serverScoped
         settingKeys={["sourceControlWriterModelSelection"]}
         {...searchableSetting("source-control-writer-model")}
-        description="Model for source control text and branch or bookmark names. Off uses the environment's text generation model."
+        description={tr(
+          "Model for source control text and branch or bookmark names. Off uses the environment's text generation model.",
+        )}
         control={
           !hasServerTargets ? (
             <span className="text-sm text-muted-foreground">
-              Connect an environment to choose its source control writer model.
+              {tr("Connect an environment to choose its source control writer model.")}
             </span>
           ) : (
             <div className="flex flex-wrap items-center justify-end gap-2">
               {usesDedicatedModel && !canEnableDedicatedModel ? (
                 <span className="text-sm text-muted-foreground">
-                  No text generation providers available.
+                  {tr("No text generation providers available.")}
                 </span>
               ) : null}
               {usesDedicatedModel && canEnableDedicatedModel ? (
@@ -334,8 +344,8 @@ export function SourceControlWritingSettingsSection() {
                   instanceEntries={instanceEntries}
                   modelOptionsByInstance={modelOptionsByInstance}
                   triggerClassName={SETTINGS_PICKER_TRIGGER_CLASSNAME}
-                  triggerAriaLabel="Source control writer model"
-                  {...(mixedWriterModel ? { triggerLabel: "Mixed" } : {})}
+                  triggerAriaLabel={tr("Source control writer model")}
+                  {...(mixedWriterModel ? { triggerLabel: tr("Mixed") } : {})}
                   {...(environmentId
                     ? {
                         onOpenProviderSetup: (instanceId: ProviderInstanceId) => {
@@ -352,7 +362,7 @@ export function SourceControlWritingSettingsSection() {
                     if (reason) {
                       toastManager.add({
                         type: "error",
-                        title: "Source control writer model not saved",
+                        title: tr("Source control writer model not saved"),
                         description: reason,
                       });
                       return;
@@ -377,7 +387,7 @@ export function SourceControlWritingSettingsSection() {
                       : null,
                   })
                 }
-                aria-label="Use a separate source control writer model"
+                aria-label={tr("Use a separate source control writer model")}
               />
             </div>
           )
@@ -390,13 +400,15 @@ export function SourceControlWritingSettingsSection() {
         settingKeys={["reviewGuidesEnabled"]}
         mixed={mixedReviewGuidesEnabled}
         {...searchableSetting("review-guides")}
-        description="Adds a Guide tab to pull requests: an agent writes a tour of the change, stop by stop, with the calls a maintainer should make."
+        description={tr(
+          "Adds a Guide tab to pull requests: an agent writes a tour of the change, stop by stop, with the calls a maintainer should make.",
+        )}
         control={
           <Switch
             mixed={mixedReviewGuidesEnabled}
             checked={mixedReviewGuidesEnabled ? false : settings.reviewGuidesEnabled}
             onCheckedChange={(checked) => updateSettings({ reviewGuidesEnabled: Boolean(checked) })}
-            aria-label="Review guides"
+            aria-label={tr("Review guides")}
           />
         }
       />
@@ -407,11 +419,13 @@ export function SourceControlWritingSettingsSection() {
             serverScoped
             settingKeys={["reviewGuideModelSelection"]}
             {...searchableSetting("review-guide-model")}
-            description="Model that reads a pull request to write its review guide. It reads the change itself over many steps, so a stronger model helps. Off uses the source control writer model."
+            description={tr(
+              "Model that reads a pull request to write its review guide. It reads the change itself over many steps, so a stronger model helps. Off uses the source control writer model.",
+            )}
             control={
               !hasServerTargets ? (
                 <span className="text-sm text-muted-foreground">
-                  Connect an environment to choose its review guide model.
+                  {tr("Connect an environment to choose its review guide model.")}
                 </span>
               ) : (
                 <div className="flex flex-wrap items-center justify-end gap-2">
@@ -424,15 +438,15 @@ export function SourceControlWritingSettingsSection() {
                       instanceEntries={instanceEntries}
                       modelOptionsByInstance={reviewGuideModelOptionsByInstance}
                       triggerClassName={SETTINGS_PICKER_TRIGGER_CLASSNAME}
-                      triggerAriaLabel="Review guide model"
-                      {...(mixedReviewGuideModel ? { triggerLabel: "Mixed" } : {})}
+                      triggerAriaLabel={tr("Review guide model")}
+                      {...(mixedReviewGuideModel ? { triggerLabel: tr("Mixed") } : {})}
                       getModelDisabledReason={writerModelDisabledReason}
                       onInstanceModelChange={(instanceId, model) => {
                         const reason = writerModelDisabledReason(instanceId, model);
                         if (reason) {
                           toastManager.add({
                             type: "error",
-                            title: "Review guide model not saved",
+                            title: tr("Review guide model not saved"),
                             description: reason,
                           });
                           return;
@@ -460,7 +474,7 @@ export function SourceControlWritingSettingsSection() {
                       if (reason) {
                         toastManager.add({
                           type: "error",
-                          title: "Review guide model not saved",
+                          title: tr("Review guide model not saved"),
                           description: reason,
                         });
                         return;
@@ -473,7 +487,7 @@ export function SourceControlWritingSettingsSection() {
                         ),
                       });
                     }}
-                    aria-label="Use a separate review guide model"
+                    aria-label={tr("Use a separate review guide model")}
                   />
                 </div>
               )
@@ -484,11 +498,13 @@ export function SourceControlWritingSettingsSection() {
             serverScoped
             settingKeys={["reviewGuideInstructions"]}
             {...searchableSetting("review-guide-instructions")}
-            description="Your preferences for review guides: what to show first, dwell on, or skip. The guide's format and coverage stay the same."
+            description={tr(
+              "Your preferences for review guides: what to show first, dwell on, or skip. The guide's format and coverage stay the same.",
+            )}
             resetAction={
               mixedReviewGuideInstructions || settings.reviewGuideInstructions !== "" ? (
                 <SettingResetButton
-                  label="review guide instructions"
+                  label={tr("review guide instructions")}
                   onClick={() => updateSettings({ reviewGuideInstructions: "" })}
                 />
               ) : null
@@ -497,7 +513,7 @@ export function SourceControlWritingSettingsSection() {
             <div className="mt-3 max-w-2xl pb-3.5">
               <Textarea
                 key={`${scopeKey}:${mixedReviewGuideInstructions}:${settings.reviewGuideInstructions}`}
-                aria-label="Review guide instructions"
+                aria-label={tr("Review guide instructions")}
                 onChange={() => {
                   reviewGuideInstructionsEdited.current = true;
                 }}
@@ -505,8 +521,10 @@ export function SourceControlWritingSettingsSection() {
                 defaultValue={mixedReviewGuideInstructions ? "" : settings.reviewGuideInstructions}
                 placeholder={
                   mixedReviewGuideInstructions
-                    ? "Mixed. Enter instructions to apply to all selected targets."
-                    : "Show service interfaces before implementations. Skip test files unless they change behavior. Keep summaries to two sentences."
+                    ? tr("Mixed. Enter instructions to apply to all selected targets.")
+                    : tr(
+                        "Show service interfaces before implementations. Skip test files unless they change behavior. Keep summaries to two sentences.",
+                      )
                 }
                 onBlur={(event) => {
                   const value = event.target.value.trim();

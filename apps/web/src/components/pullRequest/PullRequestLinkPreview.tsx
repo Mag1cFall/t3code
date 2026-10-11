@@ -19,6 +19,7 @@ import { useEnvironmentQuery } from "~/state/query";
 import { PreviewCard, PreviewCardPopup, PreviewCardTrigger } from "../ui/preview-card";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { PullRequestActorAvatar, resolvePullRequestState } from "./pullRequestPresentation";
+import { tr } from "~/i18n";
 
 interface PullRequestLinkPreviewTarget {
   readonly environmentId: EnvironmentId;
@@ -140,7 +141,7 @@ export function PullRequestLinkPreview({
                   <span className="min-w-0 truncate">{authorLabel}</span>
                   <span aria-hidden>·</span>
                   <span className="shrink-0">
-                    opened {formatRelativeTimeLabel(detail.createdAt)}
+                    {tr("opened")} {formatRelativeTimeLabel(detail.createdAt)}
                   </span>
                 </div>
               </div>

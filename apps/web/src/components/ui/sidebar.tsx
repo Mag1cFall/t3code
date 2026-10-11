@@ -21,6 +21,7 @@ import { useIsMobile } from "~/hooks/useMediaQuery";
 import { getLocalStorageItem, setLocalStorageItem } from "~/hooks/useLocalStorage";
 import { resolveSidebarState, type ResponsiveSidebarState } from "./sidebarState";
 import * as Schema from "effect/Schema";
+import { tr } from "~/i18n";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -252,8 +253,8 @@ function Sidebar({
             }
           >
             <SheetHeader className="sr-only">
-              <SheetTitle>Sidebar</SheetTitle>
-              <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+              <SheetTitle>{tr("Sidebar")}</SheetTitle>
+              <SheetDescription>{tr("Displays the mobile sidebar.")}</SheetDescription>
             </SheetHeader>
             <div
               className={cn(
@@ -344,7 +345,7 @@ function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<t
       {...props}
     >
       <MorphIcon className="size-4" icon={isOpen ? PanelLeftClose : PanelLeft} />
-      <span className="sr-only">Toggle Sidebar</span>
+      <span className="sr-only">{tr("Toggle Sidebar")}</span>
     </Button>
   );
 }
@@ -371,7 +372,7 @@ function SidebarRail({
   const latestResizable = React.useRef(resolvedResizable);
   const canResize = resolvedResizable !== null && open;
   const railLabel = canResize ? "Resize Sidebar" : "Toggle Sidebar";
-  const railTitle = canResize ? "Drag to resize sidebar" : "Toggle Sidebar";
+  const railTitle = canResize ? tr("Drag to resize sidebar") : "Toggle Sidebar";
   const resize = useResizeDrag<HTMLButtonElement>((event) => {
     if (!resolvedResizable || !open) return null;
     const rail = event.currentTarget;

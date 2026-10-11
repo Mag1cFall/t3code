@@ -22,6 +22,7 @@ import {
 } from "./ui/command";
 import { getVirtualizedScrollFadeClassName } from "./ui/scroll-area";
 import { ThreadSearchMatchExcerpt } from "./ThreadSearchMatch";
+import { tr } from "~/i18n";
 
 interface CommandPaletteResultsProps {
   emptyStateMessage?: string;
@@ -37,8 +38,8 @@ function CommandPaletteEmptyState(props: { emptyStateMessage?: string; isActions
     <div className="py-10 text-center text-sm text-muted-foreground">
       {props.emptyStateMessage ??
         (props.isActionsOnly
-          ? "No matching actions."
-          : "No matching commands, projects, or threads.")}
+          ? tr("No matching actions.")
+          : tr("No matching commands, projects, or threads."))}
     </div>
   );
 }

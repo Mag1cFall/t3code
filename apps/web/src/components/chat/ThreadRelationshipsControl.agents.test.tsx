@@ -521,7 +521,16 @@ it.each([
       thread: parent,
       runs: [],
       providerThreads: [],
-      providerSessions: [],
+      providerSessions:
+        origin === "provider_native"
+          ? [
+              {
+                driver,
+                providerInstanceId: "codex",
+                capabilities: { subagents: { supportsNativeSubagentStop: true } },
+              },
+            ]
+          : [],
       contextTransfers: [],
       subagents: [agent],
     };
@@ -731,7 +740,9 @@ it("shows the matching child agent details and refreshes them when the agent set
   await act(async () =>
     renderer.root
       .findAllByType("button")
-      .find((button) => button.children.includes("Show "))!
+      .find((button) =>
+        button.children.some((child) => typeof child === "string" && child.startsWith("Show ")),
+      )!
       .props.onClick(),
   );
   expect(text()).toContain("Old agent 7");

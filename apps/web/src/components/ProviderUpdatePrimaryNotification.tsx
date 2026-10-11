@@ -27,6 +27,7 @@ import {
 } from "./ProviderUpdateLaunchNotification.logic";
 import { hiddenToastActionProps, stackedThreadToast, toastManager } from "./ui/toast";
 import { useAtomCommand } from "../state/use-atom-command";
+import { tr } from "~/i18n";
 
 const seenProviderUpdateNotificationKeys = new Set<string>();
 type ProviderUpdateToastId = ReturnType<typeof toastManager.add>;
@@ -89,7 +90,7 @@ function addProviderUpdateToast(input: {
       description: input.view.description,
       timeout: 0,
       actionProps: {
-        children: "Settings",
+        children: tr("Settings"),
         onClick: () => input.openSettings(toastId),
       },
       actionVariant: "outline",
@@ -247,7 +248,7 @@ export function ProviderUpdatePrimaryNotification() {
               addProviderUpdateToast({
                 view: getProviderUpdateRejectedToastView(
                   providerCount,
-                  "This connection cannot manage provider accounts.",
+                  tr("This connection cannot manage provider accounts."),
                 ),
                 openSettings: openProviderSettings,
               });
@@ -301,17 +302,19 @@ export function ProviderUpdatePrimaryNotification() {
       title: initialView.title,
       description: canManageProviders
         ? initialView.description
-        : "This connection cannot manage provider accounts. View provider settings for update details.",
+        : tr(
+            "This connection cannot manage provider accounts. View provider settings for update details.",
+          ),
       timeout: 0,
       actionProps:
         oneClickProviders.length > 0
           ? {
-              children: "Update",
+              children: tr("Update"),
               disabled: !canManageProviders,
               onClick: runUpdates,
             }
           : {
-              children: "Settings",
+              children: tr("Settings"),
               onClick: openSettings,
             },
       actionVariant: "outline",
@@ -325,7 +328,7 @@ export function ProviderUpdatePrimaryNotification() {
         ...(oneClickProviders.length > 0
           ? {
               secondaryActionProps: {
-                children: "Settings",
+                children: tr("Settings"),
                 onClick: openSettings,
               },
               secondaryActionVariant: "outline" as const,

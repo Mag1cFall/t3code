@@ -9,6 +9,7 @@ import {
   parseVsCodeThemeFile,
   resolveThemeLabelCollisions,
 } from "./vscodeThemeImport";
+import { tr } from "~/i18n";
 
 const OPEN_VSX_SEARCH_URL = "https://open-vsx.org/api/-/search";
 const MAX_VSIX_BYTES = 20 * 1024 * 1024;
@@ -257,7 +258,7 @@ export async function searchOpenVsxThemes(
     const searchBytes = await readCappedResponse(
       response,
       MAX_SEARCH_BYTES,
-      "Open VSX returned an unexpectedly large response.",
+      tr("Open VSX returned an unexpectedly large response."),
     );
     try {
       return JSON.parse(new TextDecoder().decode(searchBytes)) as unknown;
@@ -283,7 +284,7 @@ export async function searchOpenVsxThemes(
         const detailBytes = await readCappedResponse(
           detailResponse,
           MAX_DETAIL_BYTES,
-          "Open VSX returned an unexpectedly large detail response.",
+          tr("Open VSX returned an unexpectedly large detail response."),
         );
         try {
           const extension = extensionFromDetail(JSON.parse(new TextDecoder().decode(detailBytes)));
@@ -301,11 +302,11 @@ export async function searchOpenVsxThemes(
           const manifestBytes = await readCappedResponse(
             manifestResponse,
             MAX_MANIFEST_BYTES,
-            "Open VSX returned an unexpectedly large manifest.",
+            tr("Open VSX returned an unexpectedly large manifest."),
           );
           const manifest = parseJsoncObject(
             new TextDecoder().decode(manifestBytes),
-            "Extension manifest",
+            tr("Extension manifest"),
           );
           return themeContributions(manifest).length > 0 &&
             manifestLicenseMatches(manifest, extension.license)
@@ -317,7 +318,7 @@ export async function searchOpenVsxThemes(
       }, signal),
     ),
   );
-  if (signal?.aborted) throw new DOMException("The operation was aborted.", "AbortError");
+  if (signal?.aborted) throw new DOMException(tr("The operation was aborted."), "AbortError");
   const completedDetails = details.filter((result) => result.status === "fulfilled");
   if (identities.length > 0 && completedDetails.length === 0) {
     throw new Error("Open VSX theme details are unavailable right now.");
@@ -621,7 +622,7 @@ async function fetchPackage(url: string, signal?: AbortSignal): Promise<Uint8Arr
   return readCappedResponse(
     response,
     MAX_VSIX_BYTES,
-    "That theme extension is too large to import safely.",
+    tr("That theme extension is too large to import safely."),
   );
 }
 
@@ -634,9 +635,12 @@ export async function importOpenVsxThemeExtension(
   const manifestBytes = await readCappedResponse(
     manifestResponse,
     MAX_MANIFEST_BYTES,
-    "That Open VSX extension manifest is too large.",
+    tr("That Open VSX extension manifest is too large."),
   );
-  const manifest = parseJsoncObject(new TextDecoder().decode(manifestBytes), "Extension manifest");
+  const manifest = parseJsoncObject(
+    new TextDecoder().decode(manifestBytes),
+    tr("Extension manifest"),
+  );
   const advertisedContributions = themeContributions(manifest);
   if (advertisedContributions.length === 0) {
     throw new Error("That extension does not contain color themes.");
@@ -654,7 +658,7 @@ export async function importOpenVsxThemeExtension(
       await readCappedResponse(
         checksumResponse,
         256,
-        "That Open VSX checksum response is invalid.",
+        tr("That Open VSX checksum response is invalid."),
       ),
     )
     .trim()
@@ -683,8 +687,8 @@ export async function importOpenVsxThemeExtension(
   }
 
   const packagedManifest = parseJsoncObject(
-    await readZipText(zip, "extension/package.json", "Extension manifest", signal),
-    "Extension manifest",
+    await readZipText(zip, "extension/package.json", tr("Extension manifest"), signal),
+    tr("Extension manifest"),
   );
   if (
     typeof packagedManifest.publisher !== "string" ||

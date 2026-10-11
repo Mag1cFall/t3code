@@ -31,6 +31,7 @@ import { isPaginatedBranchesNextPagePending } from "./paginatedBranches";
 import { projectContentSearch, projectEnvironment } from "./projects";
 import { useEnvironmentQuery } from "./query";
 import { vcsEnvironment } from "./vcs";
+import { tr } from "~/i18n";
 
 const PROJECT_PATH_SEARCH_DEBOUNCE_MS = 120;
 const COMPOSER_PATH_SEARCH_LIMIT = 80;
@@ -169,7 +170,7 @@ export function usePaginatedBranches(target: VcsRefTarget) {
           const cause = Cause.squash(failed.cause);
           return cause instanceof Error && cause.message.trim().length > 0
             ? cause.message
-            : "Failed to load refs.";
+            : tr("Failed to load refs.");
         })()
       : null;
   const refresh = useCallback(() => {
@@ -268,7 +269,7 @@ export function useProjectPathSearch(
         ? null
         : canReadFiles
           ? result.error
-          : (fileAccess.error ?? "This connection cannot search host files."),
+          : (fileAccess.error ?? tr("This connection cannot search host files.")),
     isPending:
       !areProjectPathSearchTargetsEqual(normalizedTarget, debouncedTarget) ||
       (hasTarget && (fileAccess.isPending || result.isPending)),
@@ -330,7 +331,7 @@ export function useProjectContentSearch(target: ProjectContentSearchTarget) {
         ? null
         : canReadFiles
           ? result.error
-          : (fileAccess.error ?? "This connection cannot search host files."),
+          : (fileAccess.error ?? tr("This connection cannot search host files.")),
     isPending:
       isCheckingAccess ||
       (canReadFiles && hasQuery && (query !== debouncedQuery || result.isPending)),

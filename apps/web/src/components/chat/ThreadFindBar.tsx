@@ -5,6 +5,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
 import { cn } from "~/lib/utils";
 import { formatThreadFindCount } from "./threadFind";
 import { THREAD_DETAILS_CARD_GAP } from "./threadDetailsCardLayout";
+import { tr } from "~/i18n";
 
 interface ThreadFindBarProps {
   readonly open: boolean;
@@ -45,7 +46,7 @@ export function ThreadFindBar(props: ThreadFindBarProps) {
     label = props.counting ? "1/…" : formatThreadFindCount(props.activeIndex, props.matchCount);
   }
   if (props.status === "loading") label = "Searching…";
-  if (props.status === "error") label = "Search failed";
+  if (props.status === "error") label = tr("Search failed");
   const navigationDisabled =
     props.matchCount === 0 || props.status === "loading" || props.counting === true;
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -69,7 +70,7 @@ export function ThreadFindBar(props: ThreadFindBarProps) {
         size="lg"
         onContextMenu={(event) => event.stopPropagation()}
         role="search"
-        aria-label="Find in thread"
+        aria-label={tr("Find in thread")}
         aria-busy={props.status === "loading" || props.counting === true}
         className="w-full"
       >
@@ -78,8 +79,8 @@ export function ThreadFindBar(props: ThreadFindBarProps) {
           type="search"
           size="sm"
           value={props.query}
-          aria-label="Find in thread"
-          placeholder="Find in thread"
+          aria-label={tr("Find in thread")}
+          placeholder={tr("Find in thread")}
           maxLength={200}
           spellCheck={false}
           autoComplete="off"
@@ -98,13 +99,13 @@ export function ThreadFindBar(props: ThreadFindBarProps) {
           </span>
           {props.status === "error" ? (
             <Button size="xs" variant="ghost" onClick={props.onRetry}>
-              Retry
+              {tr("Retry")}
             </Button>
           ) : null}
           <Button
             size="icon-xs"
             variant="ghost"
-            aria-label="Previous match"
+            aria-label={tr("Previous match")}
             disabled={navigationDisabled}
             onClick={props.onPrevious}
           >
@@ -113,13 +114,18 @@ export function ThreadFindBar(props: ThreadFindBarProps) {
           <Button
             size="icon-xs"
             variant="ghost"
-            aria-label="Next match"
+            aria-label={tr("Next match")}
             disabled={navigationDisabled}
             onClick={props.onNext}
           >
             <ChevronDownIcon />
           </Button>
-          <Button size="icon-xs" variant="ghost" aria-label="Close find" onClick={props.onClose}>
+          <Button
+            size="icon-xs"
+            variant="ghost"
+            aria-label={tr("Close find")}
+            onClick={props.onClose}
+          >
             <XIcon />
           </Button>
         </InputGroupAddon>

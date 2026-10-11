@@ -15,6 +15,7 @@ import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
 import { useProjects, useServerConfigs } from "../state/entities";
 import { serverEnvironment } from "../state/server";
 import { usePrimaryEnvironmentId } from "../state/environments";
+import { tr } from "~/i18n";
 
 export {
   parseChangeRequestUrl,
@@ -271,8 +272,8 @@ export function useOpenPrLink(threadRef?: ScopedThreadRef) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Unable to open pull request link",
-            description: error instanceof Error ? error.message : "An error occurred.",
+            title: tr("Unable to open pull request link"),
+            description: error instanceof Error ? error.message : tr("An error occurred."),
           }),
         );
       });

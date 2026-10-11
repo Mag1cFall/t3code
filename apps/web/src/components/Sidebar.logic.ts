@@ -26,6 +26,7 @@ import type { SidebarThreadSummary, Thread } from "../types";
 import { cn, normalizeSearchText } from "../lib/utils";
 import { isLatestRunSettled } from "../session-logic";
 import { resolveServerBackedAppStageLabel } from "../branding.logic";
+import { tr } from "~/i18n";
 
 export function shouldNavigateAfterThreadPark(input: {
   readonly threadKey: string;
@@ -553,13 +554,13 @@ export function buildMultiSelectThreadContextMenuItems(input: {
   hasRunningThread: boolean;
 }): readonly ContextMenuItem<"mark-unread" | "archive" | "delete">[] {
   return [
-    { id: "mark-unread", label: `Mark unread (${input.count})` },
+    { id: "mark-unread", label: tr("Mark unread ({{count}})", { count: input.count }) },
     {
       id: "archive",
-      label: `Archive (${input.count})`,
+      label: tr("Archive ({{count}})", { count: input.count }),
       disabled: input.hasRunningThread,
     },
-    { id: "delete", label: `Delete (${input.count})`, destructive: true },
+    { id: "delete", label: tr("Delete ({{count}})", { count: input.count }), destructive: true },
   ];
 }
 
@@ -601,13 +602,15 @@ export function buildBulkTitleRegenerationContextMenuItem(input: {
   if (input.actionableCount === 0) {
     return {
       id: "regenerate-title",
-      label: `Regenerating… (${input.supportedCount})`,
+      label: tr("Regenerating… ({{supportedCount}})", { supportedCount: input.supportedCount }),
       disabled: true,
     };
   }
   return {
     id: "regenerate-title",
-    label: `Regenerate titles (${input.actionableCount})`,
+    label: tr("Regenerate titles ({{actionableCount}})", {
+      actionableCount: input.actionableCount,
+    }),
   };
 }
 
@@ -620,7 +623,7 @@ export function buildBulkUnpinContextMenuItem(input: {
   pinnedCount: number;
 }): ContextMenuItem<"unpin"> | null {
   if (input.pinnedCount === 0) return null;
-  return { id: "unpin", label: `Unpin (${input.pinnedCount})` };
+  return { id: "unpin", label: tr("Unpin ({{pinnedCount}})", { pinnedCount: input.pinnedCount }) };
 }
 
 export interface ThreadStatusPill {

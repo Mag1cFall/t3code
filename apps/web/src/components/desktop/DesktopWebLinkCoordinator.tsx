@@ -17,6 +17,7 @@ import { previewEnvironment } from "../../state/preview";
 import { useAtomCommand } from "../../state/use-atom-command";
 import { useAtomQueryRunner } from "../../state/use-atom-query-runner";
 import { stackedThreadToast, toastManager } from "../ui/toast";
+import { tr } from "~/i18n";
 
 /**
  * The thread on screen when its browser panel is showing, so a link opens as
@@ -69,7 +70,7 @@ export function DesktopWebLinkCoordinator() {
 
   const reportFailure = (url: string, description = url) =>
     toastManager.add(
-      stackedThreadToast({ type: "error", title: "Could not open the link", description }),
+      stackedThreadToast({ type: "error", title: tr("Could not open the link"), description }),
     );
 
   // The OS hands each link over once, so a thread that could not start says so.
@@ -80,7 +81,7 @@ export function DesktopWebLinkCoordinator() {
       return null;
     }
     // Reports its own failure.
-    const project = await openScratchProject(environmentId, "Could not open the link");
+    const project = await openScratchProject(environmentId, tr("Could not open the link"));
     if (!project) return null;
     const opened = await openThread(scopeProjectRef(project.environmentId, project.id));
     if (!opened) {

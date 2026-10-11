@@ -19,6 +19,7 @@ import { Dialog, DialogPopup, DialogTitle } from "../ui/dialog";
 import { MenuItem } from "../ui/menu";
 import { toastManager } from "../ui/toast";
 import { PullRequestGlyph } from "./pullRequestIcons";
+import { tr } from "~/i18n";
 
 interface PullRequestThreadLinksProps {
   environmentId: EnvironmentId;
@@ -81,7 +82,9 @@ function EnabledPullRequestThreadLinks({
     } catch (error) {
       toastManager.add({
         type: "error",
-        title: remove ? "Could not unlink the pull request" : "Could not link the pull request",
+        title: remove
+          ? tr("Could not unlink the pull request")
+          : tr("Could not link the pull request"),
         description: error instanceof Error ? error.message : String(error),
       });
       return;
@@ -104,8 +107,11 @@ function EnabledPullRequestThreadLinks({
     linking.mode === "multiple" ? ((relations.data ?? lastRelations)?.threads ?? []) : [];
   const linkedThreadsLabel =
     linkedThreads.length > 0
-      ? `Linked from ${linkedThreads.length} ${linkedThreads.length === 1 ? "thread" : "threads"}`
-      : "Linked threads";
+      ? tr("Linked from {{length}} {{value}}", {
+          length: linkedThreads.length,
+          value: linkedThreads.length === 1 ? "thread" : "threads",
+        })
+      : tr("Linked threads");
   return (
     <>
       {display === "count" && (linkedThreads.length > 0 || relations.error !== null) ? (
@@ -130,7 +136,9 @@ function EnabledPullRequestThreadLinks({
               </Button>
             }
           />
-          <TooltipPopup>{linkedThreadsLabel}. Search in the command palette.</TooltipPopup>
+          <TooltipPopup>
+            {tr("{{linkedThreadsLabel}}. Search in the command palette.", { linkedThreadsLabel })}
+          </TooltipPopup>
         </Tooltip>
       ) : null}
       {display === "menu-item" ? (
@@ -150,16 +158,16 @@ function EnabledPullRequestThreadLinks({
             <PullRequestGlyph.link aria-hidden className="size-3.5" />
           )}
           {linkedHere
-            ? "Unlink from this thread"
+            ? tr("Unlink from this thread")
             : currentThreadRef
-              ? "Link to this thread"
-              : "Link to thread"}
+              ? tr("Link to this thread")
+              : tr("Link to thread")}
         </MenuItem>
       ) : null}
       {display === "picker" ? (
         <Dialog open onOpenChange={onPickerOpenChange}>
           <DialogPopup className="max-w-md" showCloseButton={false}>
-            <DialogTitle className="sr-only">Link pull request to a thread</DialogTitle>
+            <DialogTitle className="sr-only">{tr("Link pull request to a thread")}</DialogTitle>
             <ThreadPicker
               environmentId={environmentId}
               url={url}
@@ -205,12 +213,12 @@ function ThreadPicker({
     )
     .toSorted((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   return (
-    <Command mode="none" value={query} onValueChange={setQuery} aria-label="Choose a thread">
-      <CommandInput placeholder="Search threads or projects..." disabled={pending} />
+    <Command mode="none" value={query} onValueChange={setQuery} aria-label={tr("Choose a thread")}>
+      <CommandInput placeholder={tr("Search threads or projects...")} disabled={pending} />
       <CommandList className="max-h-80 overflow-y-auto">
         {candidates.length === 0 ? (
           <div className="px-3 py-6 text-center text-sm text-muted-foreground">
-            No active threads found.
+            {tr("No active threads found.")}
           </div>
         ) : (
           candidates.map((thread) => {
@@ -224,7 +232,7 @@ function ThreadPicker({
               >
                 <MessageSquareIcon aria-hidden className="size-4 shrink-0" />
                 <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="truncate">{thread.title || "Untitled thread"}</span>
+                  <span className="truncate">{thread.title || tr("Untitled thread")}</span>
                   <span className="truncate text-xs text-muted-foreground">
                     {projectNames.get(thread.projectId)}
                   </span>
@@ -232,7 +240,7 @@ function ThreadPicker({
                 {linked ? (
                   <>
                     <CheckIcon aria-hidden className="size-3.5" />
-                    <span className="text-xs text-muted-foreground">Linked</span>
+                    <span className="text-xs text-muted-foreground">{tr("Linked")}</span>
                   </>
                 ) : null}
               </CommandItem>

@@ -1,4 +1,5 @@
 import { PREVIEW_ERROR_CODE_MESSAGES } from "./previewConstants";
+import { tr } from "~/i18n";
 
 /**
  * Resolve a friendly description for a Chromium / network error. Falls back
@@ -8,5 +9,5 @@ export function describePreviewError(description: string): string {
   const friendly = PREVIEW_ERROR_CODE_MESSAGES[description];
   if (friendly) return friendly;
   if (description.length > 0) return description;
-  return "Network error";
+  return tr("Network error");
 }

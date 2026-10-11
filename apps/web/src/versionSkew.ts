@@ -10,6 +10,7 @@ import * as Schema from "effect/Schema";
 
 import { APP_VERSION } from "./branding";
 import { getLocalStorageItem, setLocalStorageItem } from "./hooks/useLocalStorage";
+import { tr } from "~/i18n";
 
 export interface VersionMismatch {
   readonly clientVersion: string;
@@ -85,7 +86,7 @@ export function resolveVersionMismatch(
   return {
     clientVersion: normalizedClientVersion,
     serverVersion: normalizedServerVersion,
-    hint: "Version mismatch. Try syncing the client and server to the same T3 Code version.",
+    hint: tr("Version mismatch. Try syncing the client and server to the same T3 Code version."),
   };
 }
 
@@ -134,7 +135,9 @@ export function manualServerUpdateCommand(
 }
 
 export function serverUpdateGuidance(capability: ServerSelfUpdateCapability): string {
-  return capability === "desktop-managed" ? "Update the desktop app" : "Update to stay in sync";
+  return capability === "desktop-managed"
+    ? tr("Update the desktop app")
+    : tr("Update to stay in sync");
 }
 
 export function buildVersionMismatchDismissalKey(

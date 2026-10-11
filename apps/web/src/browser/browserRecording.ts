@@ -11,6 +11,7 @@ import { appAtomRegistry } from "~/rpc/atomRegistry";
 import { createRecordingCompositor } from "./recordingCompositor";
 
 import { acquireBrowserSurfaceActivity } from "./browserSurfaceStore";
+import { tr } from "~/i18n";
 
 export class BrowserRecordingUnavailableError extends Schema.TaggedError<BrowserRecordingUnavailableError>()(
   "BrowserRecordingUnavailableError",
@@ -19,7 +20,7 @@ export class BrowserRecordingUnavailableError extends Schema.TaggedError<Browser
   },
 ) {
   override get message(): string {
-    return `Browser recording is unavailable for tab ${this.tabId}.`;
+    return tr("Browser recording is unavailable for tab {{tabId}}.", { tabId: this.tabId });
   }
 }
 
@@ -31,7 +32,10 @@ export class BrowserRecordingConflictError extends Schema.TaggedError<BrowserRec
   },
 ) {
   override get message(): string {
-    return `Cannot record tab ${this.requestedTabId} while tab ${this.activeTabId} is already being recorded.`;
+    return tr(
+      "Cannot record tab {{requestedTabId}} while tab {{activeTabId}} is already being recorded.",
+      { requestedTabId: this.requestedTabId, activeTabId: this.activeTabId },
+    );
   }
 }
 
@@ -42,7 +46,7 @@ export class BrowserRecordingStartCancelledError extends Schema.TaggedError<Brow
   },
 ) {
   override get message(): string {
-    return `Browser recording start was cancelled for tab ${this.tabId}.`;
+    return tr("Browser recording start was cancelled for tab {{tabId}}.", { tabId: this.tabId });
   }
 }
 
@@ -51,7 +55,9 @@ export class BrowserRecordingFormatUnavailableError extends Schema.TaggedError<B
   { tabId: Schema.String },
 ) {
   override get message(): string {
-    return `MediaRecorder did not report an output format for tab ${this.tabId}.`;
+    return tr("MediaRecorder did not report an output format for tab {{tabId}}.", {
+      tabId: this.tabId,
+    });
   }
 }
 
@@ -63,7 +69,10 @@ export class BrowserRecordingCaptureTimeoutError extends Schema.TaggedError<Brow
   },
 ) {
   override get message(): string {
-    return `Browser recording media capture for tab ${this.tabId} did not settle within ${this.timeoutMs}ms.`;
+    return tr(
+      "Browser recording media capture for tab {{tabId}} did not settle within {{timeoutMs}}ms.",
+      { tabId: this.tabId, timeoutMs: this.timeoutMs },
+    );
   }
 }
 
@@ -86,7 +95,10 @@ export class BrowserRecordingOperationError extends Schema.TaggedError<BrowserRe
   },
 ) {
   override get message(): string {
-    return `Browser recording operation ${this.operation} failed for tab ${this.tabId}.`;
+    return tr("Browser recording operation {{operation}} failed for tab {{tabId}}.", {
+      operation: this.operation,
+      tabId: this.tabId,
+    });
   }
 }
 

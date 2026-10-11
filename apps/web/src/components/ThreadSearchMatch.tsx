@@ -1,3 +1,4 @@
+import { tr } from "~/i18n";
 function foldAsciiCase(value: string): string {
   return value.replace(/[A-Z]/g, (character) => character.toLowerCase());
 }
@@ -58,7 +59,7 @@ export function ThreadSearchMatchExcerpt(props: {
   return (
     <span className="truncate text-xs text-muted-foreground/85">
       <span className={isUser ? "text-info-foreground" : "text-success-foreground"}>
-        {isUser ? "You:" : "Agent:"}
+        {isUser ? tr("You:") : tr("Agent:")}
       </span>{" "}
       <HighlightedSearchText text={props.match.snippet} query={props.match.query} />
     </span>

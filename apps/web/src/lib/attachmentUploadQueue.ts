@@ -29,6 +29,7 @@ import { assetEnvironment } from "../state/assets";
 import { attachmentEnvironment } from "../state/attachments";
 import { readEnvironmentScope, readPreparedConnection } from "../state/session";
 import type { AttachmentUploadState, ReadyAttachmentUpload } from "./attachmentUploadState";
+import { tr } from "~/i18n";
 
 const MAX_UPLOADS_PER_ENVIRONMENT = 3;
 const UPLOAD_TIMEOUT_MS = 5 * 60_000;
@@ -185,7 +186,7 @@ async function runUpload(job: UploadJob): Promise<void> {
     setUploadState(job.image.id, {
       status: "failed",
       environmentId: job.environmentId,
-      reason: "This connection cannot upload attachments.",
+      reason: tr("This connection cannot upload attachments."),
       ...(job.previous ? { previous: job.previous } : {}),
     });
     return;
@@ -236,8 +237,8 @@ async function runUpload(job: UploadJob): Promise<void> {
         environmentId: job.environmentId,
         reason:
           verification.status === "missing"
-            ? "Uploaded file expired. Remove it and attach it again."
-            : "Uploaded file could not be verified. Retry when the server reconnects.",
+            ? tr("Uploaded file expired. Remove it and attach it again.")
+            : tr("Uploaded file could not be verified. Retry when the server reconnects."),
         ...(job.previous ? { previous: job.previous } : {}),
       });
       return;
@@ -254,7 +255,7 @@ async function runUpload(job: UploadJob): Promise<void> {
     setUploadState(job.image.id, {
       status: "failed",
       environmentId: job.environmentId,
-      reason: "Unsupported image type",
+      reason: tr("Unsupported image type"),
       ...(job.previous ? { previous: job.previous } : {}),
     });
     return;
@@ -264,7 +265,7 @@ async function runUpload(job: UploadJob): Promise<void> {
     setUploadState(job.image.id, {
       status: "failed",
       environmentId: job.environmentId,
-      reason: "Original file is no longer available",
+      reason: tr("Original file is no longer available"),
       ...(job.previous ? { previous: job.previous } : {}),
     });
     return;
@@ -275,7 +276,7 @@ async function runUpload(job: UploadJob): Promise<void> {
     setUploadState(job.image.id, {
       status: "failed",
       environmentId: job.environmentId,
-      reason: "This connection cannot upload attachments.",
+      reason: tr("This connection cannot upload attachments."),
       ...(job.previous ? { previous: job.previous } : {}),
     });
     return;
@@ -352,14 +353,14 @@ async function runUpload(job: UploadJob): Promise<void> {
     environmentId: job.environmentId,
     reason:
       result.step === "mint"
-        ? "Upload could not start"
+        ? tr("Upload could not start")
         : result.step === "resolve-url"
           ? readEnvironmentScope(job.environmentId, AuthOrchestrationOperateScope)
-            ? "Not connected"
-            : "This connection cannot upload attachments."
+            ? tr("Not connected")
+            : tr("This connection cannot upload attachments.")
           : result.error instanceof Error
             ? result.error.message
-            : "Upload failed",
+            : tr("Upload failed"),
     ...(result.attachmentId ? { attachmentId: result.attachmentId } : {}),
     ...(job.previous ? { previous: job.previous } : {}),
   });
@@ -385,7 +386,7 @@ function pumpUploads(): void {
           setUploadState(job.image.id, {
             status: "failed",
             environmentId: job.environmentId,
-            reason: "Upload failed",
+            reason: tr("Upload failed"),
             ...(job.previous ? { previous: job.previous } : {}),
           });
         }

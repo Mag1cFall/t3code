@@ -11,6 +11,7 @@ import {
   type ThemeColorRole,
   type ThemeDefinition,
 } from "./themePalette";
+import { tr } from "~/i18n";
 
 /**
  * Best-effort import of a VS Code color theme (`*-color-theme.json`).
@@ -184,7 +185,7 @@ function resolveName(value: Record<string, unknown>): string {
     const humanized = humanizeThemeName(candidate);
     if (humanized.length > 0) return humanized.slice(0, 48);
   }
-  return "VS Code theme";
+  return tr("VS Code theme");
 }
 
 export function parseVsCodeThemeFile(value: unknown): ThemeDefinition {

@@ -19,6 +19,7 @@ import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import type { ProjectOverrideEntry, ScopedSettingsTarget } from "./scopedSettings";
 import { isProjectScopedSettingKey } from "./scopedSettings";
+import { tr } from "~/i18n";
 
 interface InheritanceLayer {
   readonly key: "project" | "environment" | "t3.json" | "built-in";
@@ -29,27 +30,27 @@ interface InheritanceLayer {
 }
 
 const WRITING_STYLE_LABELS: Record<string, string> = {
-  repo_conventions: "Repository conventions",
+  repo_conventions: tr("Repository conventions"),
   conventional_commits: "Conventional Commits",
-  custom: "Custom instructions",
+  custom: tr("Custom instructions"),
 };
 
 /** Human labels for the values the chain can show; falls back to a type summary. */
 function formatValue(key: keyof ServerSettings, value: unknown): string {
   if (value === null || value === undefined) {
     return key === "pullRequestMergeMethod"
-      ? "Last selected"
+      ? tr("Last selected")
       : key === "sidebarAutoSettleAfterDays"
         ? "Never"
         : key === "defaultModelSelection"
           ? "Automatic"
           : key === "sourceControlWriterModelSelection"
-            ? "Text generation model"
+            ? tr("Text generation model")
             : key === "reviewGuideModelSelection"
-              ? "Source control writer model"
+              ? tr("Source control writer model")
               : key === "defaultThreadEnvMode" || key === "worktreeSubmodules"
                 ? "Inherit"
-                : "Not set";
+                : tr("Not set");
   }
   if (typeof value === "boolean") return value ? "On" : "Off";
   if (typeof value === "number") {
@@ -100,7 +101,7 @@ export function settingInheritanceLayers(
   if (target.projectId !== null && isProjectScopedSettingKey(key)) {
     layers.push({
       key: "project",
-      label: "Project",
+      label: tr("Project"),
       value: source === "project" ? formatValue(key, target.settings[key]) : "Inherits",
       effective: source === "project",
       set: source === "project",
@@ -129,7 +130,7 @@ export function settingInheritanceLayers(
     : DEFAULT_SERVER_SETTINGS[key];
   layers.push({
     key: "built-in",
-    label: "Default",
+    label: tr("Default"),
     value: formatValue(key, builtIn),
     effective: source === "environment" && !environmentSet,
     set: true,
@@ -209,7 +210,9 @@ export function SettingInheritance({
                 <Button
                   size="icon-micro"
                   variant="ghost-muted"
-                  aria-label={`${overrideSummary}. Show where this value comes from`}
+                  aria-label={tr("{{overrideSummary}}. Show where this value comes from", {
+                    overrideSummary,
+                  })}
                 />
               }
             />
@@ -251,7 +254,7 @@ export function SettingInheritance({
                         layer.effective ? "font-medium text-foreground" : "text-muted-foreground",
                       )}
                     >
-                      {layer.key === "environment" ? "Environment" : layer.label}
+                      {layer.key === "environment" ? tr("Environment") : layer.label}
                     </span>
                     <span
                       className={cn(
@@ -282,10 +285,10 @@ export function SettingInheritance({
                 return (
                   <div className="mt-2 border-t border-border/60 pt-2">
                     <div className="flex items-center justify-between gap-3 px-2 text-xs text-muted-foreground">
-                      <span>Overridden by</span>
+                      <span>{tr("Overridden by")}</span>
                       {onClearOverrides ? (
                         <InlineButton onClick={() => onClearOverrides(overriding)}>
-                          Reset {overriding.length === 1 ? "it" : "all"}
+                          {tr("Reset")} {overriding.length === 1 ? tr("it") : tr("all")}
                         </InlineButton>
                       ) : null}
                     </div>

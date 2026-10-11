@@ -27,6 +27,7 @@ import {
   PullRequestLabelChip,
   PullRequestReviewDecisionGlyph,
 } from "./pullRequestPresentation";
+import { tr } from "~/i18n";
 
 /**
  * Each slot past the first only appears once the meta line is wide enough to hold it, so a
@@ -228,13 +229,13 @@ function PullRequestRowImpl({
                       <span className="flex min-w-6 items-center gap-1 overflow-hidden rounded-full border border-border/60 px-1 text-3xs" />
                     }
                   >
-                    <span className="sr-only">matched in the description</span>
+                    <span className="sr-only">{tr("matched in the description")}</span>
                     <SearchIcon aria-hidden className="size-3 shrink-0" />
                     <span aria-hidden className="hidden truncate @xs/pr-row-meta:block">
-                      matched in the description
+                      {tr("matched in the description")}
                     </span>
                   </TooltipTrigger>
-                  <TooltipPopup side="top">Matched in the description</TooltipPopup>
+                  <TooltipPopup side="top">{tr("Matched in the description")}</TooltipPopup>
                 </Tooltip>
               ) : null}
               {showProvider ? (

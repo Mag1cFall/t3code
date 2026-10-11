@@ -8,6 +8,7 @@ import { useCallback } from "react";
 import { isLocalEnvironmentDisabled } from "../../localEnvironment";
 import { appAtomRegistry } from "../../rpc/atomRegistry";
 import { fetchSessionState } from "./auth";
+import { tr } from "~/i18n";
 
 const primarySessionStateAtom = Atom.make(
   Effect.suspend(() =>
@@ -31,7 +32,7 @@ export function usePrimarySessionState() {
   let error: string | null = null;
   if (result._tag === "Failure") {
     const cause = Cause.squash(result.cause);
-    error = cause instanceof Error ? cause.message : "Could not read environment session.";
+    error = cause instanceof Error ? cause.message : tr("Could not read environment session.");
   }
   return {
     data: Option.getOrNull(AsyncResult.value(result)),

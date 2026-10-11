@@ -19,6 +19,7 @@ import { useAtomCommand } from "../../state/use-atom-command";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { WorkLogRow } from "./WorkLog";
+import { tr } from "~/i18n";
 
 /**
  * Inline card for a secret an agent asked the user for. The typed value lives
@@ -63,7 +64,7 @@ function PendingSecretRequestForm(props: {
   const errorId = useId();
   const privacyId = useId();
   const answer = useAtomCommand(serverEnvironment.answerSecretRequest, {
-    label: "answer secret request",
+    label: tr("answer secret request"),
     // The failure cause holds the request; keep it out of the console.
     reportFailure: false,
     reportDefect: false,
@@ -148,7 +149,7 @@ function PendingSecretRequestForm(props: {
           />
         </div>
         <Button type="submit" disabled={submitting || secret.trim().length === 0}>
-          Save securely
+          {tr("Save securely")}
         </Button>
       </div>
       {error !== null ? (
@@ -171,7 +172,7 @@ function PendingSecretRequestForm(props: {
           disabled={submitting}
           onClick={() => void send({ type: "decline" })}
         >
-          Decline
+          {tr("Decline")}
         </Button>
       </div>
     </form>

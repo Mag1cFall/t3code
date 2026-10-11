@@ -1,4 +1,5 @@
 import type { DesktopUpdateActionResult, DesktopUpdateState } from "@t3tools/contracts";
+import { tr } from "~/i18n";
 
 export type DesktopUpdateButtonAction = "download" | "install" | "none";
 
@@ -57,51 +58,70 @@ export function isDesktopUpdateButtonDisabled(state: DesktopUpdateState | null):
 
 export function getArm64IntelBuildWarningDescription(state: DesktopUpdateState): string {
   if (!shouldShowArm64IntelBuildWarning(state)) {
-    return "This install is using the correct architecture.";
+    return tr("This install is using the correct architecture.");
   }
 
   const action = resolveDesktopUpdateButtonAction(state);
   if (action === "download") {
-    return "This Mac has Apple Silicon, but T3 Code is still running the Intel build under Rosetta. Download the available update to switch to the native Apple Silicon build.";
+    return tr(
+      "This Mac has Apple Silicon, but T3 Code is still running the Intel build under Rosetta. Download the available update to switch to the native Apple Silicon build.",
+    );
   }
   if (action === "install") {
-    return "This Mac has Apple Silicon, but T3 Code is still running the Intel build under Rosetta. Restart to install the downloaded Apple Silicon build.";
+    return tr(
+      "This Mac has Apple Silicon, but T3 Code is still running the Intel build under Rosetta. Restart to install the downloaded Apple Silicon build.",
+    );
   }
-  return "This Mac has Apple Silicon, but T3 Code is still running the Intel build under Rosetta. The next app update will replace it with the native Apple Silicon build.";
+  return tr(
+    "This Mac has Apple Silicon, but T3 Code is still running the Intel build under Rosetta. The next app update will replace it with the native Apple Silicon build.",
+  );
 }
 
 export function getDesktopUpdateButtonTooltip(state: DesktopUpdateState): string {
   if (state.status === "available") {
-    return `Update ${state.availableVersion ?? "available"} ready to download`;
+    return tr("Update {{value}} ready to download", {
+      value: state.availableVersion ?? "available",
+    });
   }
   if (state.status === "downloading") {
     const progress =
       typeof state.downloadPercent === "number" ? ` (${Math.floor(state.downloadPercent)}%)` : "";
-    return `Downloading update${progress}`;
+    return tr("Downloading update{{progress}}", { progress });
   }
   if (state.status === "downloaded") {
-    return `Update ${state.downloadedVersion ?? state.availableVersion ?? "ready"} downloaded. Click to restart and install.`;
+    return tr("Update {{value}} downloaded. Click to restart and install.", {
+      value: state.downloadedVersion ?? state.availableVersion ?? "ready",
+    });
   }
   if (state.status === "error") {
     if (state.errorContext === "download" && state.availableVersion) {
-      return `Download failed for ${state.availableVersion}. Click to retry.`;
+      return tr("Download failed for {{availableVersion}}. Click to retry.", {
+        availableVersion: state.availableVersion,
+      });
     }
     if (state.errorContext === "install" && state.downloadedVersion) {
-      return `Install failed for ${state.downloadedVersion}. Click to retry.`;
+      return tr("Install failed for {{downloadedVersion}}. Click to retry.", {
+        downloadedVersion: state.downloadedVersion,
+      });
     }
     if (state.downloadedVersion) {
-      return `Update ${state.downloadedVersion} downloaded. Click to restart and install.`;
+      return tr("Update {{downloadedVersion}} downloaded. Click to restart and install.", {
+        downloadedVersion: state.downloadedVersion,
+      });
     }
-    return state.message ?? "Update failed";
+    return state.message ?? tr("Update failed");
   }
-  return "Up to date";
+  return tr("Up to date");
 }
 
 export function getDesktopUpdateInstallConfirmationMessage(
   state: Pick<DesktopUpdateState, "availableVersion" | "downloadedVersion">,
 ): string {
   const version = state.downloadedVersion ?? state.availableVersion;
-  return `Install update${version ? ` ${version}` : ""} and restart T3 Code?\n\nAny running tasks will be interrupted. Make sure you're ready before continuing.`;
+  return tr(
+    "Install update{{value}} and restart T3 Code?\n\nAny running tasks will be interrupted. Make sure you're ready before continuing.",
+    { value: version ? ` ${version}` : "" },
+  );
 }
 
 export function getDesktopUpdateActionError(result: DesktopUpdateActionResult): string | null {

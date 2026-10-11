@@ -23,6 +23,7 @@ import {
   type DeviceStreamStatus,
 } from "@t3tools/client-runtime/device/stream";
 import { observeResize } from "~/lib/observeResize";
+import { tr } from "~/i18n";
 
 const AX_POLL_INTERVAL_MS = 2_000;
 const CONTROLS_RAIL_WIDTH = 56;
@@ -315,7 +316,7 @@ export function DeviceStreamView(props: {
         : mjpegUrl
           ? "3D requires the H.264 stream"
           : props.axOverlay
-            ? "Turn off accessibility frames to use 3D"
+            ? tr("Turn off accessibility frames to use 3D")
             : null;
 
   const keyboardSource = deviceKeyboard(props.platform, props.deviceName ?? "");
@@ -395,7 +396,9 @@ export function DeviceStreamView(props: {
         )}
         tabIndex={0}
         role="application"
-        aria-label={`${props.platform === "ios" ? "iOS Simulator" : "Android Emulator"} screen`}
+        aria-label={tr("{{value}} screen", {
+          value: props.platform === "ios" ? "iOS Simulator" : "Android Emulator",
+        })}
         onKeyDown={(event) => {
           if (event.target !== event.currentTarget) return;
           if (event.metaKey && !["r", "R"].includes(event.key)) return;
@@ -510,7 +513,7 @@ export function DeviceStreamView(props: {
               size="xs"
               aria-pressed={!!showPhone}
               disabled={!!phoneUnavailableReason}
-              title={phoneUnavailableReason ?? "Show 3D phone"}
+              title={phoneUnavailableReason ?? tr("Show 3D phone")}
               onClick={() => setPresentation("phone")}
             >
               3D
@@ -521,21 +524,23 @@ export function DeviceStreamView(props: {
               aria-pressed={!showPhone}
               onClick={() => setPresentation("flat")}
             >
-              Flat
+              {tr("Flat")}
             </Button>
           </div>
         ) : null}
         {status === "streaming" && !inputState.connected ? (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center p-2">
             <span className="rounded-md bg-background/85 px-2 py-1 text-xs text-muted-foreground">
-              Input disconnected{inputState.detail ? ` (${inputState.detail})` : ""}, reconnecting…
+              {tr("Input disconnected")}
+              {inputState.detail ? ` (${inputState.detail})` : ""}
+              {tr(", reconnecting…")}
             </span>
           </div>
         ) : null}
         {retainingFrame && showPhone && showRestartNotice ? (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center p-2">
             <span className="rounded-md bg-background/85 px-2 py-1 text-xs text-muted-foreground">
-              Waiting for device video…
+              {tr("Waiting for device video…")}
             </span>
           </div>
         ) : null}
@@ -545,7 +550,9 @@ export function DeviceStreamView(props: {
               name={props.deviceName ?? "Device"}
               description={props.deviceDescription ?? ""}
               stage="stream"
-              message={status === "error" ? (detail ?? "Stream failed.") : "Connecting video…"}
+              message={
+                status === "error" ? (detail ?? tr("Stream failed.")) : tr("Connecting video…")
+              }
               error={status === "error"}
             >
               {status === "error" ? (
@@ -560,7 +567,7 @@ export function DeviceStreamView(props: {
                     clientRef.current?.start();
                   }}
                 >
-                  Reconnect
+                  {tr("Reconnect")}
                 </Button>
               ) : null}
             </DeviceLoadingView>

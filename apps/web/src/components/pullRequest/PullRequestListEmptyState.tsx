@@ -18,6 +18,7 @@ import { openCommandPalette } from "../../commandPaletteBus";
 import { Button } from "../ui/button";
 import { PullRequestListGhost } from "./PullRequestGhosts";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "../ui/empty";
+import { tr } from "~/i18n";
 
 /**
  * Drawn at the weight of the icons beside it rather than as an illustration with its own
@@ -103,15 +104,15 @@ export function PullRequestListEmptyState({
       <Empty>
         <BranchMark joined={false} />
         <EmptyHeader>
-          <EmptyTitle>No projects in this workspace</EmptyTitle>
+          <EmptyTitle>{tr("No projects in this workspace")}</EmptyTitle>
           <EmptyDescription>
-            Add a project, and the pull requests from its repository appear here.
+            {tr("Add a project, and the pull requests from its repository appear here.")}
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
           <Button size="sm" onClick={() => openCommandPalette({ open: "add-project" })}>
             <PlusIcon className="size-3.5" />
-            Add project
+            {tr("Add project")}
           </Button>
         </EmptyContent>
       </Empty>
@@ -124,7 +125,9 @@ export function PullRequestListEmptyState({
     return (
       <PullRequestListGhost
         rows={5}
-        caption={`Searching every host for “${query.length > 48 ? `${query.slice(0, 48)}…` : query}”`}
+        caption={tr("Searching every host for “{{value}}”", {
+          value: query.length > 48 ? `${query.slice(0, 48)}…` : query,
+        })}
       />
     );
   }
@@ -136,22 +139,25 @@ export function PullRequestListEmptyState({
         <EmptyHeader>
           {/* A pasted paragraph is still a search, but it is not a title. */}
           <EmptyTitle>
-            Nothing matches “{query.length > 48 ? `${query.slice(0, 48)}…` : query}”
+            {tr("Nothing matches “")}
+            {query.length > 48 ? `${query.slice(0, 48)}…` : query}”
           </EmptyTitle>
           <EmptyDescription>
-            The hosts were searched for it. Try fewer words, or search by number, author or branch.
+            {tr(
+              "The hosts were searched for it. Try fewer words, or search by number, author or branch.",
+            )}
           </EmptyDescription>
         </EmptyHeader>
         <div className="flex flex-wrap justify-center gap-2">
           <Button size="sm" variant="outline" onClick={onClearQuery}>
             <SearchIcon className="size-3.5" />
-            Clear search
+            {tr("Clear search")}
           </Button>
           {/* The hosts answered this query once; a pull request opened since then would answer
               differently, and nothing on screen says which of the two the reader is looking at. */}
           <Button size="sm" variant="outline" disabled={refreshing} onClick={onRefresh}>
             <RefreshIcon size="sm" refreshing={refreshing} />
-            {refreshing ? "Checking..." : "Check again"}
+            {refreshing ? tr("Checking...") : tr("Check again")}
           </Button>
         </div>
       </Empty>
@@ -162,22 +168,24 @@ export function PullRequestListEmptyState({
     <Empty>
       <BranchMark joined={false} />
       <EmptyHeader>
-        <EmptyTitle>{filtered ? "Nothing under these filters" : "No pull requests"}</EmptyTitle>
+        <EmptyTitle>
+          {filtered ? tr("Nothing under these filters") : tr("No pull requests")}
+        </EmptyTitle>
         <EmptyDescription>
           {filtered
-            ? "Widen the state, involvement or project filter to see more."
-            : "Pull requests from every project in this workspace appear here."}
+            ? tr("Widen the state, involvement or project filter to see more.")
+            : tr("Pull requests from every project in this workspace appear here.")}
         </EmptyDescription>
       </EmptyHeader>
       <div className="flex flex-wrap justify-center gap-2">
         {canLoadMore ? (
           <Button size="sm" variant="outline" disabled={loadingMore} onClick={onLoadMore}>
-            {loadingMore ? "Loading..." : "Load more pull requests"}
+            {loadingMore ? tr("Loading...") : tr("Load more pull requests")}
           </Button>
         ) : null}
         <Button size="sm" variant="outline" disabled={refreshing} onClick={onRefresh}>
           <RefreshIcon size="sm" refreshing={refreshing} />
-          {refreshing ? "Checking..." : "Check again"}
+          {refreshing ? tr("Checking...") : tr("Check again")}
         </Button>
       </div>
     </Empty>

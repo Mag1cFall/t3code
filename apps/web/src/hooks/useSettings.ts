@@ -62,6 +62,7 @@ import { useAtomCommand } from "~/state/use-atom-command";
 import { useTheme } from "./useTheme";
 import { environmentSession, readEnvironmentScope, useEnvironmentScope } from "~/state/session";
 import { appAtomRegistry } from "~/rpc/atomRegistry";
+import { tr } from "~/i18n";
 
 const CLIENT_SETTINGS_PERSISTENCE_ERROR_SCOPE = "[CLIENT_SETTINGS]";
 
@@ -452,8 +453,8 @@ export function useUpdateEnvironmentModelPreferences(environmentId: EnvironmentI
       } catch {
         toastManager.add({
           type: "error",
-          title: "Model preferences not saved",
-          description: "Could not load saved model preferences. Try again.",
+          title: tr("Model preferences not saved"),
+          description: tr("Could not load saved model preferences. Try again."),
         });
         return;
       }
@@ -482,8 +483,8 @@ export function useToggleEnvironmentModelFavorite(environmentId: EnvironmentId |
         } catch {
           toastManager.add({
             type: "error",
-            title: "Favorites not saved",
-            description: "Could not load saved model preferences. Try again.",
+            title: tr("Favorites not saved"),
+            description: tr("Could not load saved model preferences. Try again."),
           });
           return;
         }
@@ -587,8 +588,9 @@ export function usePrimarySettings<T = UnifiedSettings>(
   return useMergedSettings(settings, selector);
 }
 
-export const PRIMARY_SETTINGS_UNAVAILABLE_MESSAGE =
-  "This setting is saved on a server, and the hosted app is not anchored to one. Change it from the desktop app or from the server's own address.";
+export const PRIMARY_SETTINGS_UNAVAILABLE_MESSAGE = tr(
+  "This setting is saved on a server, and the hosted app is not anchored to one. Change it from the desktop app or from the server's own address.",
+);
 
 /**
  * Whether primary-scoped server settings have a server to live on. The
@@ -639,7 +641,7 @@ function useUpdateSettingsTarget(environmentId: EnvironmentId | null) {
   // Mount this session even on pages without a visible permission-gated control.
   useEnvironmentScope(environmentId, AuthSettingsWriteScope);
   const persist = useAtomCommand(serverEnvironment.updateSettings, {
-    label: "server settings update",
+    label: tr("server settings update"),
     reportFailure: false,
   });
   const { environments } = useEnvironments();
@@ -653,8 +655,14 @@ function useUpdateSettingsTarget(environmentId: EnvironmentId | null) {
         const error = squashAtomCommandFailure(result);
         toastManager.add({
           type: "error",
-          title: "Setting not saved",
-          description: `Could not save on ${label}: ${error instanceof Error ? error.message : "The save failed. Try reconnecting and saving again."}`,
+          title: tr("Setting not saved"),
+          description: tr("Could not save on {{label}}: {{value}}", {
+            label,
+            value:
+              error instanceof Error
+                ? error.message
+                : "The save failed. Try reconnecting and saving again.",
+          }),
         });
       }
       return result;
@@ -674,8 +682,12 @@ function useUpdateSettingsTarget(environmentId: EnvironmentId | null) {
       if (Object.keys(serverPatch).length > 0 && !canWriteServerPatch) {
         toastManager.add({
           type: "warning",
-          title: "Setting not saved",
-          description: `This connection lacks permission to change settings on ${environments.find((target) => target.environmentId === environmentId)?.label ?? "the selected environment"}.`,
+          title: tr("Setting not saved"),
+          description: tr("This connection lacks permission to change settings on {{value}}.", {
+            value:
+              environments.find((target) => target.environmentId === environmentId)?.label ??
+              "the selected environment",
+          }),
         });
       }
       if (Object.keys(serverPatch).length > 0 && canWriteServerPatch) {
@@ -684,7 +696,7 @@ function useUpdateSettingsTarget(environmentId: EnvironmentId | null) {
         const warnUnsaved = (description = PRIMARY_SETTINGS_UNAVAILABLE_MESSAGE) =>
           toastManager.add({
             type: "warning",
-            title: "Setting not saved",
+            title: tr("Setting not saved"),
             description,
           });
         if (Object.keys(localPatch).length > 0) {
@@ -735,9 +747,11 @@ function useUpdateSettingsTarget(environmentId: EnvironmentId | null) {
           if (writes.length === 0) {
             warnUnsaved(
               deniedLabels.length > 0
-                ? `This connection lacks permission to change settings on ${deniedLabels.join(", ")}.`
+                ? tr("This connection lacks permission to change settings on {{value}}.", {
+                    value: deniedLabels.join(", "),
+                  })
                 : targets.size > 0
-                  ? "Update older servers to save this setting."
+                  ? tr("Update older servers to save this setting.")
                   : undefined,
             );
           } else {
@@ -753,7 +767,13 @@ function useUpdateSettingsTarget(environmentId: EnvironmentId | null) {
                 if (result._tag !== "Failure" || isAtomCommandInterrupted(result)) return [];
                 const error = squashAtomCommandFailure(result);
                 return [
-                  `Could not save on ${label}: ${error instanceof Error ? error.message : "The save failed. Try reconnecting and saving again."}`,
+                  tr("Could not save on {{label}}: {{value}}", {
+                    label,
+                    value:
+                      error instanceof Error
+                        ? error.message
+                        : "The save failed. Try reconnecting and saving again.",
+                  }),
                 ];
               });
               if (failures.length === 0) return;
@@ -763,10 +783,14 @@ function useUpdateSettingsTarget(environmentId: EnvironmentId | null) {
               toastManager.add({
                 type: "error",
                 title:
-                  saved.length > 0 ? "Setting saved on some environments" : "Setting not saved",
+                  saved.length > 0
+                    ? tr("Setting saved on some environments")
+                    : tr("Setting not saved"),
                 description: [
                   ...failures,
-                  ...(saved.length > 0 ? [`Saved on ${saved.join(", ")}.`] : []),
+                  ...(saved.length > 0
+                    ? [tr("Saved on {{value}}.", { value: saved.join(", ") })]
+                    : []),
                 ].join("\n"),
               });
             });

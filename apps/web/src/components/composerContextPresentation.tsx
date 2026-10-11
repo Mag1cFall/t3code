@@ -47,6 +47,7 @@ import {
   PullRequestChip,
   UnresolvedChip,
 } from "./contextChipParts";
+import { tr } from "~/i18n";
 
 /**
  * Draft-side payload behind a context reference chip. Each kind keeps its existing draft
@@ -234,7 +235,11 @@ function FileContextChip(props: {
       error={props.upload?.status === "failed"}
       unresolved={needsReattach}
       suffix={suffix}
-      accessibleLabel={`${isVideo && !needsReattach ? "Preview video" : "File"} attachment, ${props.record.name}, ${size}`}
+      accessibleLabel={tr("{{value}} attachment, {{name}}, {{size}}", {
+        value: isVideo && !needsReattach ? "Preview video" : "File",
+        name: props.record.name,
+        size,
+      })}
       onOpen={
         !needsReattach
           ? () =>
@@ -243,7 +248,9 @@ function FileContextChip(props: {
       }
       tooltip={
         needsReattach
-          ? `${props.record.name} was not saved with this draft. Attach it again to send it.`
+          ? tr("{{name}} was not saved with this draft. Attach it again to send it.", {
+              name: props.record.name,
+            })
           : attachmentTooltip(props.record, props.upload)
       }
     />
@@ -315,12 +322,12 @@ function ComposerPreviewAnnotationDetails({
       {screenshotUrl ? (
         <img
           src={screenshotUrl}
-          alt="Annotated preview crop"
+          alt={tr("Annotated preview crop")}
           className="max-h-64 w-full border-border/70 border-b bg-muted object-contain"
         />
       ) : (
         <div className="border-border/70 border-b bg-muted/40 px-3 py-2 text-secondary-label text-xs">
-          Screenshot unavailable
+          {tr("Screenshot unavailable")}
         </div>
       )}
       <div className="whitespace-pre-wrap wrap-break-word px-3 py-2.5 text-sm text-foreground">
@@ -334,7 +341,7 @@ function UnresolvedContextChip(props: { label: string }) {
   return (
     <UnresolvedChip
       label={props.label}
-      tooltip="This context is no longer available. Remove it or attach it again."
+      tooltip={tr("This context is no longer available. Remove it or attach it again.")}
     />
   );
 }
@@ -404,7 +411,9 @@ const composerContextPresentationRegistry = createContextPresentationRegistry<
           <ContextChip
             icon={isPullRequest ? <PullRequestGlyph.pullRequest /> : <MessageCircleIcon />}
             label={reviewCommentContextLabel(entry.record)}
-            kindLabel={isPullRequest ? pullRequestContextKindLabel(entry.record) : "Review comment"}
+            kindLabel={
+              isPullRequest ? pullRequestContextKindLabel(entry.record) : tr("Review comment")
+            }
             details={<ComposerReviewCommentDetails comment={entry.record} />}
             detailsMode={definition.capabilities.details}
             kind={isPullRequest ? PULL_REQUEST_CHIP_KINDS[pullRequestState] : "review-comment"}
@@ -420,7 +429,7 @@ const composerContextPresentationRegistry = createContextPresentationRegistry<
           <ContextChip
             icon={<MousePointerClickIcon />}
             label={previewAnnotationContextLabel(entry.record)}
-            kindLabel="Preview annotation"
+            kindLabel={tr("Preview annotation")}
             details={
               <ComposerPreviewAnnotationDetails
                 annotation={entry.record}

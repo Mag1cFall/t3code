@@ -62,6 +62,7 @@ import {
   type PullRequestGlyphIcon,
 } from "./pullRequest/pullRequestIcons";
 import { resolvePullRequestState } from "./pullRequest/pullRequestPresentation";
+import { tr } from "~/i18n";
 
 export interface PrStatusIndicator {
   label: string;
@@ -186,13 +187,16 @@ export function resolveThreadPullRequestBadgePresentation({
     return {
       Icon: PullRequestGlyph.stack,
       toneClassName: aggregate.toneClassName,
-      label: `Stack of ${badge.layers} pull requests, ${aggregate.label.toLowerCase()}`,
+      label: tr("Stack of {{layers}} pull requests, {{value}}", {
+        layers: badge.layers,
+        value: aggregate.label.toLowerCase(),
+      }),
       text: badge.layers,
     };
   }
   if (number === undefined || url === undefined) return null;
 
-  const tooltip = status?.tooltip ?? `PR #${number}, status pending`;
+  const tooltip = status?.tooltip ?? tr("PR #{{number}}, status pending", { number });
   if (badge?.kind === "pull-request" && badge.others > 0) {
     // Unrelated links fold into one state, so a count of merged PRs reads as merged.
     const aggregate = PULL_REQUEST_STATE_PRESENTATION[badge.state];
@@ -374,7 +378,7 @@ export function ThreadPullRequestsMiniList({
           >
             {line.stack ? (
               <span className="ml-auto shrink-0 pl-1 text-3xs">
-                {line.stack.kind === "native" ? "stack" : "chain"} · {line.stack.size}
+                {line.stack.kind === "native" ? tr("stack") : tr("chain")} · {line.stack.size}
               </span>
             ) : null}
           </ThreadPullRequestMiniListItem>
@@ -830,7 +834,7 @@ export function ThreadStatusLabel({
           render={
             <span
               role="img"
-              aria-label={status.label}
+              aria-label={tr(status.label)}
               className={`inline-flex size-3.5 shrink-0 items-center justify-center ${status.colorClass}`}
             />
           }
@@ -841,7 +845,7 @@ export function ThreadStatusLabel({
             }`}
           />
         </TooltipTrigger>
-        <TooltipPopup side="top">{status.label}</TooltipPopup>
+        <TooltipPopup side="top">{tr(status.label)}</TooltipPopup>
       </Tooltip>
     );
   }
@@ -852,7 +856,7 @@ export function ThreadStatusLabel({
         render={
           <span
             role="img"
-            aria-label={status.label}
+            aria-label={tr(status.label)}
             className={`inline-flex items-center gap-1 text-3xs ${status.colorClass}`}
           />
         }
@@ -862,9 +866,9 @@ export function ThreadStatusLabel({
             status.pulse ? "animate-status-pulse" : ""
           }`}
         />
-        <span className="hidden md:inline">{status.label}</span>
+        <span className="hidden md:inline">{tr(status.label)}</span>
       </TooltipTrigger>
-      <TooltipPopup side="top">{status.label}</TooltipPopup>
+      <TooltipPopup side="top">{tr(status.label)}</TooltipPopup>
     </Tooltip>
   );
 }
@@ -970,7 +974,7 @@ export function ThreadRowLeadingStatus({
       {pendingLink ? (
         <PullRequestGlyph.pullRequest
           className="size-3 text-muted-foreground"
-          aria-label={`PR #${pendingLink.number}, status pending`}
+          aria-label={tr("PR #{{number}}, status pending", { number: pendingLink.number })}
         />
       ) : null}
       {threadStatus ? <ThreadStatusLabel status={threadStatus} /> : null}
@@ -1010,7 +1014,7 @@ export function ThreadRowTrailingStatus({ thread }: { thread: SidebarThreadSumma
             render={
               <span
                 role="img"
-                aria-label={terminalStatus.label}
+                aria-label={tr(terminalStatus.label)}
                 className={`inline-flex items-center justify-center ${terminalStatus.colorClass}`}
               />
             }
@@ -1020,7 +1024,7 @@ export function ThreadRowTrailingStatus({ thread }: { thread: SidebarThreadSumma
               onAnimationStart={synchronizeTerminalPulse}
             />
           </TooltipTrigger>
-          <TooltipPopup side="top">{terminalStatus.label}</TooltipPopup>
+          <TooltipPopup side="top">{tr(terminalStatus.label)}</TooltipPopup>
         </Tooltip>
       ) : null}
       {isRemoteThread ? (
@@ -1028,7 +1032,7 @@ export function ThreadRowTrailingStatus({ thread }: { thread: SidebarThreadSumma
           <TooltipTrigger
             render={
               <span
-                aria-label={threadEnvironmentLabel ?? "Remote"}
+                aria-label={threadEnvironmentLabel ?? tr("Remote")}
                 className="inline-flex items-center justify-center"
               />
             }
@@ -1116,7 +1120,7 @@ export function ThreadSearchPullRequestNumber({
             )
           : (status?.colorClass ?? "text-secondary-label")
       }
-      aria-label={status?.tooltip ?? `Pull request #${reference.number}`}
+      aria-label={status?.tooltip ?? tr("Pull request #{{number}}", { number: reference.number })}
     />
   ) : null;
 }

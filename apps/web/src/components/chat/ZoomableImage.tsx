@@ -7,6 +7,7 @@ import {
   useState,
   type Ref,
 } from "react";
+import { tr } from "~/i18n";
 
 const MAX_ZOOM = 8;
 
@@ -147,8 +148,10 @@ export function ZoomableImage({
       <div
         ref={viewportRef}
         role="region"
-        aria-label={`${name}, zoomable image`}
-        aria-description="Click to zoom in or return to fit. Scroll to zoom, drag to pan. Use Enter to toggle zoom, plus or minus to zoom, and 0 to fit."
+        aria-label={tr("{{name}}, zoomable image", { name })}
+        aria-description={tr(
+          "Click to zoom in or return to fit. Scroll to zoom, drag to pan. Use Enter to toggle zoom, plus or minus to zoom, and 0 to fit.",
+        )}
         tabIndex={0}
         className="max-w-[var(--media-width)] overflow-auto overscroll-contain rounded-lg bg-background shadow-2xl ring-1 ring-border/70 outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:-outline-offset-2 focus-visible:outline-ring"
         style={{
@@ -240,7 +243,8 @@ export function ZoomableImage({
         />
       </div>
       <span className="sr-only" aria-live="polite">
-        {Math.round(zoom * 100)}% zoom
+        {Math.round(zoom * 100)}
+        {tr("% zoom")}
       </span>
     </div>
   );

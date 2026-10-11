@@ -6,6 +6,7 @@ import { CircleAlertIcon, XIcon } from "lucide-react";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { OpenAI } from "../Icons";
 import { ChatGptUsageButton } from "../settings/ChatGptUsageButton";
+import { tr } from "~/i18n";
 
 export function getThreadErrorBannerKey(threadKey: string, error: string | null): string | null {
   return error === null ? null : `${threadKey}\u0000${error}`;
@@ -60,8 +61,8 @@ export const ThreadErrorBanner = memo(function ThreadErrorBanner({
         <AlertDescription>
           {chatGptUsageLimit ? (
             <div className="space-y-1">
-              <p className="font-medium">ChatGPT usage limit reached</p>
-              <p>Review your usage settings in ChatGPT to continue.</p>
+              <p className="font-medium">{tr("ChatGPT usage limit reached")}</p>
+              <p>{tr("Review your usage settings in ChatGPT to continue.")}</p>
             </div>
           ) : (
             <Tooltip>
@@ -76,7 +77,12 @@ export const ThreadErrorBanner = memo(function ThreadErrorBanner({
           <AlertAction>
             {chatGptUsageLimit ? <ChatGptUsageButton variant="default" size="sm" /> : null}
             {onDismiss ? (
-              <Button variant="ghost" size="icon-xs" aria-label="Dismiss error" onClick={onDismiss}>
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                aria-label={tr("Dismiss error")}
+                onClick={onDismiss}
+              >
                 <XIcon />
               </Button>
             ) : null}

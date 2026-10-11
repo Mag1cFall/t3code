@@ -79,6 +79,7 @@ import {
   THREAD_DETAILS_PANEL_SPLIT_GROUP_CLASS,
   THREAD_DETAILS_PANEL_SPLIT_SEPARATOR_CLASS,
 } from "./threadDetailsPanelStyles";
+import { tr } from "~/i18n";
 
 export function ThreadDetailsPrRow({
   environmentId,
@@ -238,7 +239,9 @@ export function ThreadDetailsPrRow({
   // detail rows, so the two read as one family.
   const rowTooltip =
     detail === null || statePresentation === null ? (
-      <TooltipPopup side="top">{status?.tooltip ?? `Pull request #${number}`}</TooltipPopup>
+      <TooltipPopup side="top">
+        {status?.tooltip ?? tr("Pull request #{{number}}", { number })}
+      </TooltipPopup>
     ) : (
       <TooltipPopup
         side="top"
@@ -286,7 +289,7 @@ export function ThreadDetailsPrRow({
               <div className="flex min-w-0 items-start gap-2 text-destructive">
                 <TriangleAlertIcon aria-hidden className="mt-0.5 size-3 shrink-0 stroke-current" />
                 <div className="min-w-0 flex-1 wrap-break-word leading-5">
-                  Merge conflicts with {detail.baseBranch}
+                  {tr("Merge conflicts with {{baseBranch}}", { baseBranch: detail.baseBranch })}
                 </div>
               </div>
             ) : null}
@@ -294,7 +297,7 @@ export function ThreadDetailsPrRow({
               <FileDiffIcon className="size-3 shrink-0 stroke-muted-foreground" />
               <div className="min-w-0 flex items-baseline gap-1 truncate text-foreground/75">
                 {detail.changedFiles.toLocaleString()}{" "}
-                {detail.changedFiles === 1 ? "file" : "files"}
+                {detail.changedFiles === 1 ? tr("file") : tr("files")}
                 <PullRequestDiffStat additions={detail.additions} deletions={detail.deletions} />
               </div>
             </div>
@@ -306,42 +309,44 @@ export function ThreadDetailsPrRow({
   const trailingAction =
     rowAction === "resolve"
       ? {
-          label: "Resolve",
+          label: tr("Resolve"),
           pendingLabel: "Preparing...",
           pending: handoff === "conflicts",
           destructive: true,
           suffix: <ArrowUpRightIcon aria-hidden className="size-3 shrink-0" />,
-          tooltip: "Check the branch out and resolve the conflicts in a new thread",
+          tooltip: tr("Check the branch out and resolve the conflicts in a new thread"),
           onClick: startResolveConflicts,
         }
       : rowAction === "ready"
         ? {
-            label: "Ready",
+            label: tr("Ready"),
             pendingLabel: "Marking...",
             pending: actionPending,
             destructive: false,
             suffix: null,
-            tooltip: "Mark this pull request as ready for review",
+            tooltip: tr("Mark this pull request as ready for review"),
             onClick: () => void perform("ready"),
           }
         : rowAction === "fix"
           ? {
-              label: "Fix",
+              label: tr("Fix"),
               pendingLabel: "Preparing...",
               pending: handoff === "findings",
               destructive: true,
               suffix: <ArrowUpRightIcon aria-hidden className="size-3 shrink-0" />,
-              tooltip: "Fix the failing checks in a new thread",
+              tooltip: tr("Fix the failing checks in a new thread"),
               onClick: startFixChecks,
             }
           : rowAction === "merge"
             ? {
-                label: "Merge",
+                label: tr("Merge"),
                 pendingLabel: "Merging...",
                 pending: actionPending,
                 destructive: false,
                 suffix: null,
-                tooltip: `Merge this pull request (${selectedMergeMethod})`,
+                tooltip: tr("Merge this pull request ({{selectedMergeMethod}})", {
+                  selectedMergeMethod,
+                }),
                 onClick: () => setConfirmingMerge(true),
               }
             : null;
@@ -360,7 +365,7 @@ export function ThreadDetailsPrRow({
               size="sm"
               part={part}
               className="group/watch"
-              aria-label={`Stop watching #${number}`}
+              aria-label={tr("Stop watching #{{number}}", { number })}
               onClick={onStopWatching}
             />
           }
@@ -378,8 +383,9 @@ export function ThreadDetailsPrRow({
           />
         </TooltipTrigger>
         <TooltipPopup side="top">
-          Watching: the agent wakes when checks finish, someone comments, or the branch conflicts.
-          Click to stop.
+          {tr(
+            "Watching: the agent wakes when checks finish, someone comments, or the branch conflicts. Click to stop.",
+          )}
         </TooltipPopup>
       </Tooltip>
     ) : null;
@@ -465,14 +471,17 @@ export function ThreadDetailsPrRow({
         <AlertDialog open={confirmingMerge} onOpenChange={(open) => setConfirmingMerge(open)}>
           <AlertDialogPopup>
             <AlertDialogHeader>
-              <AlertDialogTitle>Merge pull request?</AlertDialogTitle>
+              <AlertDialogTitle>{tr("Merge pull request?")}</AlertDialogTitle>
               <AlertDialogDescription>
-                This merges #{number} using {selectedMergeMethod}.
+                {tr("This merges #{{number}} using {{selectedMergeMethod}}.", {
+                  number,
+                  selectedMergeMethod,
+                })}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogClose render={<Button variant="outline" size="sm" />}>
-                Cancel
+                {tr("Cancel")}
               </AlertDialogClose>
               <Button
                 size="sm"
@@ -482,7 +491,7 @@ export function ThreadDetailsPrRow({
                   void perform("merge", selectedMergeMethod);
                 }}
               >
-                Merge
+                {tr("Merge")}
               </Button>
             </AlertDialogFooter>
           </AlertDialogPopup>

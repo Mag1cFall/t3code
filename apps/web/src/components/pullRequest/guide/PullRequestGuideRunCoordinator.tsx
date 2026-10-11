@@ -14,6 +14,7 @@ import {
 import { toastManager } from "../../ui/toast";
 import { readPullRequestListPreferences } from "../pullRequestListPreferences";
 import { useGuideRunStore, type GuideRunWatch } from "./guideRunStore";
+import { tr } from "~/i18n";
 
 /** How often a watched run is re-read. A run takes minutes, not seconds. */
 const RUN_POLL_MS = 5_000;
@@ -72,7 +73,7 @@ function GuideRunWatcher({ runKey, watch }: { runKey: string; watch: GuideRunWat
     const looking = document.visibilityState === "visible" && document.hasFocus();
     if (looking && store.shownKey === runKey) return;
 
-    const title = failure === null ? "Review guide ready" : "Review guide failed";
+    const title = failure === null ? tr("Review guide ready") : tr("Review guide failed");
     const body = watch.title ?? `${watch.reference.repository} #${watch.reference.number}`;
     const open = () => {
       useGuideRunStore.getState().requestOpen(runKey);
@@ -109,7 +110,7 @@ function GuideRunWatcher({ runKey, watch }: { runKey: string; watch: GuideRunWat
             ),
         },
         actionProps: {
-          children: "Open guide",
+          children: tr("Open guide"),
           onClick: () => {
             toastManager.close(toastId);
             open();

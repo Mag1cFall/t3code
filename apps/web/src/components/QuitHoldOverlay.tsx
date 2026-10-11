@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { isMacPlatform } from "../lib/utils";
+import { tr } from "~/i18n";
 
 // A released hold hint lingers for the original hold duration. Double-press
 // hints disappear as soon as their acceptance window closes.
@@ -41,8 +42,8 @@ export function QuitHoldOverlay() {
   const shortcut = isMacPlatform(navigator.platform) ? "⌘Q" : "Ctrl+Q";
   const message =
     visibleMode === "hold"
-      ? `Hold ${shortcut} or press twice to quit`
-      : `Press ${shortcut} again to quit`;
+      ? tr("Hold {{shortcut}} or press twice to quit", { shortcut })
+      : tr("Press {{shortcut}} again to quit", { shortcut });
   return (
     <div
       role="status"

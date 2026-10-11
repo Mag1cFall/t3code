@@ -6,6 +6,7 @@ import { useId, useState } from "react";
 import { serverUpdateStageLabel } from "../ServerUpdateAction";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { ComposerBanner } from "./ComposerBanner";
+import { tr } from "~/i18n";
 
 export function ComposerServerUpdateIcon({
   status,
@@ -31,7 +32,7 @@ export function ComposerServerUpdateStatus({
 }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const triggerId = useId();
-  const title = `${state.status === "failed" ? "Could not update" : "Updating"} ${serverLabel}`;
+  const title = `${state.status === "failed" ? tr("Could not update") : "Updating"} ${serverLabel}`;
   const detail = state.status === "failed" ? state.message : serverUpdateStageLabel(state.stage);
   return (
     <span

@@ -1,6 +1,7 @@
 import { withDeviceHubQuery } from "@t3tools/client-runtime/state/deviceHubAccess";
 import type { DeviceHubAccess } from "@t3tools/client-runtime/state/deviceHubAccess";
 import type { DevicePlatform } from "@t3tools/contracts";
+import { tr } from "~/i18n";
 
 /**
  * Read-only hub endpoints the Tools drawer consumes directly: the accessibility
@@ -118,7 +119,7 @@ export async function fetchDeviceAxTree(
     );
     if (!Array.isArray(payload)) {
       const error = isRecord(payload) && typeof payload.error === "string" ? payload.error : null;
-      return { elements: [], errors: [error ?? "Unexpected accessibility payload."] };
+      return { elements: [], errors: [error ?? tr("Unexpected accessibility payload.")] };
     }
     return { elements: flattenIosAxTree(payload), errors: [] };
   }
@@ -129,7 +130,7 @@ export async function fetchDeviceAxTree(
   );
   if (!isRecord(payload) || !Array.isArray(payload.nodes)) {
     const error = isRecord(payload) && typeof payload.error === "string" ? payload.error : null;
-    return { elements: [], errors: [error ?? "Unexpected accessibility payload."] };
+    return { elements: [], errors: [error ?? tr("Unexpected accessibility payload.")] };
   }
   // uiautomator reports pixel bounds; the first node is the full window.
   const nodes = payload.nodes.filter(

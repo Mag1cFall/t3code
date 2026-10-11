@@ -4,9 +4,10 @@ import { ExternalLinkIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 import { PullRequestGlyph } from "./pullRequestIcons";
+import { tr } from "~/i18n";
 
 export function PullRequestsUnavailableState({
-  title = "Could not load pull requests",
+  title = tr("Could not load pull requests"),
   error,
   onRetry,
   refreshing = false,
@@ -40,7 +41,7 @@ export function PullRequestsUnavailableState({
               aria-busy={refreshing}
             >
               <RefreshIcon size="sm" refreshing={refreshing} />
-              Retry
+              {tr("Retry")}
             </Button>
           ) : null}
           {gitHubUrl ? (
@@ -50,7 +51,7 @@ export function PullRequestsUnavailableState({
               render={<a href={gitHubUrl} target="_blank" rel="noopener noreferrer" />}
             >
               <ExternalLinkIcon aria-hidden className="size-3.5" />
-              Open on GitHub
+              {tr("Open on GitHub")}
             </Button>
           ) : null}
         </div>

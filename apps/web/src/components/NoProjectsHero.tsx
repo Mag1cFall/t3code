@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "./ui/empty";
 import { SidebarInset } from "./ui/sidebar";
 import { WorkspacePageHeader } from "./WorkspacePageHeader";
+import { tr } from "~/i18n";
 
 export function NoProjectsHero() {
   const openAddProject = useCallback(() => openCommandPalette({ open: "add-project" }), []);
@@ -24,16 +25,16 @@ export function NoProjectsHero() {
         <Empty size="hero" className="flex-1">
           <div className="w-full max-w-lg px-8 py-12">
             <EmptyHeader className="max-w-none">
-              <EmptyTitle>What should we work on?</EmptyTitle>
+              <EmptyTitle>{tr("What should we work on?")}</EmptyTitle>
               <EmptyDescription>
                 {scratchTargetEnvironmentId === null
-                  ? "Add a project to start your first thread."
-                  : "Add a project, or start without one."}
+                  ? tr("Add a project to start your first thread.")
+                  : tr("Add a project, or start without one.")}
               </EmptyDescription>
               <div className="mt-6 flex justify-center gap-2">
                 <Button size="sm" onClick={openAddProject}>
                   <PlusIcon className="size-4" />
-                  Add project
+                  {tr("Add project")}
                 </Button>
                 {scratchTargetEnvironmentId === null ? null : (
                   <Button
@@ -42,7 +43,7 @@ export function NoProjectsHero() {
                     onClick={() => void startScratchThread(scratchTargetEnvironmentId)}
                   >
                     <MessageSquareDashedIcon className="size-4" />
-                    Start without a project
+                    {tr("Start without a project")}
                   </Button>
                 )}
               </div>

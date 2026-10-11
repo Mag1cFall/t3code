@@ -8,6 +8,7 @@ import { writeTextToClipboard } from "../../hooks/useCopyToClipboard";
 import { Button } from "../ui/button";
 import { toastManager } from "../ui/toast";
 import type { ComposerBannerStackItem } from "./ComposerBannerStack";
+import { tr } from "~/i18n";
 
 export function feedbackBannerItem(
   submission: CodexFeedbackSubmission,
@@ -28,22 +29,22 @@ export function feedbackBannerItem(
           size="xs"
           variant="ghost"
           onClick={() => {
-            void writeTextToClipboard(submission.feedbackId, "Codex feedback thread ID").catch(
+            void writeTextToClipboard(submission.feedbackId, tr("Codex feedback thread ID")).catch(
               (error: unknown) => {
                 toastManager.add({
                   type: "error",
-                  title: "Could not copy thread ID",
-                  description: error instanceof Error ? error.message : "An error occurred.",
+                  title: tr("Could not copy thread ID"),
+                  description: error instanceof Error ? error.message : tr("An error occurred."),
                 });
               },
             );
           }}
         >
-          Copy ID
+          {tr("Copy ID")}
         </Button>
       ) : undefined,
     ...(submission.status !== "uploading"
-      ? { dismissLabel: "Dismiss feedback notice", onDismiss }
+      ? { dismissLabel: tr("Dismiss feedback notice"), onDismiss }
       : {}),
   };
 }

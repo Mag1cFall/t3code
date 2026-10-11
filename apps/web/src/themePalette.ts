@@ -19,6 +19,7 @@ import {
   type ThemeDefinition,
   type ThemeVariants,
 } from "@t3tools/shared/themePalettes";
+import { tr } from "~/i18n";
 
 export { EMBER_THEME, GROVE_THEME, IRIS_THEME, OCEAN_THEME, T3_CHAT_THEME, THEME_COLOR_ROLES };
 export type { ThemeAppearance, ThemeColorRole, ThemeColors, ThemeDefinition, ThemeVariants };
@@ -1162,7 +1163,11 @@ export class ThemeLibraryStorageError extends Schema.TaggedError<ThemeLibrarySto
 ) {
   override get message(): string {
     const direction = this.operation === "read" ? "from" : "to";
-    return `Failed to ${this.operation} the theme library ${direction} ${this.storageKey}.`;
+    return tr("Failed to {{operation}} the theme library {{direction}} {{storageKey}}.", {
+      operation: this.operation,
+      direction,
+      storageKey: this.storageKey,
+    });
   }
 }
 

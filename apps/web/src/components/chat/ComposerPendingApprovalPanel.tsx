@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { type PendingApproval } from "../../session-logic";
 import { cn } from "~/lib/utils";
+import { tr } from "~/i18n";
 
 interface ComposerPendingApprovalPanelProps {
   approval: PendingApproval;
@@ -16,24 +17,24 @@ export const ComposerPendingApprovalPanel = memo(function ComposerPendingApprova
   const Detail = approval.requestKind === "mcp-elicitation" ? "span" : "code";
   const fallbackLabel =
     approval.requestKind === "mcp-elicitation"
-      ? "App access approval"
+      ? tr("App access approval")
       : approval.requestKind === "command"
-        ? "Command approval"
+        ? tr("Command approval")
         : approval.requestKind === "file-read"
-          ? "File read approval"
+          ? tr("File read approval")
           : approval.requestKind === "permission"
-            ? "App permission approval"
-            : "File change approval";
+            ? tr("App permission approval")
+            : tr("File change approval");
   const detailAriaLabel =
     approval.requestKind === "mcp-elicitation"
-      ? "App access request"
+      ? tr("App access request")
       : approval.requestKind === "command"
         ? "Command"
         : approval.requestKind === "file-read"
-          ? "File to read"
+          ? tr("File to read")
           : approval.requestKind === "permission"
-            ? "Permission request"
-            : "File change";
+            ? tr("Permission request")
+            : tr("File change");
 
   return (
     <span
@@ -60,7 +61,7 @@ export const ComposerPendingApprovalPanel = memo(function ComposerPendingApprova
         tabIndex={0}
       >
         {approval.responseCapability === "not_resumable"
-          ? "Provider process is gone — interrupt or restart the run to respond."
+          ? tr("Provider process is gone — interrupt or restart the run to respond.")
           : approval.detail || fallbackLabel}
       </Detail>
     </span>

@@ -66,6 +66,7 @@ import {
   resolveSelectableProviderInstanceEntry,
   type ProviderInstanceEntry,
 } from "../providerInstances";
+import { tr } from "~/i18n";
 
 export const LAST_INVOKED_SCRIPT_BY_PROJECT_KEY = "t3code:last-invoked-script-by-project";
 export const MAX_HIDDEN_MOUNTED_TERMINAL_THREADS = 10;
@@ -85,13 +86,19 @@ export function agentControlledBrowserCloseConfirmation(
   if (activeBrowserCount === 0) return null;
   if (activeBrowserCount === 1) {
     return [
-      "Close browser while the agent is using it?",
-      "The agent is actively controlling this browser. Closing it may interrupt the current browser action.",
+      tr("Close browser while the agent is using it?"),
+      tr(
+        "The agent is actively controlling this browser. Closing it may interrupt the current browser action.",
+      ),
     ].join("\n");
   }
   return [
-    `Close ${activeBrowserCount} browsers while the agent is using them?`,
-    "The agent is actively controlling these browsers. Closing them may interrupt the current browser actions.",
+    tr("Close {{activeBrowserCount}} browsers while the agent is using them?", {
+      activeBrowserCount,
+    }),
+    tr(
+      "The agent is actively controlling these browsers. Closing them may interrupt the current browser actions.",
+    ),
   ].join("\n");
 }
 
@@ -517,7 +524,7 @@ export function buildLocalDraftThread(
   return presentThreadShell(draftThread.environmentId, {
     id: threadId,
     projectId: draftThread.projectId,
-    title: "New thread",
+    title: tr("New thread"),
     providerInstanceId: fallbackModelSelection.instanceId,
     modelSelection: fallbackModelSelection,
     runtimeMode: draftThread.runtimeMode,
@@ -647,18 +654,18 @@ export function getAntigravitySendBlockReason(
 ): string | null {
   if (provider?.driver !== "antigravity") return null;
   if (!provider.installed) {
-    return "Install Antigravity in provider settings before sending.";
+    return tr("Install Antigravity in provider settings before sending.");
   }
   if (provider.auth.status === "unauthenticated") {
-    return "Sign in to Antigravity in provider settings before sending.";
+    return tr("Sign in to Antigravity in provider settings before sending.");
   }
   const slug = model.trim();
-  if (slug.length === 0) return "Choose an Antigravity model before sending.";
+  if (slug.length === 0) return tr("Choose an Antigravity model before sending.");
   // A restart clears the account status and catalog. Session startup checks
   // saved credentials and validates the model before sending the prompt.
   if (provider.auth.status === "unknown") return null;
   if (provider.models.length === 0) {
-    return "Refresh Antigravity models in provider settings before sending.";
+    return tr("Refresh Antigravity models in provider settings before sending.");
   }
   // A saved model that left the catalog is kept in the picker as unavailable
   // so the user sees what the thread used. The server rejects it at turn
@@ -669,7 +676,7 @@ export function getAntigravitySendBlockReason(
     slug !== ANTIGRAVITY_DEFAULT_MODEL &&
     !provider.models.some((entry) => entry.slug === slug || entry.aliases?.includes(slug))
   ) {
-    return "That Antigravity model is no longer available. Choose another model.";
+    return tr("That Antigravity model is no longer available. Choose another model.");
   }
   return null;
 }
@@ -894,16 +901,16 @@ export function buildExpiredTerminalContextToastCopy(
   variant: "omitted" | "empty",
 ): { title: string; description: string } {
   const count = Math.max(1, Math.floor(expiredTerminalContextCount));
-  const noun = count === 1 ? "Expired terminal context" : "Expired terminal contexts";
+  const noun = count === 1 ? tr("Expired terminal context") : tr("Expired terminal contexts");
   if (variant === "empty") {
     return {
-      title: `${noun} won't be sent`,
-      description: "Remove it or re-add it to include terminal output.",
+      title: tr("{{noun}} won't be sent", { noun }),
+      description: tr("Remove it or re-add it to include terminal output."),
     };
   }
   return {
-    title: `${noun} omitted from message`,
-    description: "Re-add it if you want that terminal output included.",
+    title: tr("{{noun}} omitted from message", { noun }),
+    description: tr("Re-add it if you want that terminal output included."),
   };
 }
 
@@ -1069,8 +1076,8 @@ export function getStartedThreadModelChangeBlockReason(input: {
       return null;
     }
     return {
-      title: "Start a new chat to switch providers",
-      description: "This thread does not support switching providers after it has started.",
+      title: tr("Start a new chat to switch providers"),
+      description: tr("This thread does not support switching providers after it has started."),
     };
   }
   const currentProvider = input.providers.find(
@@ -1086,8 +1093,10 @@ export function getStartedThreadModelChangeBlockReason(input: {
     return null;
   }
   return {
-    title: "Start a new chat to change models",
-    description: "This provider does not allow switching models after a conversation has started.",
+    title: tr("Start a new chat to change models"),
+    description: tr(
+      "This provider does not allow switching models after a conversation has started.",
+    ),
   };
 }
 

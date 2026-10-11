@@ -12,6 +12,7 @@ import {
   resolveThreadDetailsCardLayout,
 } from "./threadDetailsCardLayout";
 import { observeResize } from "../../lib/observeResize";
+import { tr } from "~/i18n";
 
 /** One card owns its placement and folds content only when that content cannot fit. */
 export function ThreadDetailsCard({
@@ -158,7 +159,7 @@ export function ThreadDetailsCard({
       {placement ? (
         inlineOpen ? (
           <aside
-            aria-label="Thread details"
+            aria-label={tr("Thread details")}
             // Slides down to make room for the find bar, but returns in the same frame
             // the bar closes: a floating preview below moves up at once and would
             // otherwise overlap the card mid-slide.

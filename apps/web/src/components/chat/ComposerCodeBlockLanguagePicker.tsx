@@ -20,6 +20,7 @@ import {
   ComboboxTrigger,
 } from "../ui/combobox";
 import { PierreEntryIcon } from "./PierreEntryIcon";
+import { tr } from "~/i18n";
 
 /**
  * The language's file icon: plain text gets the text-file icon, and a
@@ -89,7 +90,9 @@ export function ComposerCodeBlockLanguagePicker(props: {
               variant="ghost-muted"
               size="xs"
               disabled={props.disabled}
-              aria-label={`Code language: ${codeLanguageLabel(props.language)}`}
+              aria-label={tr("Code language: {{value}}", {
+                value: codeLanguageLabel(props.language),
+              })}
             />
           }
         >
@@ -99,12 +102,12 @@ export function ComposerCodeBlockLanguagePicker(props: {
         </ComboboxTrigger>
         <ComboboxPopup align="start" className="w-56">
           <ComboboxSearchInput
-            aria-label="Search languages"
-            placeholder="Search languages"
+            aria-label={tr("Search languages")}
+            placeholder={tr("Search languages")}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
-          <ComboboxEmpty>No matching languages.</ComboboxEmpty>
+          <ComboboxEmpty>{tr("No matching languages.")}</ComboboxEmpty>
           <ComboboxList>
             {(entry: CodeBlockLanguage) => (
               <ComboboxItem key={entry.id || "plain"} value={entry}>

@@ -15,6 +15,7 @@ import { HtmlRenderDocument } from "../files/BrowserDocumentFrame";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { observeResize } from "~/lib/observeResize";
+import { tr } from "~/i18n";
 
 // A frame may load its URL a little after mounting.
 const MIN_URL_LIFE_MS = 5 * 60_000;
@@ -105,7 +106,7 @@ export function HtmlRenderFrame(props: {
               <TooltipTrigger
                 render={
                   <Button
-                    aria-label="Open in panel"
+                    aria-label={tr("Open in panel")}
                     size="icon-xs"
                     variant="glass"
                     onClick={() =>
@@ -124,13 +125,13 @@ export function HtmlRenderFrame(props: {
               >
                 <Maximize2Icon className="size-3.5" />
               </TooltipTrigger>
-              <TooltipPopup side="left">Open in panel</TooltipPopup>
+              <TooltipPopup side="left">{tr("Open in panel")}</TooltipPopup>
             </Tooltip>
           </div>
         </>
       ) : failed ? (
         <p className="flex size-full items-center justify-center text-muted-foreground text-xs">
-          Unable to load {title}
+          {tr("Unable to load {{title}}", { title })}
         </p>
       ) : null}
     </div>

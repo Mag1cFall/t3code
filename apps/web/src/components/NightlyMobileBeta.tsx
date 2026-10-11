@@ -13,6 +13,7 @@ import { Button } from "./ui/button";
 import { Popover, PopoverPopup, PopoverTitle, PopoverTrigger } from "./ui/popover";
 import { QRCodeSvg } from "./ui/qr-code";
 import { toastManager } from "./ui/toast";
+import { tr } from "~/i18n";
 
 // Orchestrator V2 ships to Nightly first. The App Store and Google Play apps are
 // still V1 and cannot connect to a V2 server, so Nightly users need the V2 beta
@@ -59,13 +60,14 @@ export function NightlyMobileBetaNotice() {
     if (!IS_NIGHTLY_BUILD || noticeShown || isNoticeDismissed()) return;
     noticeShown = true;
     const toastId = toastManager.add({
-      title: "Nightly needs the beta mobile app",
-      description:
+      title: tr("Nightly needs the beta mobile app"),
+      description: tr(
         "Nightly uses the new orchestrator. The App Store and Google Play versions of T3 Code cannot connect to it.",
+      ),
       timeout: 0,
       onClose: dismissNotice,
       actionProps: {
-        children: "Get the beta app",
+        children: tr("Get the beta app"),
         onClick: () => {
           toastManager.close(toastId);
           void navigate({ to: "/settings/general", hash: ROW_ID });
@@ -75,7 +77,7 @@ export function NightlyMobileBetaNotice() {
         leadingIcon: <SmartphoneIcon className="size-4" />,
         actionLayout: "stacked-end",
         secondaryActionProps: {
-          children: "Dismiss",
+          children: tr("Dismiss"),
           onClick: () => toastManager.close(toastId),
         },
         secondaryActionVariant: "ghost",
@@ -95,7 +97,7 @@ function BetaLinkQr({ url, label }: { url: string; label: string }) {
         <QRCodeSvg value={url} size={128} level="M" marginSize={1} title={label} />
       </div>
       <Button size="xs" variant="outline" onClick={() => copyToClipboard(url)}>
-        {isCopied ? "Copied" : "Copy link"}
+        {isCopied ? tr("Copied") : tr("Copy link")}
       </Button>
     </div>
   );
@@ -106,22 +108,26 @@ export function NightlyMobileBetaRow() {
   return (
     <SettingsRow
       id={ROW_ID}
-      title="Mobile app"
-      description="Nightly needs the beta app. The App Store and Google Play versions cannot connect."
+      title={tr("Mobile app")}
+      description={tr(
+        "Nightly needs the beta app. The App Store and Google Play versions cannot connect.",
+      )}
       control={
         <div className="flex items-center gap-2">
           <Popover>
             <PopoverTrigger render={<Button size="sm" variant="outline" />}>
               <AppleIcon />
-              iPhone
+              {tr("iPhone")}
             </PopoverTrigger>
             <PopoverPopup align="end">
               <div className="flex flex-col gap-3">
                 <div className="space-y-1">
-                  <PopoverTitle>TestFlight beta</PopoverTitle>
-                  <p className="text-xs text-muted-foreground">Scan with your iPhone camera.</p>
+                  <PopoverTitle>{tr("TestFlight beta")}</PopoverTitle>
+                  <p className="text-xs text-muted-foreground">
+                    {tr("Scan with your iPhone camera.")}
+                  </p>
                 </div>
-                <BetaLinkQr url={IOS_TESTFLIGHT_URL} label="TestFlight beta link" />
+                <BetaLinkQr url={IOS_TESTFLIGHT_URL} label={tr("TestFlight beta link")} />
               </div>
             </PopoverPopup>
           </Popover>
@@ -133,20 +139,27 @@ export function NightlyMobileBetaRow() {
             <PopoverPopup align="end">
               <div className="flex flex-col gap-3">
                 <div className="space-y-1">
-                  <PopoverTitle>Google Play beta</PopoverTitle>
+                  <PopoverTitle>{tr("Google Play beta")}</PopoverTitle>
                   <p className="max-w-72 text-xs text-muted-foreground">
-                    Use the same Google account for both steps. Step 2 can take up to an hour to
-                    work after you join the group.
+                    {tr(
+                      "Use the same Google account for both steps. Step 2 can take up to an hour to work after you join the group.",
+                    )}
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <p className="text-center text-xs font-medium">1. Join the group</p>
-                    <BetaLinkQr url={ANDROID_BETA_GROUP_URL} label="Android beta group link" />
+                    <p className="text-center text-xs font-medium">{tr("1. Join the group")}</p>
+                    <BetaLinkQr
+                      url={ANDROID_BETA_GROUP_URL}
+                      label={tr("Android beta group link")}
+                    />
                   </div>
                   <div className="space-y-2">
-                    <p className="text-center text-xs font-medium">2. Become a tester</p>
-                    <BetaLinkQr url={ANDROID_PLAY_TESTING_URL} label="Google Play beta link" />
+                    <p className="text-center text-xs font-medium">{tr("2. Become a tester")}</p>
+                    <BetaLinkQr
+                      url={ANDROID_PLAY_TESTING_URL}
+                      label={tr("Google Play beta link")}
+                    />
                   </div>
                 </div>
               </div>

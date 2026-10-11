@@ -13,6 +13,7 @@ import {
 import { Button } from "./ui/button";
 import { stackedThreadToast, toastManager } from "./ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
+import { tr } from "~/i18n";
 
 /**
  * Updates every outdated provider on every connected machine at once, then
@@ -93,7 +94,7 @@ export function ProviderUpdatesAction() {
             disabled={isPending}
             onClick={() => void handleUpdate()}
           >
-            {isPending ? "Updating…" : "Update all"}
+            {isPending ? tr("Updating…") : tr("Update all")}
           </Button>
         }
       />

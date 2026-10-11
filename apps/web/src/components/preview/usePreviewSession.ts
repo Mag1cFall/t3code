@@ -12,13 +12,14 @@ import {
   reconcilePreviewServerSessions,
 } from "~/previewStateStore";
 import { previewEnvironment } from "~/state/preview";
+import { tr } from "~/i18n";
 
 class PreviewSessionThreadKeyParseError extends Schema.TaggedError<PreviewSessionThreadKeyParseError>()(
   "PreviewSessionThreadKeyParseError",
   { threadKey: Schema.String },
 ) {
   override get message(): string {
-    return `Invalid scoped preview thread key: ${this.threadKey}`;
+    return tr("Invalid scoped preview thread key: {{threadKey}}", { threadKey: this.threadKey });
   }
 }
 

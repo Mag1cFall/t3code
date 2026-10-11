@@ -288,6 +288,7 @@ import {
   type ComposerThreadDraftState,
   type DraftSessionState,
 } from "../composerDraftStore";
+import { tr } from "~/i18n";
 
 // Settled-tail paging: recent history is the common lookup; the deep tail
 // stays behind an explicit Show more.
@@ -321,8 +322,8 @@ function checkThreadOperations(
   if (canOperateThreads(threads)) return true;
   toastManager.add({
     type: "error",
-    title: "Thread action unavailable",
-    description: "This connection cannot change one or more selected threads.",
+    title: tr("Thread action unavailable"),
+    description: tr("This connection cannot change one or more selected threads."),
   });
   return false;
 }
@@ -502,7 +503,7 @@ function SidebarThreadTooltip({
           <div className="flex min-w-0 items-start gap-2 text-warning">
             <CircleAlertIcon aria-hidden className="mt-0.5 size-3 shrink-0 stroke-current" />
             <div className="min-w-0 flex-1 wrap-break-word leading-5">
-              You're currently checked out on another branch.
+              {tr("You're currently checked out on another branch.")}
             </div>
           </div>
         ) : null}
@@ -533,7 +534,7 @@ function SidebarThreadTooltip({
           <div className="flex min-w-0 items-center gap-2">
             <ArrowRightLeftIcon className="size-3 shrink-0 stroke-muted-foreground" />
             <div className="min-w-0 truncate text-foreground/75">
-              Handed off from {previousProviderNames.join(", ")}
+              {tr("Handed off from")} {previousProviderNames.join(", ")}
             </div>
           </div>
         ) : null}
@@ -558,8 +559,8 @@ function SidebarThreadTooltip({
             <CircleAlertIcon className="size-3 shrink-0 stroke-current" />
             <div className="min-w-0 truncate">
               {thread.runtime.lastErrorClass === "usage_limit"
-                ? "Usage limit reached"
-                : "Error occurred"}
+                ? tr("Usage limit reached")
+                : tr("Error occurred")}
             </div>
           </div>
         ) : null}
@@ -595,7 +596,7 @@ function SnoozeMenuButton(props: {
               render={
                 <button
                   type="button"
-                  aria-label="Snooze thread"
+                  aria-label={tr("Snooze thread")}
                   onClick={(event) => event.stopPropagation()}
                   onDoubleClick={(event) => event.stopPropagation()}
                   className="inline-flex h-full cursor-pointer items-center gap-0.5 rounded-md bg-transparent px-1.5 text-xs text-muted-foreground hover:text-foreground"
@@ -606,7 +607,7 @@ function SnoozeMenuButton(props: {
         >
           <ClockIcon className="size-3" />
         </TooltipTrigger>
-        <TooltipPopup>Snooze thread</TooltipPopup>
+        <TooltipPopup>{tr("Snooze thread")}</TooltipPopup>
       </Tooltip>
       <MenuPopup side="bottom" align="end">
         {presets.map((preset) => (
@@ -629,7 +630,7 @@ function SnoozeMenuButton(props: {
             if (choice) onSnooze(choice);
           }}
         >
-          Custom…
+          {tr("Custom…")}
         </MenuItem>
       </MenuPopup>
     </Menu>
@@ -859,10 +860,13 @@ const SidebarDraftRow = memo(function SidebarDraftRow(props: {
   const preview =
     promptPreview.length > 0
       ? promptPreview
-      : `${attachmentCount} attachment${attachmentCount === 1 ? "" : "s"}`;
+      : tr("{{attachmentCount}} attachment{{s}}", {
+          attachmentCount,
+          s: attachmentCount === 1 ? "" : "s",
+        });
   const accessibility = resolveSidebarRowAccessibility({
     title: preview,
-    statusLabel: "Unsent draft",
+    statusLabel: tr("Unsent draft"),
     projectDisplayName: props.projectDisplayName,
     isActive: props.isActive,
   });
@@ -931,7 +935,7 @@ const SidebarDraftRow = memo(function SidebarDraftRow(props: {
                   render={
                     <button
                       type="button"
-                      aria-label="Discard draft"
+                      aria-label={tr("Discard draft")}
                       onClick={handleDiscard}
                       className="pointer-events-none inline-flex cursor-pointer items-center rounded-md bg-transparent px-1 text-muted-foreground opacity-0 transition-opacity hover:text-foreground focus-visible:pointer-events-auto focus-visible:opacity-100 group-hover/sidebar-row:pointer-events-auto group-hover/sidebar-row:opacity-100"
                     >
@@ -939,7 +943,7 @@ const SidebarDraftRow = memo(function SidebarDraftRow(props: {
                     </button>
                   }
                 />
-                <TooltipPopup side="top">Discard draft</TooltipPopup>
+                <TooltipPopup side="top">{tr("Discard draft")}</TooltipPopup>
               </Tooltip>
             </span>
           </div>
@@ -1075,31 +1079,31 @@ const dropVerbBadge: Record<SidebarDropVerb, ReactNode> = {
   pin: (
     <>
       <PinIcon aria-hidden className="size-3" />
-      Pin
+      {tr("Pin")}
     </>
   ),
   unpin: (
     <>
       <PinOffIcon aria-hidden className="size-3" />
-      Unpin
+      {tr("Unpin")}
     </>
   ),
   settle: (
     <>
       <CircleCheckIcon aria-hidden className="size-3" />
-      Settle
+      {tr("Settle")}
     </>
   ),
   unsettle: (
     <>
       <Undo2Icon aria-hidden className="size-3" />
-      Un-settle
+      {tr("Un-settle")}
     </>
   ),
   wake: (
     <>
       <AlarmClockOffIcon aria-hidden className="size-3" />
-      Wake
+      {tr("Wake")}
     </>
   ),
 };
@@ -1297,7 +1301,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
     status === "working"
       ? {
           // A native /goal keeps the agent going across turns until it is met.
-          label: thread.goal?.status === "active" ? "Goal" : "Working",
+          label: thread.goal?.status === "active" ? tr("Goal") : tr("Working"),
           icon: "working" as const,
           // No shimmer: a label that animates forever is noise in a sidebar
           // full of them (and repaints every vsync on high-refresh displays).
@@ -1307,43 +1311,43 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
         ? {
             // Waiting is calm background presence (post-settle background
             // roster), not active progress, so the label keeps full strength.
-            label: "Waiting",
+            label: tr("Waiting"),
             icon: null,
             className: "text-muted-foreground",
           }
         : status === "approval"
           ? {
-              label: "Approval",
+              label: tr("Approval"),
               icon: "approval" as const,
               className: "text-warning-foreground",
             }
           : status === "input"
             ? {
-                label: "Input",
+                label: tr("Input"),
                 icon: "input" as const,
                 className: "text-indigo-600 dark:text-indigo-300",
               }
             : status === "limited"
               ? {
-                  label: "Limited",
+                  label: tr("Limited"),
                   icon: "failed" as const,
                   className: "text-warning",
                 }
               : status === "failed"
                 ? {
-                    label: "Failed",
+                    label: tr("Failed"),
                     icon: "failed" as const,
                     className: "text-error",
                   }
                 : isWoke
                   ? {
-                      label: "Woke",
+                      label: tr("Woke"),
                       icon: "woke" as const,
                       className: "text-warning",
                     }
                   : isUnread
                     ? {
-                        label: "Done",
+                        label: tr("Done"),
                         icon: "done" as const,
                         className: "text-success",
                       }
@@ -1645,7 +1649,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
 
   const accessibility = resolveSidebarRowAccessibility({
     title: thread.title,
-    statusLabel: topStatus?.label ?? null,
+    statusLabel: topStatus ? tr(topStatus.label) : null,
     projectDisplayName: props.projectDisplayName,
     isActive: props.isActive,
   });
@@ -1655,7 +1659,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
       <input
         autoFocus
         value={renamingTitle}
-        aria-label="Thread title"
+        aria-label={tr("Thread title")}
         onChange={(event) => onRenameTitleChange(event.target.value)}
         onFocus={(event) => event.currentTarget.select()}
         onKeyDown={handleRenameKeyDown}
@@ -1743,7 +1747,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
         render={
           <span
             role="img"
-            aria-label="Unsent draft"
+            aria-label={tr("Unsent draft")}
             data-testid={`sidebar-draft-indicator-${thread.id}`}
             className="inline-flex shrink-0 items-center"
           />
@@ -1751,7 +1755,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
       >
         <SquarePenIcon aria-hidden className={draftPenClassName} />
       </TooltipTrigger>
-      <TooltipPopup side="top">Unsent draft</TooltipPopup>
+      <TooltipPopup side="top">{tr("Unsent draft")}</TooltipPopup>
     </Tooltip>
   ) : null;
   const showPin =
@@ -1763,7 +1767,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
           render={
             <button
               type="button"
-              aria-label="Unpin thread"
+              aria-label={tr("Unpin thread")}
               onClick={handleUnpinClick}
               className="group/unpin inline-flex cursor-pointer items-center rounded-sm text-muted-foreground/65 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
             />
@@ -1780,11 +1784,11 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
             className="hidden size-3 shrink-0 group-hover/unpin:block group-focus-visible/unpin:block"
           />
         </TooltipTrigger>
-        <TooltipPopup>Unpin thread</TooltipPopup>
+        <TooltipPopup>{tr("Unpin thread")}</TooltipPopup>
       </Tooltip>
     ) : (
       <PinIcon
-        aria-label="Pinned"
+        aria-label={tr("Pinned")}
         role="img"
         className="size-3 shrink-0 text-muted-foreground/65"
       />
@@ -1840,7 +1844,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
             {terminalStatusIcon}
             {isRegeneratingTitle ? (
               <span role="status" className="sr-only">
-                Regenerating title
+                {tr("Regenerating title")}
               </span>
             ) : null}
             {/* The PR badge stays outside the hover-fading slot: it must
@@ -1876,16 +1880,16 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                         render={
                           <button
                             type="button"
-                            aria-label="Dismiss Woke notification"
+                            aria-label={tr("Dismiss Woke notification")}
                             onClick={handleAcknowledgeWokeClick}
                             className="inline-flex cursor-pointer items-center gap-1 rounded-sm text-xs font-medium text-warning-foreground outline-none hover:underline focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
                           >
                             <AlarmClockIcon aria-hidden className="size-3" />
-                            <span role="status">Woke</span>
+                            <span role="status">{tr("Woke")}</span>
                           </button>
                         }
                       />
-                      <TooltipPopup side="top">Dismiss Woke notification</TooltipPopup>
+                      <TooltipPopup side="top">{tr("Dismiss Woke notification")}</TooltipPopup>
                     </Tooltip>
                   ) : (
                     <span className="text-xs">
@@ -1899,7 +1903,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                   !props.snoozeSupported ? null : (
                     <button
                       type="button"
-                      aria-label="Wake thread now"
+                      aria-label={tr("Wake thread now")}
                       onClick={handleUnsnoozeClick}
                       onPointerDown={handleActionPointerDown}
                       className={cn(
@@ -1916,7 +1920,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                       render={
                         <button
                           type="button"
-                          aria-label="Un-settle thread"
+                          aria-label={tr("Un-settle thread")}
                           onClick={handleUnsettleClick}
                           onPointerDown={handleActionPointerDown}
                           className={cn(
@@ -1928,12 +1932,12 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                     >
                       <Undo2Icon className="mb-px size-3.5" />
                     </TooltipTrigger>
-                    <TooltipPopup side="top">Un-settle thread</TooltipPopup>
+                    <TooltipPopup side="top">{tr("Un-settle thread")}</TooltipPopup>
                   </Tooltip>
                 ) : (
                   <button
                     type="button"
-                    aria-label="Settle thread"
+                    aria-label={tr("Settle thread")}
                     onClick={handleSettleClick}
                     onPointerDown={handleActionPointerDown}
                     className={cn(
@@ -2039,7 +2043,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                             render={
                               <button
                                 type="button"
-                                aria-label="Dismiss Woke notification"
+                                aria-label={tr("Dismiss Woke notification")}
                                 onClick={handleAcknowledgeWokeClick}
                                 className={cn(
                                   "inline-flex cursor-pointer items-center gap-1 rounded-sm font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
@@ -2047,11 +2051,11 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                                 )}
                               >
                                 <AlarmClockIcon aria-hidden className="size-4 shrink-0" />
-                                <span role="status">{topStatus.label}</span>
+                                <span role="status">{tr(topStatus.label)}</span>
                               </button>
                             }
                           />
-                          <TooltipPopup side="top">Dismiss Woke notification</TooltipPopup>
+                          <TooltipPopup side="top">{tr("Dismiss Woke notification")}</TooltipPopup>
                         </Tooltip>
                       ) : (
                         <span
@@ -2074,7 +2078,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                           {/* The label alone is the live region: a role="status"
                             wrapper around the ticking duration would make
                             screen readers announce every second. */}
-                          <span role="status">{topStatus.label}</span>
+                          <span role="status">{tr(topStatus.label)}</span>
                           {status === "working" ? (
                             <span aria-hidden>
                               <WorkingDuration startedAt={resolveWorkingStartedAt(thread)} />
@@ -2104,7 +2108,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                             render={
                               <button
                                 type="button"
-                                aria-label="Discard draft"
+                                aria-label={tr("Discard draft")}
                                 onClick={handleDiscardDraftClick}
                                 className="inline-flex cursor-pointer items-center rounded-md bg-transparent px-1.5 text-xs text-muted-foreground hover:text-foreground"
                               />
@@ -2112,7 +2116,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                           >
                             <XIcon className="size-3.5" />
                           </TooltipTrigger>
-                          <TooltipPopup side="top">Discard draft</TooltipPopup>
+                          <TooltipPopup side="top">{tr("Discard draft")}</TooltipPopup>
                         </Tooltip>
                       ) : null}
                       {showSnoozeButton ? (
@@ -2129,7 +2133,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                             render={
                               <button
                                 type="button"
-                                aria-label="Settle thread"
+                                aria-label={tr("Settle thread")}
                                 onClick={handleSettleClick}
                                 onPointerDown={handleActionPointerDown}
                                 className="-mr-1 inline-flex cursor-pointer items-center gap-1 rounded-md bg-transparent px-1.5 text-xs text-muted-foreground hover:text-foreground"
@@ -2137,9 +2141,9 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                             }
                           >
                             <CheckIcon className="size-3.5" />
-                            Settle
+                            {tr("Settle")}
                           </TooltipTrigger>
-                          <TooltipPopup>Settle thread</TooltipPopup>
+                          <TooltipPopup>{tr("Settle thread")}</TooltipPopup>
                         </Tooltip>
                       ) : null}
                     </span>
@@ -2155,7 +2159,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
               {title}
               {isRegeneratingTitle ? (
                 <span role="status" className="sr-only">
-                  Regenerating title
+                  {tr("Regenerating title")}
                 </span>
               ) : null}
             </div>
@@ -2453,7 +2457,7 @@ export default function Sidebar() {
     onCopy: ({ path }) => {
       toastManager.add({
         type: "success",
-        title: "Path copied",
+        title: tr("Path copied"),
         description: path,
       });
     },
@@ -2461,8 +2465,8 @@ export default function Sidebar() {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Failed to copy path",
-          description: error instanceof Error ? error.message : "An error occurred.",
+          title: tr("Failed to copy path"),
+          description: error instanceof Error ? error.message : tr("An error occurred."),
         }),
       );
     },
@@ -2472,7 +2476,7 @@ export default function Sidebar() {
     onCopy: ({ branch }) => {
       toastManager.add({
         type: "success",
-        title: "Branch copied",
+        title: tr("Branch copied"),
         description: branch,
       });
     },
@@ -2480,8 +2484,8 @@ export default function Sidebar() {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Failed to copy branch",
-          description: error instanceof Error ? error.message : "An error occurred.",
+          title: tr("Failed to copy branch"),
+          description: error instanceof Error ? error.message : tr("An error occurred."),
         }),
       );
     },
@@ -2490,7 +2494,7 @@ export default function Sidebar() {
     onCopy: ({ threadId }) => {
       toastManager.add({
         type: "success",
-        title: "Thread ID copied",
+        title: tr("Thread ID copied"),
         description: threadId,
       });
     },
@@ -2498,8 +2502,8 @@ export default function Sidebar() {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Failed to copy thread ID",
-          description: error instanceof Error ? error.message : "An error occurred.",
+          title: tr("Failed to copy thread ID"),
+          description: error instanceof Error ? error.message : tr("An error occurred."),
         }),
       );
     },
@@ -2631,7 +2635,7 @@ export default function Sidebar() {
   // while the popup search filters the same collection.
   const projectScopeItems = useMemo(
     () => [
-      { value: "all", label: "All projects" },
+      { value: "all", label: tr("All projects") },
       ...projectGroups.map((project) => ({
         value: project.projectKey,
         label: project.displayName,
@@ -3302,7 +3306,7 @@ export default function Sidebar() {
         const trimmed = title.trim();
         setRenamingThreadKey(null);
         if (trimmed.length === 0) {
-          toastManager.add({ type: "warning", title: "Thread title cannot be empty" });
+          toastManager.add({ type: "warning", title: tr("Thread title cannot be empty") });
           return;
         }
         if (trimmed === originalTitle) return;
@@ -3315,8 +3319,8 @@ export default function Sidebar() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to rename thread",
-              description: error instanceof Error ? error.message : "An error occurred.",
+              title: tr("Failed to rename thread"),
+              description: error instanceof Error ? error.message : tr("An error occurred."),
             }),
           );
         }
@@ -3398,8 +3402,8 @@ export default function Sidebar() {
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Failed to settle thread",
-                  description: error instanceof Error ? error.message : "An error occurred.",
+                  title: tr("Failed to settle thread"),
+                  description: error instanceof Error ? error.message : tr("An error occurred."),
                 }),
               );
             }
@@ -3450,8 +3454,8 @@ export default function Sidebar() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to un-settle thread",
-              description: error instanceof Error ? error.message : "An error occurred.",
+              title: tr("Failed to un-settle thread"),
+              description: error instanceof Error ? error.message : tr("An error occurred."),
             }),
           );
         }
@@ -3468,8 +3472,8 @@ export default function Sidebar() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to wake thread",
-              description: error instanceof Error ? error.message : "An error occurred.",
+              title: tr("Failed to wake thread"),
+              description: error instanceof Error ? error.message : tr("An error occurred."),
             }),
           );
         }
@@ -3755,8 +3759,8 @@ export default function Sidebar() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to pin thread",
-              description: error instanceof Error ? error.message : "An error occurred.",
+              title: tr("Failed to pin thread"),
+              description: error instanceof Error ? error.message : tr("An error occurred."),
             }),
           );
         }
@@ -3773,8 +3777,8 @@ export default function Sidebar() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to unpin thread",
-              description: error instanceof Error ? error.message : "An error occurred.",
+              title: tr("Failed to unpin thread"),
+              description: error instanceof Error ? error.message : tr("An error occurred."),
             }),
           );
         }
@@ -4112,7 +4116,7 @@ export default function Sidebar() {
               stackedThreadToast({
                 type: "error",
                 title,
-                description: error instanceof Error ? error.message : "An error occurred.",
+                description: error instanceof Error ? error.message : tr("An error occurred."),
               }),
             );
           }
@@ -4122,9 +4126,10 @@ export default function Sidebar() {
           case "settle": {
             settlingThreadKeysRef.current.add(activeKey);
             const navigateAfterSettle = planForwardNavigation(activeKey);
-            const settled = await run(settleThread(threadRef), "Failed to settle thread").finally(
-              () => settlingThreadKeysRef.current.delete(activeKey),
-            );
+            const settled = await run(
+              settleThread(threadRef),
+              tr("Failed to settle thread"),
+            ).finally(() => settlingThreadKeysRef.current.delete(activeKey));
             if (
               settled &&
               shouldNavigateAfterThreadPark({
@@ -4140,14 +4145,17 @@ export default function Sidebar() {
           }
           case "move-active":
             // The drag expresses unpin intent; button/menu confirmation is unchanged.
-            if (plan.unpin && !(await run(unpinThread(threadRef), "Failed to unpin thread")))
+            if (plan.unpin && !(await run(unpinThread(threadRef), tr("Failed to unpin thread"))))
               return;
             if (
               plan.unsettle &&
-              !(await run(unsettleThread(threadRef), "Failed to un-settle thread"))
+              !(await run(unsettleThread(threadRef), tr("Failed to un-settle thread")))
             )
               return;
-            if (plan.unsnooze && !(await run(unsnoozeThread(threadRef), "Failed to wake thread")))
+            if (
+              plan.unsnooze &&
+              !(await run(unsnoozeThread(threadRef), tr("Failed to wake thread")))
+            )
               return;
             break;
           case "pin":
@@ -4157,7 +4165,7 @@ export default function Sidebar() {
                   threadRef,
                   plan.orderKey === undefined ? {} : { orderKey: plan.orderKey },
                 ),
-                "Failed to pin thread",
+                tr("Failed to pin thread"),
               ))
             )
               return;
@@ -4177,8 +4185,8 @@ export default function Sidebar() {
                 assignment.orderKey,
               ),
               plan.kind === "move-active"
-                ? "Failed to reorder active threads"
-                : "Failed to reorder pinned threads",
+                ? tr("Failed to reorder active threads")
+                : tr("Failed to reorder pinned threads"),
             ))
           )
             return;
@@ -4263,9 +4271,9 @@ export default function Sidebar() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to snooze thread",
+              title: tr("Failed to snooze thread"),
               description:
-                outcome.error instanceof Error ? outcome.error.message : "An error occurred.",
+                outcome.error instanceof Error ? outcome.error.message : tr("An error occurred."),
             }),
           );
           return;
@@ -4337,14 +4345,14 @@ export default function Sidebar() {
               : []),
             {
               id: "settle",
-              label: `Settle (${count})`,
+              label: tr("Settle ({{count}})", { count }),
               disabled: settlingThreads.length === 0 || !canOperateThreads(settlingThreads),
             },
             ...(canSnoozeSelection
               ? [
                   {
                     id: "snooze",
-                    label: `Snooze (${count})`,
+                    label: tr("Snooze ({{count}})", { count }),
                     disabled: !canOperateThreads(selectedThreads),
                     children: [
                       ...snoozePresets.map((preset) => ({
@@ -4354,7 +4362,7 @@ export default function Sidebar() {
                       })),
                       {
                         id: "snooze:custom",
-                        label: "Custom…",
+                        label: tr("Custom…"),
                         separatorBefore: true,
                         disabled: !canOperateThreads(selectedThreads),
                       },
@@ -4372,10 +4380,10 @@ export default function Sidebar() {
                   },
                 ]
               : []),
-            { id: "mark-unread", label: `Mark unread (${count})` },
+            { id: "mark-unread", label: tr("Mark unread ({{count}})", { count }) },
             {
               id: "delete",
-              label: `Delete (${count})`,
+              label: tr("Delete ({{count}})", { count }),
               destructive: true,
               disabled: !canOperateThreads(selectedThreads),
             },
@@ -4430,10 +4438,13 @@ export default function Sidebar() {
                 type: "error",
                 title:
                   snoozedThreadRefs.length > 0
-                    ? `Failed to snooze ${failures.length} thread${failures.length === 1 ? "" : "s"}`
-                    : "Failed to snooze threads",
+                    ? tr("Failed to snooze {{length}} thread{{value}}", {
+                        length: failures.length,
+                        value: failures.length === 1 ? "" : "s",
+                      })
+                    : tr("Failed to snooze threads"),
                 description:
-                  firstError instanceof Error ? firstError.message : "An error occurred.",
+                  firstError instanceof Error ? firstError.message : tr("An error occurred."),
               }),
             );
           }
@@ -4460,8 +4471,8 @@ export default function Sidebar() {
             toastManager.add(
               stackedThreadToast({
                 type: "error",
-                title: "Failed to regenerate thread titles",
-                description: error instanceof Error ? error.message : "An error occurred.",
+                title: tr("Failed to regenerate thread titles"),
+                description: error instanceof Error ? error.message : tr("An error occurred."),
               }),
             );
           }
@@ -4492,8 +4503,8 @@ export default function Sidebar() {
         const confirmed = await settlePromise(() =>
           api.dialogs.confirm(
             [
-              `Delete ${count} thread${count === 1 ? "" : "s"}?`,
-              "This permanently clears conversation history for these threads.",
+              tr("Delete {{count}} thread{{value}}?", { count, value: count === 1 ? "" : "s" }),
+              tr("This permanently clears conversation history for these threads."),
             ].join("\n"),
             { variant: "destructive" },
           ),
@@ -4524,8 +4535,9 @@ export default function Sidebar() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to delete threads",
-            description: firstError instanceof Error ? firstError.message : "An error occurred.",
+            title: tr("Failed to delete threads"),
+            description:
+              firstError instanceof Error ? firstError.message : tr("An error occurred."),
           }),
         );
       }
@@ -4721,8 +4733,8 @@ export default function Sidebar() {
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Could not create thread",
-                  description: error instanceof Error ? error.message : "An error occurred.",
+                  title: tr("Could not create thread"),
+                  description: error instanceof Error ? error.message : tr("An error occurred."),
                 }),
               );
             }
@@ -4754,8 +4766,8 @@ export default function Sidebar() {
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Failed to update auto-settle",
-                  description: error instanceof Error ? error.message : "An error occurred.",
+                  title: tr("Failed to update auto-settle"),
+                  description: error instanceof Error ? error.message : tr("An error occurred."),
                 }),
               );
             }
@@ -4775,8 +4787,8 @@ export default function Sidebar() {
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Failed to regenerate thread title",
-                  description: error instanceof Error ? error.message : "An error occurred.",
+                  title: tr("Failed to regenerate thread title"),
+                  description: error instanceof Error ? error.message : tr("An error occurred."),
                 }),
               );
             }
@@ -4790,8 +4802,8 @@ export default function Sidebar() {
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Path unavailable",
-                  description: "This thread does not have a workspace path to copy.",
+                  title: tr("Path unavailable"),
+                  description: tr("This thread does not have a workspace path to copy."),
                 }),
               );
               return;
@@ -4809,7 +4821,7 @@ export default function Sidebar() {
           case "archive": {
             if (confirmThreadArchive) {
               const confirmed = await settlePromise(() =>
-                api.dialogs.confirm(`Archive thread "${thread.title}"?`),
+                api.dialogs.confirm(tr('Archive thread "{{title}}"?', { title: thread.title })),
               );
               if (confirmed._tag === "Failure" || !confirmed.value) return;
             }
@@ -4825,9 +4837,9 @@ export default function Sidebar() {
                 stackedThreadToast({
                   type: "error",
                   title: didArchive
-                    ? "Thread archived, but navigation failed"
-                    : "Failed to archive thread",
-                  description: error instanceof Error ? error.message : "An error occurred.",
+                    ? tr("Thread archived, but navigation failed")
+                    : tr("Failed to archive thread"),
+                  description: error instanceof Error ? error.message : tr("An error occurred."),
                 }),
               );
               return;
@@ -4839,8 +4851,8 @@ export default function Sidebar() {
               const confirmed = await settlePromise(() =>
                 api.dialogs.confirm(
                   [
-                    `Delete thread "${thread.title}"?`,
-                    "This permanently clears conversation history for this thread.",
+                    tr('Delete thread "{{title}}"?', { title: thread.title }),
+                    tr("This permanently clears conversation history for this thread."),
                   ].join("\n"),
                   { variant: "destructive" },
                 ),
@@ -4853,8 +4865,8 @@ export default function Sidebar() {
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Failed to delete thread",
-                  description: error instanceof Error ? error.message : "An error occurred.",
+                  title: tr("Failed to delete thread"),
+                  description: error instanceof Error ? error.message : tr("An error occurred."),
                 }),
               );
               return;
@@ -5054,8 +5066,10 @@ export default function Sidebar() {
                       <SidebarHeaderIconButton
                         label={
                           scopedProjectGroup
-                            ? `Filter threads by project: ${scopedProjectGroup.displayName}`
-                            : "Filter threads by project"
+                            ? tr("Filter threads by project: {{displayName}}", {
+                                displayName: scopedProjectGroup.displayName,
+                              })
+                            : tr("Filter threads by project")
                         }
                       />
                     }
@@ -5080,8 +5094,8 @@ export default function Sidebar() {
                     className="max-w-[min(18rem,var(--available-width))] overflow-hidden"
                   >
                     <ComboboxSearchInput
-                      aria-label="Search projects"
-                      placeholder="Search projects..."
+                      aria-label={tr("Search projects")}
+                      placeholder={tr("Search projects...")}
                       value={projectScopeMenuState.query}
                       onKeyDown={(event) => {
                         if (
@@ -5107,7 +5121,7 @@ export default function Sidebar() {
                         })
                       }
                     />
-                    <ComboboxEmpty>No matching projects.</ComboboxEmpty>
+                    <ComboboxEmpty>{tr("No matching projects.")}</ComboboxEmpty>
                     <ComboboxList>
                       {(item: (typeof projectScopeItems)[number]) => {
                         const project = projectGroupByScopeKey.get(item.value) ?? null;
@@ -5139,7 +5153,9 @@ export default function Sidebar() {
                                 variant="ghost-muted"
                                 tabIndex={-1}
                                 aria-hidden="true"
-                                title={`Project settings for ${project.displayName}`}
+                                title={tr("Project settings for {{displayName}}", {
+                                  displayName: project.displayName,
+                                })}
                                 className="ml-auto"
                                 onPointerDown={(event) => event.stopPropagation()}
                                 onClick={(event) => {
@@ -5189,7 +5205,7 @@ export default function Sidebar() {
                 <ul
                   id="sidebar-thread-search-results"
                   role="listbox"
-                  aria-label="Thread search results"
+                  aria-label={tr("Thread search results")}
                   className="flex flex-col gap-px"
                 >
                   {threadSearchResults.map((thread, index) => {
@@ -5242,7 +5258,7 @@ export default function Sidebar() {
                 role="status"
                 className="px-2 py-6 text-center text-xs text-sidebar-muted-foreground"
               >
-                {threadSearch.isPending ? "Searching thread messages…" : "No threads found"}
+                {threadSearch.isPending ? tr("Searching thread messages…") : tr("No threads found")}
               </p>
             )
           ) : null}
@@ -5451,7 +5467,7 @@ export default function Sidebar() {
                               <SidebarDragBoundary
                                 key="pinned-header"
                                 marker="pinned-header"
-                                label="Pinned"
+                                label={tr("Pinned")}
                                 visible={from !== null}
                                 isDropTarget={dragTargetSection === "pinned"}
                               />,
@@ -5462,7 +5478,7 @@ export default function Sidebar() {
                               <SidebarDragBoundary
                                 key="pinned-divider"
                                 marker="pinned-divider"
-                                label="Active"
+                                label={tr("Active")}
                                 visible={from !== null}
                                 isDropTarget={dragTargetSection === "active"}
                               />,
@@ -5473,7 +5489,7 @@ export default function Sidebar() {
                               <SidebarSectionPlaceholder
                                 key="active-placeholder"
                                 marker="active-placeholder"
-                                label="Active"
+                                label={tr("Active")}
                                 showHint={
                                   from !== null &&
                                   (activeThreads.length === 0 ||
@@ -5494,8 +5510,8 @@ export default function Sidebar() {
                                 className="mt-auto"
                                 label={
                                   workingShelfExpanded
-                                    ? "Working"
-                                    : `Working (${workingThreads.length})`
+                                    ? tr("Working")
+                                    : tr("Working ({{length}})", { length: workingThreads.length })
                                 }
                                 toggle={{
                                   expanded: workingShelfExpanded,
@@ -5512,8 +5528,8 @@ export default function Sidebar() {
                                 className={cn(workingThreads.length === 0 && "mt-auto")}
                                 label={
                                   snoozedShelfExpanded
-                                    ? "Snoozed"
-                                    : `Snoozed (${snoozedThreads.length})`
+                                    ? tr("Snoozed")
+                                    : tr("Snoozed ({{length}})", { length: snoozedThreads.length })
                                 }
                                 toggle={{
                                   expanded: snoozedShelfExpanded,
@@ -5532,8 +5548,8 @@ export default function Sidebar() {
                                 )}
                                 label={
                                   settledShelfExpanded
-                                    ? "Settled"
-                                    : `Settled (${settledThreads.length})`
+                                    ? tr("Settled")
+                                    : tr("Settled ({{length}})", { length: settledThreads.length })
                                 }
                                 dragging={from !== null}
                                 isDropTarget={dragTargetSection === "settled"}
@@ -5549,7 +5565,7 @@ export default function Sidebar() {
                               <SidebarSectionPlaceholder
                                 key="settled-placeholder"
                                 marker="settled-placeholder"
-                                label="Settled"
+                                label={tr("Settled")}
                                 showHint={
                                   from !== null &&
                                   (renderedSettledThreads.length === 0 ||
@@ -5574,7 +5590,8 @@ export default function Sidebar() {
                           className="flex h-9 w-full cursor-pointer items-center gap-2.5 rounded-md px-2.5 text-left text-sm text-sidebar-muted-foreground/55 hover:bg-sidebar-row-hover hover:text-sidebar-foreground"
                         >
                           <PlusIcon aria-hidden className="size-4 shrink-0" />
-                          Show {Math.min(hiddenSettledCount, SETTLED_TAIL_PAGE_COUNT)} more
+                          {tr("Show")} {Math.min(hiddenSettledCount, SETTLED_TAIL_PAGE_COUNT)}{" "}
+                          {tr("more")}
                         </button>
                       </li>
                     ) : null}
@@ -5594,20 +5611,22 @@ export default function Sidebar() {
             <div className="flex flex-col items-center gap-2 px-2 py-6 text-center text-xs text-muted-foreground/60">
               {projects.length === 0 ? (
                 <>
-                  <span>No projects yet</span>
+                  <span>{tr("No projects yet")}</span>
                   <button
                     type="button"
                     onClick={openAddProjectCommandPalette}
                     className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-sidebar-border px-2.5 py-1 text-2xs font-medium text-sidebar-muted-foreground transition-colors hover:bg-sidebar-row-hover hover:text-sidebar-foreground"
                   >
                     <PlusIcon className="-mx-0.5 size-3" />
-                    Add project
+                    {tr("Add project")}
                   </button>
                 </>
               ) : scopedProjectGroup ? (
-                `No threads in ${scopedProjectGroup.displayName} yet`
+                tr("No threads in {{displayName}} yet", {
+                  displayName: scopedProjectGroup.displayName,
+                })
               ) : (
-                "No threads yet"
+                tr("No threads yet")
               )}
             </div>
           ) : null}

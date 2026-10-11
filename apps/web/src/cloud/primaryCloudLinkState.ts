@@ -19,6 +19,7 @@ import { appAtomRegistry } from "../rpc/atomRegistry";
 import { readEnvironmentScope, useEnvironmentScope } from "../state/session";
 import { readPrimaryCloudLinkState, type CloudLinkTarget } from "./linkEnvironment";
 import { hasCloudPublicConfig } from "./publicConfig";
+import { tr } from "~/i18n";
 
 const primaryCloudLinkAtomRuntime = Atom.runtime(
   Layer.effect(
@@ -91,7 +92,7 @@ export function usePrimaryCloudLinkState() {
   let error: string | null = null;
   if (result._tag === "Failure") {
     const cause = Cause.squash(result.cause);
-    error = cause instanceof Error ? cause.message : "Could not read T3 Connect link state.";
+    error = cause instanceof Error ? cause.message : tr("Could not read T3 Connect link state.");
   }
 
   return {

@@ -70,6 +70,7 @@ import { measureRestingComposerControls } from "./chat/restingComposerControlsMe
 import { resolveRestingComposerControlsNaturalWidth } from "./composerFooterLayout";
 import { cn } from "~/lib/utils";
 import { observeResize } from "~/lib/observeResize";
+import { tr } from "~/i18n";
 
 export interface BranchToolbarHandle {
   openBranchPicker: () => void;
@@ -109,7 +110,7 @@ function showWorkspaceContextMenu(event: ReactMouseEvent, workspacePath: string)
   event.preventDefault();
   event.stopPropagation();
   void api.contextMenu
-    .show([{ id: "copy-path", label: "Copy full path", icon: "copy" }], {
+    .show([{ id: "copy-path", label: tr("Copy full path"), icon: "copy" }], {
       x: event.clientX,
       y: event.clientY,
     })
@@ -120,7 +121,7 @@ function showWorkspaceContextMenu(event: ReactMouseEvent, workspacePath: string)
           if (didCopy) {
             toastManager.add({
               type: "success",
-              title: "Path copied",
+              title: tr("Path copied"),
               description: workspacePath,
             });
           }
@@ -129,8 +130,8 @@ function showWorkspaceContextMenu(event: ReactMouseEvent, workspacePath: string)
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to copy path",
-              description: error instanceof Error ? error.message : "An error occurred.",
+              title: tr("Failed to copy path"),
+              description: error instanceof Error ? error.message : tr("An error occurred."),
             }),
           );
         },
@@ -222,7 +223,7 @@ const RunContextSelector = memo(function RunContextSelector({
       <TooltipPopup>
         {isPanel
           ? forceNewWorktree
-            ? "Each model starts in its own worktree."
+            ? tr("Each model starts in its own worktree.")
             : (workspacePath ?? workspaceLabel)
           : workspaceLabel}
       </TooltipPopup>
@@ -246,7 +247,9 @@ const RunContextSelector = memo(function RunContextSelector({
             />
           )}
         </TooltipTrigger>
-        <TooltipPopup>{autoEnvironmentLabel ?? activeEnvironment?.label ?? "Run on"}</TooltipPopup>
+        <TooltipPopup>
+          {autoEnvironmentLabel ?? activeEnvironment?.label ?? tr("Run on")}
+        </TooltipPopup>
       </Tooltip>
       {workspaceIcon}
     </span>
@@ -258,7 +261,7 @@ const RunContextSelector = memo(function RunContextSelector({
       {icon}
       <ComposerContextLabel displayMode={displayMode}>
         {autoEnvironmentLabel ??
-          (showEnvironmentIndicator ? (activeEnvironment?.label ?? "Run on") : workspaceLabel)}
+          (showEnvironmentIndicator ? (activeEnvironment?.label ?? tr("Run on")) : workspaceLabel)}
       </ComposerContextLabel>
     </>
   );
@@ -272,7 +275,7 @@ const RunContextSelector = memo(function RunContextSelector({
           isPanel && THREAD_DETAILS_PANEL_LOCKED_ROW_CLASS,
         )}
         onContextMenu={handleContextMenu}
-        aria-label={isPanel ? "Run context" : undefined}
+        aria-label={isPanel ? tr("Run context") : undefined}
         data-composer-context-control
       >
         {triggerContent}
@@ -293,7 +296,7 @@ const RunContextSelector = memo(function RunContextSelector({
               }
             : undefined
         }
-        aria-label={isPanel ? "Run context" : undefined}
+        aria-label={isPanel ? tr("Run context") : undefined}
         data-composer-context-control
         data-composer-shortcut={[
           showEnvironmentPicker && !envLocked ? "composer.host" : "",
@@ -318,7 +321,7 @@ const RunContextSelector = memo(function RunContextSelector({
         {showEnvironmentPicker && availableEnvironments && onEnvironmentChange ? (
           <>
             <MenuGroup>
-              <MenuGroupLabel>Run on</MenuGroupLabel>
+              <MenuGroupLabel>{tr("Run on")}</MenuGroupLabel>
               <MenuRadioGroup
                 value={autoEnvironmentLabel ? "auto" : environmentId}
                 onValueChange={(value) =>
@@ -339,7 +342,7 @@ const RunContextSelector = memo(function RunContextSelector({
                     <span className="flex min-w-0 items-center gap-1.5">
                       <ScaleIcon className="size-3" aria-hidden="true" />
                       <span className="min-w-0 truncate">
-                        {autoEnvironmentLabel ?? "Auto balance"}
+                        {autoEnvironmentLabel ?? tr("Auto balance")}
                       </span>
                     </span>
                   </MenuRadioItem>
@@ -363,7 +366,7 @@ const RunContextSelector = memo(function RunContextSelector({
           </>
         ) : null}
         <MenuGroup>
-          <MenuGroupLabel>Workspace</MenuGroupLabel>
+          <MenuGroupLabel>{tr("Workspace")}</MenuGroupLabel>
           <MenuRadioGroup
             value={effectiveEnvMode}
             onValueChange={(value) => {

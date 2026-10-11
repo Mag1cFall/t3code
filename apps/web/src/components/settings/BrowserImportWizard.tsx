@@ -36,6 +36,7 @@ import {
   type WizardTargetSelection,
   type WizardStep,
 } from "./browserImportWizard.logic";
+import { tr } from "~/i18n";
 
 export type { WizardTarget } from "./browserImportWizard.logic";
 
@@ -104,7 +105,9 @@ export function BrowserImportWizard({
     if (importInFlight.current) return;
     const chosen = resolveWizardTarget(target, newProfileId.current, targetProfiles);
     if (chosen === undefined) {
-      setTargetError("That profile is no longer available. Choose where to import these cookies.");
+      setTargetError(
+        tr("That profile is no longer available. Choose where to import these cookies."),
+      );
       setStep({ step: "configure" });
       return;
     }
@@ -213,16 +216,18 @@ function QuitStep({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Quit {source.name} to import</DialogTitle>
+        <DialogTitle>{tr("Quit {{name}} to import", { name: source.name })}</DialogTitle>
         <DialogDescription>
-          {source.name} is open, so its cookies can&rsquo;t be read yet. Quit it, then continue.
+          {tr("{{name}} is open, so its cookies can’t be read yet. Quit it, then continue.", {
+            name: source.name,
+          })}
         </DialogDescription>
       </DialogHeader>
       <DialogFooter>
         <Button variant="outline" onClick={onCancel}>
-          Cancel
+          {tr("Cancel")}
         </Button>
-        <Button onClick={onRechecked}>I&rsquo;ve quit it</Button>
+        <Button onClick={onRechecked}>{tr("I’ve quit it")}</Button>
       </DialogFooter>
     </>
   );
@@ -279,17 +284,20 @@ function FullDiskAccessStep({
     setOpeningError(null);
     void Promise.resolve()
       .then(onOpenSettings)
-      .catch(() => setOpeningError("Could not open System Settings. Try Allow again."))
+      .catch(() => setOpeningError(tr("Could not open System Settings. Try Allow again.")))
       .finally(() => setOpening(false));
   };
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Let T3 Code read {source.name}&rsquo;s cookies</DialogTitle>
+        <DialogTitle>
+          {tr("Let T3 Code read {{name}}’s cookies", { name: source.name })}
+        </DialogTitle>
         <DialogDescription>
-          To import cookies from {source.name}, T3 Code needs Full Disk Access. Turn it on in System
-          Settings, then come back to finish the import — you can revoke it again once the import is
-          done.
+          {tr(
+            "To import cookies from {{name}}, T3 Code needs Full Disk Access. Turn it on in System Settings, then come back to finish the import — you can revoke it again once the import is done.",
+            { name: source.name },
+          )}
         </DialogDescription>
       </DialogHeader>
       <DialogPanel>
@@ -304,8 +312,8 @@ function FullDiskAccessStep({
                   aria-hidden="true"
                 />
               ),
-              title: "Full Disk Access",
-              description: `Read ${source.name}'s cookies for this import.`,
+              title: tr("Full Disk Access"),
+              description: tr("Read {{name}}'s cookies for this import.", { name: source.name }),
               granted: permission.status.fullDiskAccess,
               onAllow: () => void allow(),
             },
@@ -319,21 +327,25 @@ function FullDiskAccessStep({
         {!permission.isReady(["fullDiskAccess"]) ? (
           <p className="mt-3 text-xs text-muted-foreground">
             {stillRequired
-              ? "Access is still required. Quit and reopen T3 Code if you just allowed it, then retry the import."
-              : "If access doesn't update after you allow it, quit and reopen T3 Code, then retry the import."}
+              ? tr(
+                  "Access is still required. Quit and reopen T3 Code if you just allowed it, then retry the import.",
+                )
+              : tr(
+                  "If access doesn't update after you allow it, quit and reopen T3 Code, then retry the import.",
+                )}
           </p>
         ) : null}
       </DialogPanel>
       <DialogFooter>
         <Button variant="outline" onClick={onCancel}>
-          Cancel
+          {tr("Cancel")}
         </Button>
         <PermissionContinueButton
           ready={permission.isReady(["fullDiskAccess"])}
           busy={opening}
           onClick={onGranted}
         >
-          Continue
+          {tr("Continue")}
         </PermissionContinueButton>
       </DialogFooter>
     </>
@@ -362,16 +374,18 @@ function ConfigureStep({
   const targetFeedback =
     targetError ??
     (targetMissing
-      ? "That profile is no longer available. Choose where to import these cookies."
+      ? tr("That profile is no longer available. Choose where to import these cookies.")
       : targetUncreatable
-        ? "You've reached the profile limit. Choose an existing profile to import into."
+        ? tr("You've reached the profile limit. Choose an existing profile to import into.")
         : undefined);
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Import from {source.name}</DialogTitle>
+        <DialogTitle>{tr("Import from {{name}}", { name: source.name })}</DialogTitle>
         <DialogDescription>
-          Choose which cookies to import for {destinationEnvironmentName}.
+          {tr("Choose which cookies to import for {{destinationEnvironmentName}}.", {
+            destinationEnvironmentName,
+          })}
         </DialogDescription>
       </DialogHeader>
       <DialogPanel>
@@ -379,7 +393,7 @@ function ConfigureStep({
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
           <section className="flex-1 space-y-2">
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              From
+              {tr("From")}
             </p>
             {source.profiles.map((profile) => (
               <SelectableTile
@@ -397,13 +411,13 @@ function ConfigureStep({
           </div>
           <section className="flex-1 space-y-2">
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Into
+              {tr("Into")}
             </p>
             {canCreateProfile ? (
               <SelectableTile
                 selected={target.kind === "new"}
-                title="New profile"
-                subtitle="Created for these cookies"
+                title={tr("New profile")}
+                subtitle={tr("Created for these cookies")}
                 onSelect={() => onTargetChange({ kind: "new" })}
               />
             ) : null}
@@ -412,7 +426,7 @@ function ConfigureStep({
                 key={profile.id}
                 selected={target.kind === "existing" && target.profileId === profile.id}
                 title={profile.name}
-                subtitle="Existing profile"
+                subtitle={tr("Existing profile")}
                 onSelect={() => onTargetChange({ kind: "existing", profileId: profile.id })}
               />
             ))}
@@ -426,13 +440,13 @@ function ConfigureStep({
       </DialogPanel>
       <DialogFooter>
         <Button variant="outline" onClick={onCancel}>
-          Cancel
+          {tr("Cancel")}
         </Button>
         <Button
           disabled={sourceProfileDirectory === "" || targetMissing || targetUncreatable}
           onClick={onImport}
         >
-          Import
+          {tr("Import")}
         </Button>
       </DialogFooter>
     </>
@@ -487,13 +501,13 @@ function ImportingStep() {
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Importing cookies</DialogTitle>
-        <DialogDescription>This may take a moment.</DialogDescription>
+        <DialogTitle>{tr("Importing cookies")}</DialogTitle>
+        <DialogDescription>{tr("This may take a moment.")}</DialogDescription>
       </DialogHeader>
       <DialogPanel>
         <div className="flex items-center gap-3 py-2">
           <Spinner size="md" tone="muted" />
-          <span className="text-sm text-muted-foreground">Importing…</span>
+          <span className="text-sm text-muted-foreground">{tr("Importing…")}</span>
         </div>
       </DialogPanel>
     </>
@@ -510,18 +524,18 @@ function CheckingStep({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Checking {sourceName}</DialogTitle>
+        <DialogTitle>{tr("Checking {{sourceName}}", { sourceName })}</DialogTitle>
         <DialogDescription>
           {check === "fullDiskAccess"
-            ? "Checking Full Disk Access."
-            : "Checking whether the browser has closed."}
+            ? tr("Checking Full Disk Access.")
+            : tr("Checking whether the browser has closed.")}
         </DialogDescription>
       </DialogHeader>
       <DialogPanel>
         <div className="flex items-center gap-3 py-2">
           <Spinner size="md" tone="muted" />
           <span className="text-sm text-muted-foreground">
-            {check === "fullDiskAccess" ? "Checking access…" : "Checking…"}
+            {check === "fullDiskAccess" ? tr("Checking access…") : tr("Checking…")}
           </span>
         </div>
       </DialogPanel>
@@ -549,30 +563,38 @@ function DoneStep({
       <DialogHeader>
         <DialogTitle>
           {imported > 0
-            ? `Imported ${cookieResultCount(imported)}`
+            ? tr("Imported {{value}}", { value: cookieResultCount(imported) })
             : skipped > 0
-              ? `Skipped ${cookieResultCount(skipped)}`
-              : "No cookies found"}
+              ? tr("Skipped {{value}}", { value: cookieResultCount(skipped) })
+              : tr("No cookies found")}
         </DialogTitle>
         <DialogDescription>
           {imported > 0
-            ? `Added to ${targetName} for ${destinationEnvironmentName}.${skipped > 0 ? ` ${cookieResultCount(skipped)} skipped.` : ""}`
+            ? tr("Added to {{targetName}} for {{destinationEnvironmentName}}.{{value}}", {
+                targetName,
+                destinationEnvironmentName,
+                value: skipped > 0 ? ` ${cookieResultCount(skipped)} skipped.` : "",
+              })
             : skipped > 0
-              ? `No cookies were imported for ${destinationEnvironmentName}.`
-              : `There were no cookies to import for ${destinationEnvironmentName}.`}
+              ? tr("No cookies were imported for {{destinationEnvironmentName}}.", {
+                  destinationEnvironmentName,
+                })
+              : tr("There were no cookies to import for {{destinationEnvironmentName}}.", {
+                  destinationEnvironmentName,
+                })}
         </DialogDescription>
       </DialogHeader>
       {skippedDomains.length > 0 ? (
         <DialogPanel>
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Skipped
+            {tr("Skipped")}
           </p>
           <p className="mt-1 text-sm text-foreground">{formatSkippedDomains(skippedDomains)}</p>
         </DialogPanel>
       ) : null}
       <DialogFooter>
         <DialogClose render={<Button />} onClick={onClose}>
-          Done
+          {tr("Done")}
         </DialogClose>
       </DialogFooter>
     </>
@@ -593,14 +615,14 @@ function BlockedStep({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Couldn&rsquo;t import from {source.name}</DialogTitle>
+        <DialogTitle>{tr("Couldn’t import from {{name}}", { name: source.name })}</DialogTitle>
         <DialogDescription>{BROWSER_IMPORT_FAILURE_COPY[reason]}</DialogDescription>
       </DialogHeader>
       <DialogFooter>
         <Button variant="outline" onClick={onClose}>
-          Close
+          {tr("Close")}
         </Button>
-        {onRetry ? <Button onClick={onRetry}>Try again</Button> : null}
+        {onRetry ? <Button onClick={onRetry}>{tr("Try again")}</Button> : null}
       </DialogFooter>
     </>
   );

@@ -15,6 +15,7 @@ import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { cn } from "~/lib/utils";
 import { modelPickerModelKey } from "./modelPickerKeys";
 import { ProviderInstanceIcon } from "./ProviderInstanceIcon";
+import { tr } from "~/i18n";
 
 export const ModelListRow = memo(function ModelListRow(props: {
   index: number;
@@ -71,14 +72,14 @@ export const ModelListRow = memo(function ModelListRow(props: {
           {props.showNewBadge ? (
             <span
               className="shrink-0 rounded border border-update/35 bg-update/15 px-0.5 py-px text-3xs font-bold uppercase leading-none tracking-wide text-update-foreground"
-              aria-label="New model"
+              aria-label={tr("New model")}
             >
-              New
+              {tr("New")}
             </span>
           ) : null}
           {props.unavailable ? (
             <Badge variant="outline" size="sm">
-              Unavailable
+              {tr("Unavailable")}
             </Badge>
           ) : null}
         </div>
@@ -119,7 +120,7 @@ export const ModelListRow = memo(function ModelListRow(props: {
                   event.stopPropagation();
                 }}
                 disabled={Boolean(props.disabledReason)}
-                aria-label={props.isFavorite ? "Remove from favorites" : "Add to favorites"}
+                aria-label={props.isFavorite ? tr("Remove from favorites") : tr("Add to favorites")}
               >
                 <StarIcon
                   className={cn(
@@ -131,7 +132,7 @@ export const ModelListRow = memo(function ModelListRow(props: {
             }
           />
           <TooltipPopup side="top" align="center">
-            {props.isFavorite ? "Remove from favorites" : "Add to favorites"}
+            {props.isFavorite ? tr("Remove from favorites") : tr("Add to favorites")}
           </TooltipPopup>
         </Tooltip>
       </div>

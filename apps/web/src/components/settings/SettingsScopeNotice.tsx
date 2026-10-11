@@ -7,6 +7,7 @@ import type { SettingsScopeSearch } from "./settingsScope";
 import { useSettingsProjectGroups } from "./useSettingsProjectGroups";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import type { EnvironmentId } from "@t3tools/contracts";
+import { tr } from "~/i18n";
 
 /** Offer an explicit target change when a category has no settings at this scope. */
 export function SettingsScopeNotice({
@@ -60,7 +61,7 @@ export function SettingsScopeNotice({
                   : entry.label,
                 search: { machine: entry.environmentId },
               }))
-          : [{ label: "Open all environments", search: {} }];
+          : [{ label: tr("Open all environments"), search: {} }];
   return (
     <SettingsPageContainer>
       <Alert role="status">

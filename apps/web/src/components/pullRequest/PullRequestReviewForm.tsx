@@ -20,6 +20,7 @@ import {
   usePendingReviewComments,
   usePullRequestReviewStore,
 } from "./pullRequestReviewStore";
+import { tr } from "~/i18n";
 
 const VERDICTS: ReadonlyArray<{
   readonly value: PullRequestReviewVerdict;
@@ -29,20 +30,20 @@ const VERDICTS: ReadonlyArray<{
 }> = [
   {
     value: "comment",
-    label: "Comment",
-    sent: "Review submitted",
+    label: tr("Comment"),
+    sent: tr("Review submitted"),
     icon: <MessageSquareIcon className="size-3" />,
   },
   {
     value: "approve",
-    label: "Approve",
-    sent: "Pull request approved",
+    label: tr("Approve"),
+    sent: tr("Pull request approved"),
     icon: <CheckIcon className="size-3" />,
   },
   {
     value: "request-changes",
-    label: "Request changes",
-    sent: "Changes requested",
+    label: tr("Request changes"),
+    sent: tr("Changes requested"),
     icon: <XCircleIcon className="size-3" />,
   },
 ];
@@ -101,7 +102,7 @@ export function PullRequestReviewForm({
     onPendingChange(false);
     if (result._tag === "Failure") {
       // The draft is kept: whatever went wrong, retyping the review is not the answer.
-      toastManager.add({ type: "error", title: "The review could not be submitted" });
+      toastManager.add({ type: "error", title: tr("The review could not be submitted") });
       return;
     }
     // More remarks may have been added while the host was accepting this snapshot. Leave those,
@@ -129,10 +130,10 @@ export function PullRequestReviewForm({
         value={body}
         placeholder={
           requestChangesSummaryRequired && verdicts.includes("request-changes")
-            ? "Summarize your review (required to request changes)"
-            : "Summarize your review (optional)"
+            ? tr("Summarize your review (required to request changes)")
+            : tr("Summarize your review (optional)")
         }
-        aria-label="Review summary"
+        aria-label={tr("Review summary")}
         onChange={(event) => setSummary(reviewKey, event.target.value)}
       />
       <div className="mt-2 flex justify-between gap-2">
@@ -143,7 +144,7 @@ export function PullRequestReviewForm({
             if (value !== null) setRequestedVerdict(value);
           }}
         >
-          <SelectTrigger size="xs" className="w-auto min-w-0" aria-label="Review verdict">
+          <SelectTrigger size="xs" className="w-auto min-w-0" aria-label={tr("Review verdict")}>
             <span className="flex items-center gap-1.5">
               {selectedVerdict?.icon}
               {selectedVerdict?.label}
@@ -167,7 +168,7 @@ export function PullRequestReviewForm({
             if (selectedVerdict !== undefined) void submit(selectedVerdict);
           }}
         >
-          {pending ? "Submitting..." : "Submit review"}
+          {pending ? tr("Submitting...") : tr("Submit review")}
         </Button>
       </div>
     </>

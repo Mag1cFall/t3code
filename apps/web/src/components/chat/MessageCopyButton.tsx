@@ -10,6 +10,7 @@ import {
   showAnchoredCopySuccessToast,
 } from "../ui/anchoredCopyToast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import { tr } from "~/i18n";
 
 export const MessageCopyButton = memo(function MessageCopyButton({
   text,
@@ -38,7 +39,7 @@ export const MessageCopyButton = memo(function MessageCopyButton({
       <TooltipTrigger
         render={
           <Button
-            aria-label="Copy message"
+            aria-label={tr("Copy message")}
             disabled={isCopied}
             onClick={() => copyToClipboard(text)}
             ref={ref}
@@ -55,7 +56,7 @@ export const MessageCopyButton = memo(function MessageCopyButton({
         />
       </TooltipTrigger>
       <TooltipPopup>
-        <p>Copy message</p>
+        <p>{tr("Copy message")}</p>
       </TooltipPopup>
     </Tooltip>
   );

@@ -37,11 +37,12 @@ import {
 import { inferReviewCommentFenceLanguage, type ReviewCommentContext } from "~/reviewCommentContext";
 import { reviewCommentContextId } from "~/lib/composerContextRecords";
 import { removeInlineContextReference } from "~/lib/composerContextReferences";
+import { tr } from "~/i18n";
 
 export const PULL_REQUEST_MERGE_METHOD_LABELS: Record<PullRequestMergeMethod, string> = {
-  merge: "Merge",
-  squash: "Squash and merge",
-  rebase: "Rebase and merge",
+  merge: tr("Merge"),
+  squash: tr("Squash and merge"),
+  rebase: tr("Rebase and merge"),
 };
 
 /** Old environments keep their existing actions; new ones must finish stack discovery first. */
@@ -256,14 +257,14 @@ export function threadPullRequestPanelTarget(thread: {
 export function pullRequestHandoffLabels(inThisThread: boolean) {
   return inThisThread
     ? {
-        fixFinding: "Fix in this thread",
-        fixCheck: "Fix in this thread",
-        fixFindings: "Fix findings in this thread",
+        fixFinding: tr("Fix in this thread"),
+        fixCheck: tr("Fix in this thread"),
+        fixFindings: tr("Fix findings in this thread"),
       }
     : {
-        fixFinding: "Fix in a thread",
-        fixCheck: "Fix",
-        fixFindings: "Fix findings in a thread",
+        fixFinding: tr("Fix in a thread"),
+        fixCheck: tr("Fix"),
+        fixFindings: tr("Fix findings in a thread"),
       };
 }
 
@@ -360,7 +361,7 @@ export function classifyPullRequestChecks(
  * what a reader does next.
  */
 export function describePullRequestChecks(checks: ReadonlyArray<PullRequestCheck>): string {
-  if (checks.length === 0) return "No checks reported";
+  if (checks.length === 0) return tr("No checks reported");
   const failed = checks.filter(
     (check) => check.status === "failure" || check.status === "cancelled",
   ).length;
@@ -374,7 +375,9 @@ export function describePullRequestChecks(checks: ReadonlyArray<PullRequestCheck
     parts.push(parts.length > 0 ? `${failed} failed` : `${failed} of ${checks.length} failing`);
   }
   if (parts.length === 0) {
-    return passed === checks.length ? "All checks passed" : `${passed} of ${checks.length} passing`;
+    return passed === checks.length
+      ? tr("All checks passed")
+      : tr("{{passed}} of {{total}} passing", { passed, total: checks.length });
   }
   return parts.join(" · ");
 }
@@ -625,7 +628,7 @@ export function buildPullRequestTimeline(
       id: "created",
       at: detail.createdAt,
       kind: "opened" as const,
-      title: "opened this pull request",
+      title: tr("opened this pull request"),
       body: null,
       markdown: false,
       url: null,
@@ -641,7 +644,7 @@ export function buildPullRequestTimeline(
       id: commit.oid,
       at: commit.committedDate,
       kind: "commit" as const,
-      title: `Commit ${commit.oid.slice(0, 7)}`,
+      title: tr("Commit {{value}}", { value: commit.oid.slice(0, 7) }),
       body: commit.messageHeadline || null,
       markdown: false,
       url: null,
@@ -675,7 +678,7 @@ export function buildPullRequestTimeline(
             id: "merged",
             at: detail.mergedAt,
             kind: "merged" as const,
-            title: "Pull request merged",
+            title: tr("Pull request merged"),
             body: null,
             markdown: false,
             url: null,
@@ -695,7 +698,7 @@ export function buildPullRequestTimeline(
             id: "closed",
             at: detail.closedAt,
             kind: "closed" as const,
-            title: "Pull request closed",
+            title: tr("Pull request closed"),
             body: null,
             markdown: false,
             url: null,
@@ -741,7 +744,7 @@ function reviewThreadContext(
   return {
     id: `pull-request-finding:${thread.id}`,
     sectionId: `pull-request:${pullRequestNumber}`,
-    sectionTitle: `PR #${pullRequestNumber} review`,
+    sectionTitle: tr("PR #{{pullRequestNumber}} review", { pullRequestNumber }),
     filePath: thread.path,
     startIndex: lineIndex,
     endIndex: lineIndex,
@@ -1219,7 +1222,7 @@ export function buildAskAboutGuideStopHandoff(input: {
       {
         id: `pull-request-guide-stop:${input.number}:${stop.index}`,
         sectionId: `pull-request:${input.number}`,
-        sectionTitle: `PR #${input.number} review guide`,
+        sectionTitle: tr("PR #{{number}} review guide", { number: input.number }),
         filePath: `Guide stop ${stop.index + 1}`,
         startIndex: 0,
         endIndex: 0,

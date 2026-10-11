@@ -49,12 +49,13 @@ import {
 import { PullRequestGlyph } from "./pullRequestIcons";
 import { pullRequestQuickActions } from "./pullRequestList.logic";
 import { PullRequestSpeedActions } from "./PullRequestSpeedActions";
+import { tr } from "~/i18n";
 
 const SOURCE_LABELS: Record<ThreadPullRequestLink["source"], string> = {
-  manual: "Linked by you",
-  created: "Created from this thread",
-  agent: "Linked by the agent",
-  stack: "Found in the stack",
+  manual: tr("Linked by you"),
+  created: tr("Created from this thread"),
+  agent: tr("Linked by the agent"),
+  stack: tr("Found in the stack"),
   "stack-dismissed": "Dismissed",
 };
 
@@ -145,7 +146,7 @@ function LinkRow({
       {depth > 0 ? <span aria-hidden className="-ml-2 h-6 w-px shrink-0 bg-border/70" /> : null}
       {snapshot === null ? (
         <PullRequestGlyph.pullRequest
-          aria-label="Waiting for host state"
+          aria-label={tr("Waiting for host state")}
           className="size-4 shrink-0 text-muted-foreground"
         />
       ) : (
@@ -179,11 +180,12 @@ function LinkRow({
                 {watching ? (
                   <Tooltip>
                     <TooltipTrigger render={<span className="inline-flex shrink-0" />}>
-                      <EyeIcon role="img" aria-label="Watching" className="size-3.5" />
+                      <EyeIcon role="img" aria-label={tr("Watching")} className="size-3.5" />
                     </TooltipTrigger>
                     <TooltipPopup>
-                      Watching: the agent wakes when checks finish, someone comments, or the branch
-                      conflicts
+                      {tr(
+                        "Watching: the agent wakes when checks finish, someone comments, or the branch conflicts",
+                      )}
                     </TooltipPopup>
                   </Tooltip>
                 ) : null}
@@ -219,7 +221,7 @@ function LinkRow({
                   <TooltipPopup>
                     {stack.kind === "native"
                       ? `${sourceControlClients.hostLabelForChangeRequestUrl(link.url)} stack of ${stack.size}: merging a layer lands the ones below it.`
-                      : `${stack.size} pull requests chained by base branch.`}
+                      : tr("{{size}} pull requests chained by base branch.", { size: stack.size })}
                   </TooltipPopup>
                 </Tooltip>
               ) : null}
@@ -288,7 +290,7 @@ function LinkRow({
               <Button
                 variant="ghost"
                 size="icon-micro"
-                aria-label={`Actions for #${link.number}`}
+                aria-label={tr("Actions for #{{number}}", { number: link.number })}
                 className="relative"
               >
                 <MoreHorizontalIcon className="size-3.5" />
@@ -303,21 +305,21 @@ function LinkRow({
           >
             <MenuItem onClick={() => void writeTextToClipboard(link.url, "link")}>
               <LinkIcon className="size-3.5" />
-              Copy link
+              {tr("Copy link")}
             </MenuItem>
             <MenuItem onClick={(event) => openPrLink(event, link.url, threadRef)}>
               <ArrowUpRightIcon className="size-3.5" />
-              Open
+              {tr("Open")}
             </MenuItem>
             {onSetWatching !== null && open ? (
               <MenuItem onClick={() => onSetWatching(link, !watching)}>
                 {watching ? <EyeOffIcon className="size-3.5" /> : <EyeIcon className="size-3.5" />}
-                {watching ? "Stop watching" : "Watch for changes"}
+                {watching ? tr("Stop watching") : tr("Watch for changes")}
               </MenuItem>
             ) : null}
             <MenuItem onClick={() => onUnlink(link)}>
               <PullRequestGlyph.unlink className="size-3.5" />
-              {link.source === "stack" ? "Dismiss from thread" : "Unlink from thread"}
+              {link.source === "stack" ? tr("Dismiss from thread") : tr("Unlink from thread")}
             </MenuItem>
           </MenuPopup>
         </Menu>
@@ -331,8 +333,8 @@ export function ThreadPullRequestsPanel({ threadRef }: { threadRef: ScopedThread
   if (configs.get(threadRef.environmentId)?.environment.capabilities.threadPullRequests !== true) {
     return (
       <PullRequestsUnavailableState
-        title="Linked pull requests unavailable"
-        error="This environment does not support multiple linked pull requests."
+        title={tr("Linked pull requests unavailable")}
+        error={tr("This environment does not support multiple linked pull requests.")}
       />
     );
   }
@@ -407,14 +409,15 @@ function EnabledThreadPullRequestsPanel({ threadRef }: { threadRef: ScopedThread
     return (
       <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
         <PullRequestGlyph.link aria-hidden className="size-6 text-muted-foreground/60" />
-        <p className="text-sm font-medium">No linked pull requests</p>
+        <p className="text-sm font-medium">{tr("No linked pull requests")}</p>
         <p className="max-w-60 text-xs text-muted-foreground">
-          Pull requests the agent opens from this thread land here. Link one yourself from a URL or
-          a number.
+          {tr(
+            "Pull requests the agent opens from this thread land here. Link one yourself from a URL or a number.",
+          )}
         </p>
         <Button size="sm" variant="outline" onClick={openLinkDialog}>
           <PlusIcon className="size-3.5" />
-          Link pull request
+          {tr("Link pull request")}
         </Button>
       </div>
     );
@@ -445,12 +448,14 @@ function EnabledThreadPullRequestsPanel({ threadRef }: { threadRef: ScopedThread
       </ScrollArea>
       <footer className="flex items-center justify-between border-t border-border/60 px-2 py-1.5 text-2xs text-muted-foreground">
         <span>
-          {openCount} open · {links.length} linked
-          {lastSynced ? ` · synced ${formatRelativeTimeLabel(lastSynced)}` : ""}
+          {tr("{{openCount}} open · {{length}} linked", { openCount, length: links.length })}
+          {lastSynced
+            ? tr(" · synced {{value}}", { value: formatRelativeTimeLabel(lastSynced) })
+            : ""}
         </span>
         <Button size="xs" variant="ghost" onClick={openLinkDialog}>
           <PlusIcon className="size-3.5" />
-          Link
+          {tr("Link")}
         </Button>
       </footer>
     </div>

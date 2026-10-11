@@ -5,6 +5,7 @@ import { useCopyToClipboard } from "~/hooks/useCopyToClipboard";
 import { cn } from "~/lib/utils";
 
 import { Button } from "./ui/button";
+import { tr } from "~/i18n";
 
 /** A shell command to copy and run elsewhere, such as on the environment's host. */
 export function CommandBlock({
@@ -35,7 +36,7 @@ export function CommandBlock({
       <Button
         size="icon-xs"
         variant="ghost"
-        aria-label="Copy command"
+        aria-label={tr("Copy command")}
         onClick={() => copyToClipboard(command, undefined)}
       >
         <MorphIcon className="size-3.5" icon={isCopied ? Check : Copy} />

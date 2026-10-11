@@ -17,6 +17,7 @@ import {
 } from "@t3tools/shared/backgroundActivitySettings";
 import * as Duration from "effect/Duration";
 import * as Equal from "effect/Equal";
+import { tr } from "~/i18n";
 
 export function isProjectGroupingEnabled(mode: SidebarProjectGroupingMode): boolean {
   return mode !== "separate";
@@ -91,19 +92,19 @@ export function getChangedTypographySettingLabels(settings: TypographySettings):
   return [
     ...(settings.fontFamilySans !== DEFAULT_UNIFIED_SETTINGS.fontFamilySans ||
     settings.fontSizeInterface !== DEFAULT_UNIFIED_SETTINGS.fontSizeInterface
-      ? ["Interface font"]
+      ? [tr("Interface font")]
       : []),
     ...(settings.fontFamilyComposer !== DEFAULT_UNIFIED_SETTINGS.fontFamilyComposer ||
     settings.fontSizePrompt !== DEFAULT_UNIFIED_SETTINGS.fontSizePrompt
-      ? ["Prompt font"]
+      ? [tr("Prompt font")]
       : []),
     ...(settings.fontFamilyCode !== DEFAULT_UNIFIED_SETTINGS.fontFamilyCode ||
     settings.fontSizeCode !== DEFAULT_UNIFIED_SETTINGS.fontSizeCode
-      ? ["Code font"]
+      ? [tr("Code font")]
       : []),
     ...(settings.fontFamilyTerminal !== DEFAULT_UNIFIED_SETTINGS.fontFamilyTerminal ||
     settings.fontSizeTerminal !== DEFAULT_UNIFIED_SETTINGS.fontSizeTerminal
-      ? ["Terminal font"]
+      ? [tr("Terminal font")]
       : []),
   ];
 }
@@ -147,24 +148,24 @@ export function getChangedBrowserSettingLabels(settings: BrowserDefaultSettings)
       DEFAULT_UNIFIED_SETTINGS.browserDefaultViewport,
     )
       ? []
-      : ["Browser viewport"]),
+      : [tr("Browser viewport")]),
     ...(settings.browserDefaultZoomFactor !== DEFAULT_UNIFIED_SETTINGS.browserDefaultZoomFactor
-      ? ["Browser zoom"]
+      ? [tr("Browser zoom")]
       : []),
     ...(settings.browserDefaultAppearance !== DEFAULT_UNIFIED_SETTINGS.browserDefaultAppearance
-      ? ["Browser appearance"]
+      ? [tr("Browser appearance")]
       : []),
     ...(settings.browserRecordingFrameRate !== DEFAULT_UNIFIED_SETTINGS.browserRecordingFrameRate
-      ? ["Recording frame rate"]
+      ? [tr("Recording frame rate")]
       : []),
-    ...(settings.browserRecordingShowKeyPresses ? ["Recording key presses"] : []),
-    ...(settings.browserRecordingShowMousePresses ? ["Recording mouse presses"] : []),
+    ...(settings.browserRecordingShowKeyPresses ? [tr("Recording key presses")] : []),
+    ...(settings.browserRecordingShowMousePresses ? [tr("Recording mouse presses")] : []),
     ...(settings.browserLinkTarget !== DEFAULT_UNIFIED_SETTINGS.browserLinkTarget
-      ? ["Open links in"]
+      ? [tr("Open links in")]
       : []),
     ...(settings.browserAutoShowFloatingPreview !==
     DEFAULT_UNIFIED_SETTINGS.browserAutoShowFloatingPreview
-      ? ["Floating preview"]
+      ? [tr("Floating preview")]
       : []),
   ];
 }
@@ -231,7 +232,7 @@ export function formatDiagnosticsDescription(input: {
   readonly otlpMetricsEnabled: boolean;
   readonly otlpMetricsUrl?: string | undefined;
 }): string {
-  const mode = input.localTracingEnabled ? "Local trace file" : "Terminal logs only";
+  const mode = input.localTracingEnabled ? tr("Local trace file") : tr("Terminal logs only");
   const tracesUrl = input.otlpTracesEnabled ? input.otlpTracesUrl : undefined;
   const metricsUrl = input.otlpMetricsEnabled ? input.otlpMetricsUrl : undefined;
 

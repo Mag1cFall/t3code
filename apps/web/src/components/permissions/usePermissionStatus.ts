@@ -1,4 +1,5 @@
 import { useEffect, useEffectEvent, useState } from "react";
+import { tr } from "~/i18n";
 
 export function usePermissionStatus<Id extends string>(
   check: () => Promise<Record<Id, boolean>>,
@@ -22,7 +23,7 @@ export function usePermissionStatus<Id extends string>(
           setError(null);
         }
       } catch {
-        if (!disposed) setError("Could not check permissions. We'll try again automatically.");
+        if (!disposed) setError(tr("Could not check permissions. We'll try again automatically."));
       }
       checking = false;
     };

@@ -26,6 +26,7 @@ import {
 } from "./ComposerControl";
 import { useComposerMenuProps } from "./composerEventScope";
 import { shortcutLabelForCommand } from "../../keybindings";
+import { tr } from "~/i18n";
 
 export const ProviderModelPicker = memo(function ProviderModelPicker(props: {
   environmentId: EnvironmentId | null;
@@ -89,8 +90,8 @@ export const ProviderModelPicker = memo(function ProviderModelPicker(props: {
   const triggerTitle = selectedModel
     ? getTriggerDisplayModelName(selectedModel)
     : props.model === ANTIGRAVITY_DEFAULT_MODEL
-      ? "Choose model"
-      : props.model || "Choose model";
+      ? tr("Choose model")
+      : props.model || tr("Choose model");
   const triggerLabel = selectedModel
     ? `${getTriggerDisplayModelLabel(selectedModel)}${selectedModel.isUnavailable ? " (Unavailable)" : ""}`
     : triggerTitle;
@@ -180,14 +181,14 @@ export const ProviderModelPicker = memo(function ProviderModelPicker(props: {
   });
   const multipleLabel = selectedEntries
     ? selectedEntries.length === 0
-      ? "Choose models"
+      ? tr("Choose models")
       : `${selectedEntries
           .slice(0, 2)
           .map((selection) => selection.label)
           .join(", ")}${selectedEntries.length > 2 ? `, ${selectedEntries.length - 2} more` : ""}`
     : undefined;
   const allModelNames = selectedEntries
-    ? selectedEntries.map((selection) => selection.label).join(", ") || "Choose models"
+    ? selectedEntries.map((selection) => selection.label).join(", ") || tr("Choose models")
     : undefined;
   const triggerTooltipContent = shortcutLabel
     ? `${props.triggerLabel ?? allModelNames ?? triggerLabel} · ${shortcutLabel}`
@@ -278,7 +279,7 @@ export const ProviderModelPicker = memo(function ProviderModelPicker(props: {
           </Tooltip>
           {selectedModel?.isUnavailable && !selectedEntries && props.triggerLabel === undefined ? (
             <Badge variant="outline" size="sm">
-              Unavailable
+              {tr("Unavailable")}
             </Badge>
           ) : null}
         </span>

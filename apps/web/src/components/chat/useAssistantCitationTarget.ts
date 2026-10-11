@@ -5,6 +5,7 @@ import type { TimelineEntry } from "../../session-logic";
 import type { MessagesTimelineRow } from "./MessagesTimeline.logic";
 import type { AssistantCitationRequest, AssistantCitationTarget } from "./AssistantCitationSource";
 import { toastManager } from "../ui/toast";
+import { tr } from "~/i18n";
 
 export interface CitationHistoryPage {
   readonly loading: boolean;
@@ -93,8 +94,10 @@ export function useAssistantCitationTarget({
         const cursor = loadEarlier.cursor ?? entries[0]?.id ?? "first";
         if (navigation.requestedPages.has(cursor) || navigation.requestedPages.size >= 20) {
           fail(
-            "Could not load the cited response",
-            "Load earlier turns, then click the citation to try again. Your saved quote is unchanged.",
+            tr("Could not load the cited response"),
+            tr(
+              "Load earlier turns, then click the citation to try again. Your saved quote is unchanged.",
+            ),
           );
           return;
         }
@@ -103,15 +106,15 @@ export function useAssistantCitationTarget({
         return;
       }
       fail(
-        "The cited response is unavailable",
-        "It may have been removed. The selected text is still saved in your citation.",
+        tr("The cited response is unavailable"),
+        tr("It may have been removed. The selected text is still saved in your citation."),
       );
       return;
     }
     if (source.kind !== "message" || source.message.role !== "assistant") {
       fail(
-        "The citation does not refer to an assistant response",
-        "The selected text is still saved in your citation.",
+        tr("The citation does not refer to an assistant response"),
+        tr("The selected text is still saved in your citation."),
       );
       return;
     }

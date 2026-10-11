@@ -10,6 +10,7 @@ import { useAtomCommand } from "~/state/use-atom-command";
 import { toastManager } from "../../ui/toast";
 import { readableFailure } from "../pullRequestDetail.logic";
 import { guideRunKey, useGuideRunStore } from "./guideRunStore";
+import { tr } from "~/i18n";
 
 /**
  * A pull request's stored guide and the way to write a new one, shared by the Guide tab and the
@@ -65,10 +66,10 @@ export function useReviewGuideWriter({
       useGuideRunStore.getState().settle(guideRunKey(environmentId, reference));
       toastManager.add({
         type: "error",
-        title: "Could not start a review guide",
+        title: tr("Could not start a review guide"),
         description: readableFailure(
           squashAtomCommandFailure(result),
-          "Check the review guide model in Settings → Source Control.",
+          tr("Check the review guide model in Settings → Source Control."),
         ),
       });
     }

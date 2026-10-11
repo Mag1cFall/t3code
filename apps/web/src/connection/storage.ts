@@ -38,6 +38,7 @@ import * as Schema from "effect/Schema";
 import * as Semaphore from "effect/Semaphore";
 import * as Stream from "effect/Stream";
 import { projectFaviconCache } from "../assets/projectFaviconCache";
+import { tr } from "~/i18n";
 
 const DATABASE_NAME = "t3code:connection-runtime";
 const DATABASE_VERSION = 4;
@@ -79,7 +80,10 @@ const encodeStoredVcsRefs = Schema.encodeEffect(StoredVcsRefsJson);
 function catalogError(operation: string, cause: unknown) {
   return new ConnectionTransientError({
     reason: "remote-unavailable",
-    detail: `Could not ${operation} the local connection catalog: ${String(cause)}`,
+    detail: tr("Could not {{operation}} the local connection catalog: {{value}}", {
+      operation,
+      value: String(cause),
+    }),
   });
 }
 
@@ -107,7 +111,10 @@ function persistenceError(
 ) {
   return new Persistence.ConnectionPersistenceError({
     operation,
-    message: `Could not ${operation.replaceAll("-", " ")}: ${String(cause)}`,
+    message: tr("Could not {{value}}: {{value2}}", {
+      value: operation.replaceAll("-", " "),
+      value2: String(cause),
+    }),
   });
 }
 
@@ -115,7 +122,7 @@ const openDatabase = Effect.fn("web.connectionStorage.openDatabase")(function* (
   return yield* Effect.callback<IDBDatabase, ConnectionTransientError>((resume) => {
     if (typeof indexedDB === "undefined") {
       resume(
-        Effect.fail(catalogError("open", "IndexedDB is unavailable in this browser context.")),
+        Effect.fail(catalogError("open", tr("IndexedDB is unavailable in this browser context."))),
       );
       return;
     }
@@ -139,7 +146,7 @@ const openDatabase = Effect.fn("web.connectionStorage.openDatabase")(function* (
         }
       });
       request.addEventListener("error", () => {
-        resume(Effect.fail(catalogError("open", request.error ?? "Unknown IndexedDB error")));
+        resume(Effect.fail(catalogError("open", request.error ?? tr("Unknown IndexedDB error"))));
       });
       request.addEventListener("success", () => {
         resume(Effect.succeed(request.result));
@@ -231,7 +238,9 @@ function readDatabaseValueOnConnection(database: IDBDatabase, storeName: string,
     try {
       const request = database.transaction(storeName, "readonly").objectStore(storeName).get(key);
       request.addEventListener("error", () => {
-        resume(Effect.fail(catalogError("read", request.error ?? "Unknown IndexedDB read error")));
+        resume(
+          Effect.fail(catalogError("read", request.error ?? tr("Unknown IndexedDB read error"))),
+        );
       });
       request.addEventListener("success", () => {
         resume(Effect.succeed(request.result));
@@ -255,7 +264,9 @@ function writeDatabaseValueOnConnection(
       // QuotaExceededError, fires only "abort" and no "error".
       transaction.addEventListener("abort", () => {
         resume(
-          Effect.fail(catalogError("write", transaction.error ?? "Unknown IndexedDB write error")),
+          Effect.fail(
+            catalogError("write", transaction.error ?? tr("Unknown IndexedDB write error")),
+          ),
         );
       });
       transaction.addEventListener("complete", () => {
@@ -279,7 +290,7 @@ function removeDatabaseValueOnConnection(
       transaction.addEventListener("abort", () => {
         resume(
           Effect.fail(
-            catalogError("remove", transaction.error ?? "Unknown IndexedDB remove error"),
+            catalogError("remove", transaction.error ?? tr("Unknown IndexedDB remove error")),
           ),
         );
       });
@@ -304,7 +315,7 @@ function removeDatabaseValuesInRangeOnConnection(
       transaction.addEventListener("abort", () => {
         resume(
           Effect.fail(
-            catalogError("remove", transaction.error ?? "Unknown IndexedDB cursor error"),
+            catalogError("remove", transaction.error ?? tr("Unknown IndexedDB cursor error")),
           ),
         );
       });
@@ -314,7 +325,9 @@ function removeDatabaseValuesInRangeOnConnection(
       const request = transaction.objectStore(storeName).openCursor(range);
       request.addEventListener("error", () => {
         resume(
-          Effect.fail(catalogError("remove", request.error ?? "Unknown IndexedDB cursor error")),
+          Effect.fail(
+            catalogError("remove", request.error ?? tr("Unknown IndexedDB cursor error")),
+          ),
         );
       });
       request.addEventListener("success", () => {
@@ -413,7 +426,7 @@ export function makeCatalogBackend(database: DatabaseHandle): CatalogBackend {
               : Effect.fail(
                   catalogError(
                     "save",
-                    "Desktop secure storage is unavailable in this system context.",
+                    tr("Desktop secure storage is unavailable in this system context."),
                   ),
                 ),
           ),
@@ -583,7 +596,7 @@ export function makeBrowserGitHubRoutingPermissions(
         return Effect.fail(
           new ConnectionBlockedError({
             reason: "configuration",
-            detail: "This environment does not have a saved connection endpoint.",
+            detail: tr("This environment does not have a saved connection endpoint."),
           }),
         );
       return write(

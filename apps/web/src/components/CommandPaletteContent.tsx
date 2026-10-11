@@ -3,6 +3,7 @@ import { type ComponentProps, type ReactNode, useLayoutEffect, useRef } from "re
 
 import { Command, CommandFooter, CommandInput, CommandPanel } from "./ui/command";
 import { Kbd, KbdGroup } from "./ui/kbd";
+import { tr } from "~/i18n";
 
 type CommandPaletteContentProps = Omit<ComponentProps<typeof Command>, "children"> & {
   readonly children: ReactNode;
@@ -73,22 +74,22 @@ export function CommandPaletteContent({
               <Kbd>
                 <ArrowDownIcon />
               </Kbd>
-              <span>Navigate</span>
+              <span>{tr("Navigate")}</span>
             </KbdGroup>
             {footerActionLabel !== undefined ? (
               <KbdGroup>
-                <Kbd>Enter</Kbd>
+                <Kbd>{tr("Enter")}</Kbd>
                 <span>{footerActionLabel}</span>
               </KbdGroup>
             ) : null}
             {showBackHint ? (
               <KbdGroup>
-                <Kbd>Backspace</Kbd>
-                <span>Back</span>
+                <Kbd>{tr("Backspace")}</Kbd>
+                <span>{tr("Back")}</span>
               </KbdGroup>
             ) : null}
             <KbdGroup>
-              <Kbd>Esc</Kbd>
+              <Kbd>{tr("Esc")}</Kbd>
               <span>{escapeLabel}</span>
             </KbdGroup>
           </div>

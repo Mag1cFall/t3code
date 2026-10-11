@@ -20,6 +20,7 @@ import { useClosedViewStore } from "./closedViewStore";
 import { resolveStorage } from "./lib/storage";
 import type { ThreadPanelPresentation } from "./rightPanelLayout";
 import type { ChatFileAttachment } from "./types";
+import { tr } from "~/i18n";
 
 const RIGHT_PANEL_KINDS = [
   "diff",
@@ -676,7 +677,7 @@ export const useRightPanelStore = create<RightPanelStoreState>()(
             ...current,
             surfaces: current.surfaces.map((surface) =>
               surface.id === surfaceId && surface.kind === "device"
-                ? { ...surface, title: title.trim() || surface.target?.name || "Device" }
+                ? { ...surface, title: title.trim() || surface.target?.name || tr("Device") }
                 : surface,
             ),
           })),

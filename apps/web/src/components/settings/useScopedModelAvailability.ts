@@ -10,6 +10,7 @@ import {
 } from "../../providerInstances";
 import { useEnvironments } from "../../state/environments";
 import { useSettingsScope } from "./SettingsScopeContext";
+import { tr } from "~/i18n";
 
 /**
  * A model choice fans out to every selected target, so it must exist on all
@@ -46,7 +47,10 @@ export function useScopedModelDisabledReason(
           entry.driverKind !== sourceEntry?.driverKind ||
           !options?.some((option) => option.slug === model && !option.isUnavailable)
         ) {
-          return `This model is unavailable on ${environment?.label ?? "a selected environment"}. Select that environment to choose its model separately.`;
+          return tr(
+            "This model is unavailable on {{value}}. Select that environment to choose its model separately.",
+            { value: environment?.label ?? "a selected environment" },
+          );
         }
       }
       return null;

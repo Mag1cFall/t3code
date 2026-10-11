@@ -10,6 +10,7 @@ import * as Schema from "effect/Schema";
 import { AsyncResult, Atom } from "effect/reactivity";
 
 import { previewBridge } from "~/components/preview/previewBridge";
+import { tr } from "~/i18n";
 
 const PREVIEW_CONFIG_STALE_TIME_MS = 5 * 60_000;
 const PREVIEW_CONFIG_IDLE_TTL_MS = 10 * 60_000;
@@ -19,7 +20,9 @@ export class PreviewWebviewBridgeUnavailableError extends Schema.TaggedError<Pre
   { environmentId: Schema.String },
 ) {
   override get message(): string {
-    return `Desktop preview configuration is unavailable for environment "${this.environmentId}".`;
+    return tr('Desktop preview configuration is unavailable for environment "{{environmentId}}".', {
+      environmentId: this.environmentId,
+    });
   }
 }
 
@@ -31,7 +34,9 @@ export class PreviewWebviewConfigLoadError extends Schema.TaggedError<PreviewWeb
   },
 ) {
   override get message(): string {
-    return `Failed to load desktop preview configuration for environment "${this.environmentId}".`;
+    return tr('Failed to load desktop preview configuration for environment "{{environmentId}}".', {
+      environmentId: this.environmentId,
+    });
   }
 }
 

@@ -71,6 +71,7 @@ import {
   formatSearchToolLabel,
 } from "@t3tools/shared/toolActivity";
 import { isWindowsAbsolutePath } from "@t3tools/shared/path";
+import { tr } from "~/i18n";
 
 function timelineEntryRunId(entry: TimelineEntry): RunId | null {
   if (entry.kind === "message") {
@@ -100,7 +101,7 @@ function singleToolCallLabel(entry: WorkLogEntry): string {
   const title = item?.type === "dynamic_tool" ? dynamicToolTitle(item.toolName, item.input) : null;
   if (title) return title;
   // A lone web search keeps its heading; the query stays in its detail.
-  if (entry.itemType === "web_search") return entry.toolTitle ?? "Web search";
+  if (entry.itemType === "web_search") return entry.toolTitle ?? tr("Web search");
   return workEntryDisplayLabel(entry, undefined);
 }
 
@@ -173,7 +174,7 @@ export function workEntryDisplayLabel(entry: WorkLogEntry, workspaceRoot: string
       : `${path} +${entry.changedFiles!.length - 1} more`;
   }
   if (action === "read" && !entry.viewedImagePath) {
-    return "Read file";
+    return tr("Read file");
   }
   const heading = normalizeCompactToolLabel(entry.toolTitle || entry.label);
   return `${heading.charAt(0).toUpperCase()}${heading.slice(1)}`;
@@ -257,17 +258,16 @@ export function liveWorkEntryLabel(
   if (toolPresentation) return toolPresentation.displayName;
   const command = entry.command?.trim();
   if (command) {
-    const verb =
-      status === "inProgress"
-        ? "Running"
-        : status === "failed"
-          ? "Failed"
-          : status === "declined"
-            ? "Declined"
-            : status === "stopped"
-              ? "Stopped"
-              : "Ran";
-    return `${verb} ${commandProgramName(command) ?? "command"}`;
+    const program = commandProgramName(command) ?? tr("command");
+    return status === "inProgress"
+      ? tr("Running {{program}}", { program })
+      : status === "failed"
+        ? tr("Failed {{program}}", { program })
+        : status === "declined"
+          ? tr("Declined {{program}}", { program })
+          : status === "stopped"
+            ? tr("Stopped {{program}}", { program })
+            : tr("Ran {{program}}", { program });
   }
   return workEntryDisplayLabel(entry, workspaceRoot);
 }
@@ -1182,10 +1182,10 @@ function deriveTurnFolds(input: {
     const duration = elapsedMs !== null ? formatDuration(elapsedMs) : null;
     const label = isLatestInterruptedTurn
       ? duration
-        ? `You stopped after ${duration}`
-        : "You stopped this response"
+        ? tr("You stopped after {{duration}}", { duration })
+        : tr("You stopped this response")
       : duration
-        ? `Worked for ${duration}`
+        ? tr("Worked for {{duration}}", { duration })
         : "Worked";
 
     foldsByAnchorEntryId.set(group.anchorEntryId, {
@@ -1619,7 +1619,7 @@ export function deriveMessagesTimelineRows(input: {
         createdAt: supersededFold.createdAt,
         runId: supersededFold.runId,
         attemptId: supersededFold.attemptId,
-        label: "Superseded attempt",
+        label: tr("Superseded attempt"),
         expanded: input.expandedAttemptIds?.has(supersededFold.attemptId) ?? false,
       });
     }

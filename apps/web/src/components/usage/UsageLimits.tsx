@@ -39,11 +39,18 @@ import { Button } from "../ui/button";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { UsageLimitsPooled } from "./UsageLimitsPooled";
 import { PROVIDER_PRESENTATION } from "./usageProviders";
+import { tr } from "~/i18n";
 
 const PACE: Record<LimitPace, { readonly label: string; readonly icon: typeof GaugeIcon }> = {
-  ahead: { label: "Ahead of pace: spending faster than the window elapses", icon: TrendingUpIcon },
-  on: { label: "On pace with the window", icon: GaugeIcon },
-  under: { label: "Under pace: headroom left for the rest of the window", icon: TrendingDownIcon },
+  ahead: {
+    label: tr("Ahead of pace: spending faster than the window elapses"),
+    icon: TrendingUpIcon,
+  },
+  on: { label: tr("On pace with the window"), icon: GaugeIcon },
+  under: {
+    label: tr("Under pace: headroom left for the rest of the window"),
+    icon: TrendingDownIcon,
+  },
 };
 
 /** The series colour the cost chart uses for this driver, so the two views read as one. */
@@ -138,14 +145,17 @@ function WindowBar({
       <TooltipPopup side="top">
         <div className="flex flex-col gap-0.5">
           <span className="text-foreground">
-            {remaining}% left{timeLeft !== null ? ` · ${timeLeft}% of the window left` : ""}
+            {tr("{{remaining}}% left", { remaining })}
+            {timeLeft !== null ? tr(" · {{timeLeft}}% of the window left", { timeLeft }) : ""}
           </span>
           {timeLeft !== null ? (
-            <span className="text-muted-foreground">The line is where even spending would be.</span>
+            <span className="text-muted-foreground">
+              {tr("The line is where even spending would be.")}
+            </span>
           ) : null}
           {resetsAt ? (
             <span className="text-muted-foreground">
-              Resets {resetsAt}
+              {tr("Resets {{resetsAt}}", { resetsAt })}
               {resetsIn ? ` · ${resetsIn}` : ""}
             </span>
           ) : null}
@@ -187,7 +197,8 @@ export function LimitWindows({
             <span className="flex min-w-0 items-center gap-2 text-xs">
               <span className="truncate text-muted-foreground">{window.label}</span>
               <span className="ms-auto shrink-0 font-medium text-foreground tabular-nums">
-                {remainingPercent(window)}% left
+                {remainingPercent(window)}
+                {tr("% left")}
               </span>
             </span>
             <WindowBar color={color} window={window} now={now} />
@@ -203,10 +214,10 @@ export function LimitWindows({
 }
 
 const OUTCOME_TEXT: Record<ProviderConsumeResetCreditOutcome, string> = {
-  reset: "Reset applied. Your windows have cleared.",
-  nothingToReset: "Nothing to reset right now.",
-  noCredit: "No reset credit left.",
-  alreadyRedeemed: "That credit was already redeemed.",
+  reset: tr("Reset applied. Your windows have cleared."),
+  nothingToReset: tr("Nothing to reset right now."),
+  noCredit: tr("No reset credit left."),
+  alreadyRedeemed: tr("That credit was already redeemed."),
 };
 
 /** Everything a redeem needs: where to send it and what to say afterwards. */
@@ -234,7 +245,7 @@ export function useResetCredit(
     setStatus(
       "error" in result.cause && result.cause.error instanceof Error
         ? result.cause.error.message
-        : "Could not use the reset credit.",
+        : tr("Could not use the reset credit."),
     );
   };
 
@@ -262,16 +273,17 @@ export function ResetCreditDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogPopup>
         <AlertDialogHeader>
-          <AlertDialogTitle>Use a reset credit?</AlertDialogTitle>
+          <AlertDialogTitle>{tr("Use a reset credit?")}</AlertDialogTitle>
           <AlertDialogDescription>
-            This redeems one credit on your account and clears the current rate-limit windows. It
-            cannot be undone.
+            {tr(
+              "This redeems one credit on your account and clears the current rate-limit windows. It cannot be undone.",
+            )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogClose render={<Button variant="outline" />}>Cancel</AlertDialogClose>
+          <AlertDialogClose render={<Button variant="outline" />}>{tr("Cancel")}</AlertDialogClose>
           <Button disabled={disabled} onClick={onConfirm}>
-            Use credit
+            {tr("Use credit")}
           </Button>
         </AlertDialogFooter>
       </AlertDialogPopup>
@@ -288,7 +300,7 @@ export function resetCreditsSummary(
   const expiresIn = credits.nextExpiresAt
     ? formatDuration(Date.parse(credits.nextExpiresAt) - now)
     : null;
-  if (credits.availableCount === 0) return "No reset credits banked";
+  if (credits.availableCount === 0) return tr("No reset credits banked");
   if (compact)
     return `${credits.availableCount} banked${expiresIn ? ` · expires in ${expiresIn}` : ""}`;
   return `${credits.availableCount} ${credits.availableCount === 1 ? "reset credit" : "reset credits"} banked${
@@ -325,7 +337,7 @@ export function ResetCredits({
             if (readEnvironmentScope(environmentId, AuthProvidersManageScope)) setConfirming(true);
           }}
         >
-          {busy ? "Using…" : "Use reset"}
+          {busy ? tr("Using…") : tr("Use reset")}
         </Button>
       ) : null}
       {status ? <span className="text-foreground">{status}</span> : null}

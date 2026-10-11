@@ -3,6 +3,7 @@ import {
   isTerminalSubagentStatus,
   type RuntimeSubagent,
 } from "@t3tools/client-runtime/state/subagentRuntime";
+import { tr } from "~/i18n";
 
 /** Summarize observed states without treating idle or missing agents as completed. */
 export function deriveAgentSpawnSummary({
@@ -25,39 +26,51 @@ export function deriveAgentSpawnSummary({
   // Workflow coordinators can keep running between dynamic member launches.
   const live =
     coordinatorStatus !== undefined ? !isTerminalSubagentStatus(coordinatorStatus) : working > 0;
-  const subjects = [
-    individuals > 0 ? `${individuals} subagent${individuals === 1 ? "" : "s"}` : null,
+  const es = batches === 1 ? "" : "es";
+  const subjects =
+    [
+      individuals > 0
+        ? tr("{{count}} subagent{{s}}", { count: individuals, s: individuals === 1 ? "" : "s" })
+        : null,
+      batches > 0
+        ? individuals > 0
+          ? tr("{{count}} batch{{es}}", { count: batches, es })
+          : tr("{{count}} subagent batch{{es}}", { count: batches, es })
+        : null,
+    ]
+      .filter(Boolean)
+      .join(tr(" and ")) || tr("subagents");
+  const lead =
     batches > 0
-      ? `${batches} ${individuals > 0 ? "" : "subagent "}batch${batches === 1 ? "" : "es"}`
-      : null,
-  ]
-    .filter(Boolean)
-    .join(" and ");
-  const lead = `${batches > 0 ? "Launched" : live ? "Kicked off" : "Ran"} ${subjects || "subagents"}`;
+      ? tr("Launched {{subjects}}", { subjects })
+      : live
+        ? tr("Kicked off {{subjects}}", { subjects })
+        : tr("Ran {{subjects}}", { subjects });
 
+  const completedStatus = tr("✓ completed");
   const status = live
     ? working > 0
-      ? `${working} working`
-      : "working"
+      ? tr("{{working}} working", { working })
+      : tr("working")
     : coordinatorStatus === "failed"
-      ? "Workflow failed"
+      ? tr("Workflow failed")
       : coordinatorStatus === "cancelled" || coordinatorStatus === "interrupted"
-        ? "Workflow stopped"
+        ? tr("Workflow stopped")
         : failed > 0
-          ? `${failed} failed`
+          ? tr("{{failed}} failed", { failed })
           : stopped > 0
-            ? `${stopped} stopped`
+            ? tr("{{stopped}} stopped", { stopped })
             : idle > 0
-              ? `${idle} idle`
+              ? tr("{{idle}} idle", { idle })
               : coordinatorStatus !== "completed" &&
                   (agents.length === 0 || agents.length < agentCount)
-                ? "Status unavailable"
-                : "✓ completed";
+                ? tr("Status unavailable")
+                : completedStatus;
   const tone = live
     ? "working"
     : failed > 0 || coordinatorStatus === "failed"
       ? "failed"
-      : status === "✓ completed"
+      : status === completedStatus
         ? "completed"
         : "inactive";
   return { live, lead, status, tone };

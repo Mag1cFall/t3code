@@ -7,6 +7,7 @@ import { serverEnvironment } from "../../state/server";
 import { useAtomCommand } from "../../state/use-atom-command";
 import { Button } from "../ui/button";
 import { ProviderSettingsForm } from "./ProviderSettingsForm";
+import { tr } from "~/i18n";
 
 /**
  * One host's settings, drawn from its definition's settings schema and saved under
@@ -29,7 +30,7 @@ export function SourceControlHostSettings({
     (settings) => settings.sourceControlHosts[definition.kind],
   );
   const updateSettings = useAtomCommand(serverEnvironment.updateSettings, {
-    label: `save ${definition.label} settings`,
+    label: tr("save {{label}} settings", { label: definition.label }),
   });
   const [saving, setSaving] = useState(false);
   const formDefinition = { settingsSchema: definition.settings };
@@ -75,7 +76,7 @@ export function SourceControlHostSettings({
               void save(Object.fromEntries(Object.keys(saved ?? {}).map((key) => [key, ""])))
             }
           >
-            Remove
+            {tr("Remove")}
           </Button>
         </div>
       ) : null}

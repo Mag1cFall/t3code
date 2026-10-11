@@ -13,6 +13,7 @@ import {
 import { useTheme } from "../hooks/useTheme";
 import { resolveDiffThemeName, type DiffThemeName } from "../lib/diffRendering";
 import { PREFERRED_HIGHLIGHTER } from "../lib/syntaxHighlighting";
+import { tr } from "~/i18n";
 
 export class DiffWorkerError extends Schema.TaggedError<DiffWorkerError>()("DiffWorkerError", {
   operation: Schema.Literals(["create-worker", "get-render-options", "set-render-options"]),
@@ -20,7 +21,10 @@ export class DiffWorkerError extends Schema.TaggedError<DiffWorkerError>()("Diff
   cause: Schema.Defect(),
 }) {
   override get message(): string {
-    return `Diff worker operation ${this.operation} failed for theme ${this.themeName}.`;
+    return tr("Diff worker operation {{operation}} failed for theme {{themeName}}.", {
+      operation: this.operation,
+      themeName: this.themeName,
+    });
   }
 }
 
@@ -123,7 +127,7 @@ function DiffWorkerReady({ children }: { children?: ReactNode }) {
       role="status"
       className="flex min-h-0 flex-1 items-center justify-center p-4 text-xs text-muted-foreground"
     >
-      Loading code...
+      {tr("Loading code...")}
     </div>
   );
 }

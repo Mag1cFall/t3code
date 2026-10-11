@@ -14,6 +14,7 @@ import {
 import * as DateTime from "effect/DateTime";
 
 import type { ChatMessage, Thread } from "./types";
+import { tr } from "~/i18n";
 
 const DEFAULT_TIMESTAMP = "2026-01-01T00:00:00.000Z";
 
@@ -32,7 +33,7 @@ export function makeThreadProjectionFixture(): OrchestrationV2ThreadProjection {
     thread: {
       id,
       projectId: ProjectId.make("project-test"),
-      title: "Thread",
+      title: tr("Thread"),
       providerInstanceId,
       modelSelection: { instanceId: providerInstanceId, model: "gpt-5.4" },
       runtimeMode: "full-access",
@@ -98,7 +99,7 @@ export function makeThreadFixture(overrides: ThreadFixtureOverrides = {}): Threa
   const shell = presentThreadShell(environmentId, {
     id,
     projectId,
-    title: overrides.title ?? "Thread",
+    title: overrides.title ?? tr("Thread"),
     providerInstanceId,
     modelSelection,
     runtimeMode: overrides.runtimeMode ?? "full-access",
@@ -178,7 +179,7 @@ export function makeStreamingTimelineFixture(text = "") {
       type: "command_execution",
       status: "failed",
       input: "vp test",
-      output: "Test failed",
+      output: tr("Test failed"),
       exitCode: 1,
     },
     {

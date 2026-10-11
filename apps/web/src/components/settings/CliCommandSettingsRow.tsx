@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import { SettingsRow } from "./settingsLayout";
 import { searchableSetting } from "./settingsSearch";
+import { tr } from "~/i18n";
 
 /**
  * Settings → `t3` command: puts the desktop app's bundled CLI on PATH, or takes
@@ -39,8 +40,8 @@ export function CliCommandSettingsRow() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: action === "install" ? "Could not install t3" : "Could not remove t3",
-              description: error instanceof Error ? error.message : "Something went wrong.",
+              title: action === "install" ? tr("Could not install t3") : tr("Could not remove t3"),
+              description: error instanceof Error ? error.message : tr("Something went wrong."),
             }),
           );
         })
@@ -52,12 +53,19 @@ export function CliCommandSettingsRow() {
   if (!bridge || !state?.supported) return null;
   const installed = state.installedPath !== null;
   const description = state.shadowedBy
-    ? `Another t3 at ${state.shadowedBy} runs first in a new terminal. Remove it to use T3 Code's.`
+    ? tr("Another t3 at {{shadowedBy}} runs first in a new terminal. Remove it to use T3 Code's.", {
+        shadowedBy: state.shadowedBy,
+      })
     : !installed
-      ? "Run T3 Code's CLI as `t3` from any terminal."
+      ? tr("Run T3 Code's CLI as `t3` from any terminal.")
       : state.onPath
-        ? `Installed at ${state.installedPath}. Open a new terminal to use it.`
-        : `Installed at ${state.installedPath}, which is not on your PATH yet. Add its folder to your PATH to run \`t3\`.`;
+        ? tr("Installed at {{installedPath}}. Open a new terminal to use it.", {
+            installedPath: state.installedPath,
+          })
+        : tr(
+            "Installed at {{installedPath}}, which is not on your PATH yet. Add its folder to your PATH to run `t3`.",
+            { installedPath: state.installedPath },
+          );
 
   return (
     <SettingsRow
@@ -70,7 +78,7 @@ export function CliCommandSettingsRow() {
           disabled={pending}
           onClick={() => change(installed ? "uninstall" : "install")}
         >
-          {installed ? "Remove" : "Install"}
+          {installed ? tr("Remove") : tr("Install")}
         </Button>
       }
     />

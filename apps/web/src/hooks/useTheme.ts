@@ -22,6 +22,7 @@ import {
   type ThemeHalves,
   type ThemePreferenceMode,
 } from "../themePalette";
+import { tr } from "~/i18n";
 
 type Theme = ThemePreference;
 type ThemeSnapshot = {
@@ -112,7 +113,10 @@ export class ThemeStorageError extends Schema.TaggedError<ThemeStorageError>()(
   },
 ) {
   override get message(): string {
-    return `Failed to ${this.operation} theme preference for ${this.storageKey}.`;
+    return tr("Failed to {{operation}} theme preference for {{storageKey}}.", {
+      operation: this.operation,
+      storageKey: this.storageKey,
+    });
   }
 }
 
@@ -126,7 +130,7 @@ export class DesktopThemeSyncError extends Schema.TaggedError<DesktopThemeSyncEr
   },
 ) {
   override get message(): string {
-    return `Failed to sync the ${this.theme} theme to the desktop shell.`;
+    return tr("Failed to sync the {{theme}} theme to the desktop shell.", { theme: this.theme });
   }
 }
 

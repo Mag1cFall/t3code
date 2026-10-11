@@ -13,6 +13,7 @@ import {
 import { cn } from "~/lib/utils";
 import { PROVIDER_ORDER, PROVIDER_PRESENTATION } from "./usageProviders";
 import { observeResize } from "~/lib/observeResize";
+import { tr } from "~/i18n";
 
 const VIEW_WIDTH = 960;
 const VIEW_HEIGHT = 260;
@@ -372,7 +373,10 @@ export function UsageProviderChart({
             viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
             preserveAspectRatio="none"
             role="img"
-            aria-label={`${resolution === "hour" ? "Hourly" : "Daily"} ${metric === "tokens" ? "processed tokens" : "cost"} by provider`}
+            aria-label={tr("{{value}} {{value2}} by provider", {
+              value: resolution === "hour" ? tr("Hourly") : tr("Daily"),
+              value2: metric === "tokens" ? tr("processed tokens") : tr("cost"),
+            })}
           >
             {scale.ticks.map((tick) => {
               const y = toY(tick);
@@ -465,7 +469,7 @@ export function UsageProviderChart({
                 );
               })}
               <div className="mt-1 flex items-center justify-between gap-3 border-t border-border pt-1">
-                <span className="text-muted-foreground">Total</span>
+                <span className="text-muted-foreground">{tr("Total")}</span>
                 <span
                   className={cn(
                     "tabular-nums",

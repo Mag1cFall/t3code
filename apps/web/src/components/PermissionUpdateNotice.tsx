@@ -8,6 +8,7 @@ import { getLocalStorageItem, setLocalStorageItem } from "../hooks/useLocalStora
 import { useEnvironments } from "../state/environments";
 import { environmentSession } from "../state/session";
 import { toastManager } from "./ui/toast";
+import { tr } from "~/i18n";
 
 // Keep an active toast across remounts, including Strict Mode effect replay.
 const shown = new Set<EnvironmentId>();
@@ -48,13 +49,14 @@ function EnvironmentPermissionNotice({
       toastManager.close(id);
     };
     const id = toastManager.add({
-      title: `Permissions have changed for ${label}`,
-      description:
+      title: tr("Permissions have changed for {{label}}", { label }),
+      description: tr(
         "This connection still uses the old permissions, so some actions may no longer be available. Pair again using a new link with the permissions you need.",
+      ),
       timeout: 0,
       onClose: persistDismissal,
       actionProps: {
-        children: "Open Connections",
+        children: tr("Open Connections"),
         onClick: () => {
           dismiss();
           void navigate({ to: "/settings/connections" });
@@ -62,7 +64,7 @@ function EnvironmentPermissionNotice({
       },
       data: {
         actionLayout: "stacked-end",
-        secondaryActionProps: { children: "Dismiss", onClick: dismiss },
+        secondaryActionProps: { children: tr("Dismiss"), onClick: dismiss },
         secondaryActionVariant: "ghost",
       },
     });

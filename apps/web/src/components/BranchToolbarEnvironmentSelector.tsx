@@ -16,6 +16,7 @@ import {
   SelectPopup,
   SelectValue,
 } from "./ui/select";
+import { tr } from "~/i18n";
 
 interface BranchToolbarEnvironmentSelectorProps {
   autoEnvironmentLabel?: string | undefined;
@@ -42,7 +43,7 @@ export const BranchToolbarEnvironmentSelector = memo(function BranchToolbarEnvir
   const environmentItems = useMemo(
     () => [
       ...(onAutoEnvironment
-        ? [{ value: "auto", label: autoEnvironmentLabel ?? "Auto balance" }]
+        ? [{ value: "auto", label: autoEnvironmentLabel ?? tr("Auto balance") }]
         : []),
       ...availableEnvironments.map((env) => ({
         value: env.environmentId,
@@ -67,13 +68,13 @@ export const BranchToolbarEnvironmentSelector = memo(function BranchToolbarEnvir
           kind={activeEnvironment?.machine ?? "server"}
           className="size-3 shrink-0"
         />
-        <ComposerContextLabel>{activeEnvironment?.label ?? "Run on"}</ComposerContextLabel>
+        <ComposerContextLabel>{activeEnvironment?.label ?? tr("Run on")}</ComposerContextLabel>
       </span>
     );
     return (
       <Tooltip>
         <TooltipTrigger render={lockedRow} />
-        <TooltipPopup>{activeEnvironment?.label ?? "Run on"}</TooltipPopup>
+        <TooltipPopup>{activeEnvironment?.label ?? tr("Run on")}</TooltipPopup>
       </Tooltip>
     );
   }
@@ -93,7 +94,7 @@ export const BranchToolbarEnvironmentSelector = memo(function BranchToolbarEnvir
             <ComposerSelectControl
               size="xs"
               className="min-w-0 max-w-full"
-              aria-label="Run on"
+              aria-label={tr("Run on")}
               data-composer-shortcut="composer.host"
               data-composer-context-control
             />
@@ -111,11 +112,13 @@ export const BranchToolbarEnvironmentSelector = memo(function BranchToolbarEnvir
             <SelectValue />
           </ComposerContextLabel>
         </TooltipTrigger>
-        <TooltipPopup>{autoEnvironmentLabel ?? activeEnvironment?.label ?? "Run on"}</TooltipPopup>
+        <TooltipPopup>
+          {autoEnvironmentLabel ?? activeEnvironment?.label ?? tr("Run on")}
+        </TooltipPopup>
       </Tooltip>
       <SelectPopup alignItemWithTrigger={false} {...composerFloatingLayerProps}>
         <SelectGroup>
-          <SelectGroupLabel>Run on</SelectGroupLabel>
+          <SelectGroupLabel>{tr("Run on")}</SelectGroupLabel>
           {onAutoEnvironment && (
             <SelectItem
               value="auto"
@@ -125,7 +128,7 @@ export const BranchToolbarEnvironmentSelector = memo(function BranchToolbarEnvir
             >
               <span className="inline-flex items-center gap-1.5">
                 <ScaleIcon className="size-3" aria-hidden="true" />
-                {autoEnvironmentLabel ?? "Auto balance"}
+                {autoEnvironmentLabel ?? tr("Auto balance")}
               </span>
             </SelectItem>
           )}

@@ -18,6 +18,7 @@ import {
   THREAD_DETAILS_PANEL_SPLIT_GROUP_CLASS,
   THREAD_DETAILS_PANEL_SPLIT_SEPARATOR_CLASS,
 } from "./threadDetailsPanelStyles";
+import { tr } from "~/i18n";
 
 /**
  * Wall clock for the phase: its members run in parallel, so the span from the
@@ -81,7 +82,7 @@ function WorkflowMemberRow({
           render={
             <ThreadDetailsControl
               part="row"
-              aria-label={`Open ${member.title} chat`}
+              aria-label={tr("Open {{title}} chat", { title: member.title })}
               disabled={!canOpen}
               onClick={() => canOpen && onOpen(threadId)}
             />
@@ -161,7 +162,7 @@ export function ThreadLineageWorkflowRow({
                     variant="ghost"
                     part="icon"
                     tone="destructive"
-                    aria-label={`Stop workflow ${label}`}
+                    aria-label={tr("Stop workflow {{label}}", { label })}
                     disabled={stopDisabled}
                     onClick={onStop}
                   />
@@ -173,7 +174,7 @@ export function ThreadLineageWorkflowRow({
                   <SquareIcon aria-hidden className="size-3 fill-current" />
                 )}
               </TooltipTrigger>
-              <TooltipPopup side="left">Stop entire workflow</TooltipPopup>
+              <TooltipPopup side="left">{tr("Stop entire workflow")}</TooltipPopup>
             </Tooltip>
           </div>
         ) : null}
@@ -206,16 +207,20 @@ export function ThreadLineageWorkflowRow({
                   variant="panel"
                   tone={phase.state === "running" ? "emphasized" : "muted"}
                   expanded={open}
-                  aria-label={`${open ? "Collapse" : "Expand"} ${phase.title} phase, ${status}`}
+                  aria-label={
+                    open
+                      ? tr("Collapse {{title}} phase, {{status}}", { title: phase.title, status })
+                      : tr("Expand {{title}} phase, {{status}}", { title: phase.title, status })
+                  }
                   onClick={() => setPhaseOpen((phases) => new Map(phases).set(phase.index, !open))}
                   accessory={
                     <>
                       {status === "failed" ? (
-                        <SectionHeaderStatus>Failed</SectionHeaderStatus>
+                        <SectionHeaderStatus>{tr("Failed")}</SectionHeaderStatus>
                       ) : null}
                       <span className="shrink-0 text-2xs font-normal tabular-nums">
                         {phase.settledCount}/{phase.members.length}{" "}
-                        {phase.members.length === 1 ? "agent" : "agents"}
+                        {phase.members.length === 1 ? tr("agent") : tr("agents")}
                       </span>
                       <span className="shrink-0 text-2xs font-normal tabular-nums empty:hidden">
                         <AgentElapsed agent={phaseElapsed(phase)} />
@@ -257,7 +262,9 @@ export function ThreadLineageWorkflowRow({
             />
           ))}
           {phases.length === 0 && group.unphasedMembers.length === 0 ? (
-            <li className="px-2.5 py-1.5 text-2xs text-muted-foreground/70">No agents yet</li>
+            <li className="px-2.5 py-1.5 text-2xs text-muted-foreground/70">
+              {tr("No agents yet")}
+            </li>
           ) : null}
         </ul>
       ) : null}

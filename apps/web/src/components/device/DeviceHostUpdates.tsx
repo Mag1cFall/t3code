@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { deviceEnvironment } from "~/state/device";
 import { useAtomCommand } from "~/state/use-atom-command";
+import { tr } from "~/i18n";
 
 /** Shared by setup, Settings, and the Device panel so automatic updates stay visible. */
 export function DeviceHostUpdates({
@@ -32,15 +33,16 @@ export function DeviceHostUpdates({
               <p className="whitespace-pre-wrap break-words text-muted-foreground">
                 {status.detail ??
                   (failed
-                    ? "Device support could not start."
+                    ? tr("Device support could not start.")
                     : status.status === "installing"
-                      ? "Installing device tools…"
-                      : "Starting device tools…")}
+                      ? tr("Installing device tools…")
+                      : tr("Starting device tools…"))}
               </p>
               {failed ? (
                 <p className="mt-1 text-muted-foreground">
-                  Check the host connection and network access, then retry. Your device settings are
-                  saved.
+                  {tr(
+                    "Check the host connection and network access, then retry. Your device settings are saved.",
+                  )}
                 </p>
               ) : null}
             </div>
@@ -56,7 +58,7 @@ export function DeviceHostUpdates({
                   );
                 }}
               >
-                {pending === host.id ? "Retrying…" : "Retry"}
+                {pending === host.id ? tr("Retrying…") : tr("Retry")}
               </Button>
             ) : null}
           </div>

@@ -6,22 +6,23 @@ import { ColorHueSlider, ColorSaturationValuePlane } from "../ui/color-picker";
 import { Input } from "../ui/input";
 import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import { tr } from "~/i18n";
 export function getThemeRoleLabel(role: ThemeColorRole): string {
   const labels: Partial<Record<ThemeColorRole, string>> = {
     canvas: "Background",
-    toolbar: "Toolbar background",
-    toolbarForeground: "Toolbar text",
-    toolbarBorder: "Toolbar border",
-    toolbarControl: "Toolbar control",
-    toolbarControlForeground: "Toolbar control text",
-    toolbarControlHover: "Toolbar control hover",
-    accent: "Accent color",
-    errorForeground: "Error text",
-    errorSurface: "Error background",
-    warningForeground: "Warning text",
-    warningSurface: "Warning background",
-    updateForeground: "Update text",
-    updateSurface: "Update background",
+    toolbar: tr("Toolbar background"),
+    toolbarForeground: tr("Toolbar text"),
+    toolbarBorder: tr("Toolbar border"),
+    toolbarControl: tr("Toolbar control"),
+    toolbarControlForeground: tr("Toolbar control text"),
+    toolbarControlHover: tr("Toolbar control hover"),
+    accent: tr("Accent color"),
+    errorForeground: tr("Error text"),
+    errorSurface: tr("Error background"),
+    warningForeground: tr("Warning text"),
+    warningSurface: tr("Warning background"),
+    updateForeground: tr("Update text"),
+    updateSurface: tr("Update background"),
   };
   const label = labels[role];
   if (label) return label;
@@ -171,7 +172,7 @@ function ThemeColorPickerPanel({
       <div className="flex items-center justify-between border-b border-border/70 px-4 py-3">
         <div className="min-w-0">
           <p className="truncate text-xs font-semibold text-foreground">{label}</p>
-          <p className="text-2xs text-muted-foreground">Choose a color</p>
+          <p className="text-2xs text-muted-foreground">{tr("Choose a color")}</p>
         </div>
         <span
           className="size-7 shrink-0 rounded-full shadow-sm"
@@ -186,7 +187,7 @@ function ThemeColorPickerPanel({
           onInteractionEnd={flushPendingCommit}
         />
         <ColorHueSlider
-          label={`${label} hue`}
+          label={tr("{{label}} hue", { label })}
           value={hsv.h}
           onChange={(h) => commitHsv({ ...hsv, h })}
           onInteractionEnd={flushPendingCommit}
@@ -194,7 +195,7 @@ function ThemeColorPickerPanel({
         <div className="grid grid-cols-[1fr_1.2fr] gap-2">
           <label className="grid min-w-0 gap-1">
             <span className="px-1 text-3xs font-semibold uppercase tracking-widest text-muted-foreground">
-              HEX
+              {tr("HEX")}
             </span>
             <span className="flex min-w-0 items-center gap-2 rounded-lg border border-input bg-background px-2 focus-within:border-ring">
               <span
@@ -202,7 +203,7 @@ function ThemeColorPickerPanel({
                 style={{ backgroundColor: currentColor }}
               />
               <input
-                aria-label={`${label} picker hex value`}
+                aria-label={tr("{{label}} picker hex value", { label })}
                 className="h-8 min-w-0 flex-1 bg-transparent font-mono text-xs text-foreground outline-none"
                 onBlur={() => {
                   isEditingTextRef.current = false;
@@ -220,11 +221,11 @@ function ThemeColorPickerPanel({
           </label>
           <label className="grid min-w-0 gap-1">
             <span className="px-1 text-3xs font-semibold uppercase tracking-widest text-muted-foreground">
-              RGB
+              {tr("RGB")}
             </span>
             <span className="flex min-w-0 items-center rounded-lg border border-input bg-background px-2 focus-within:border-ring">
               <input
-                aria-label={`${label} picker RGB value`}
+                aria-label={tr("{{label}} picker RGB value", { label })}
                 className="h-8 min-w-0 flex-1 bg-transparent font-mono text-xs text-foreground outline-none"
                 onBlur={() => {
                   isEditingTextRef.current = false;
@@ -265,7 +266,7 @@ function ThemeColorPicker({
             <PopoverTrigger
               render={
                 <button
-                  aria-label={`Choose ${label} color`}
+                  aria-label={tr("Choose {{label}} color", { label })}
                   className="relative flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-full border border-foreground/30 transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-solid focus-visible:-outline-offset-2 focus-visible:outline-ring"
                   onFocus={onInteract}
                   onPointerDown={onInteract}
@@ -280,7 +281,7 @@ function ThemeColorPicker({
             />
           }
         />
-        <TooltipPopup side="top">{`Choose ${label} color`}</TooltipPopup>
+        <TooltipPopup side="top">{tr("Choose {{label}} color", { label })}</TooltipPopup>
       </Tooltip>
       <PopoverPopup
         align="end"
@@ -331,7 +332,11 @@ export const ThemeColorField = memo(function ThemeColorField({
         <TooltipTrigger
           render={
             <button
-              aria-label={`${selected ? "Hide" : "Show"} ${label} usage`}
+              aria-label={
+                selected
+                  ? tr("Hide {{label}} usage", { label })
+                  : tr("Show {{label}} usage", { label })
+              }
               aria-pressed={selected}
               className="flex min-w-0 flex-1 cursor-pointer items-center rounded-md text-left text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
               onClick={() => onToggleSelected?.(role)}
@@ -341,7 +346,11 @@ export const ThemeColorField = memo(function ThemeColorField({
             </button>
           }
         />
-        <TooltipPopup side="top">{`${selected ? "Hide" : "Show"} where ${label} is used`}</TooltipPopup>
+        <TooltipPopup side="top">
+          {selected
+            ? tr("Hide where {{label}} is used", { label })
+            : tr("Show where {{label}} is used", { label })}
+        </TooltipPopup>
       </Tooltip>
       <div className="ml-auto flex shrink-0 items-center gap-2">
         <ThemeColorPicker
@@ -352,7 +361,7 @@ export const ThemeColorField = memo(function ThemeColorField({
         />
         <Input
           aria-invalid={!isColorValue}
-          aria-label={`${label} hex value`}
+          aria-label={tr("{{label}} hex value", { label })}
           className="w-28 shrink-0"
           font="mono"
           id={`${role}-hex`}

@@ -18,6 +18,7 @@ import {
   usePendingReviewComments,
   usePullRequestReviewStore,
 } from "./pullRequestReviewStore";
+import { tr } from "~/i18n";
 
 /**
  * A maintainer's tour of the pull request: stops through the diff in reading order with the
@@ -115,7 +116,7 @@ export function PullRequestGuideTab({
     canWrite ? (
       <Button size={size} variant="outline" disabled={running} onClick={() => void write()}>
         {running ? <Spinner /> : <SparklesIcon aria-hidden className="size-3.5" />}
-        {running ? "Reading the change..." : label}
+        {running ? tr("Reading the change...") : label}
       </Button>
     ) : null;
 
@@ -130,16 +131,18 @@ export function PullRequestGuideTab({
     return (
       <div className="flex min-h-48 flex-col items-center justify-center gap-2 px-4 py-10 text-center">
         <p className="text-sm font-medium text-foreground">
-          {running ? "Writing a review guide" : "No review guide yet"}
+          {running ? tr("Writing a review guide") : tr("No review guide yet")}
         </p>
         <p className="max-w-md text-xs text-muted-foreground">
           {failure ??
             query.error ??
             (running
               ? "An agent is reading the change. A large one takes a few minutes. You can leave; you will be told when it is ready."
-              : "A guide is a tour of the change: stops through the code in reading order, with the calls only a maintainer can make.")}
+              : tr(
+                  "A guide is a tour of the change: stops through the code in reading order, with the calls only a maintainer can make.",
+                ))}
         </p>
-        {writeButton(failure === null ? "Write guide" : "Try again", "sm")}
+        {writeButton(failure === null ? tr("Write guide") : tr("Try again"), "sm")}
       </div>
     );
   }
@@ -151,8 +154,8 @@ export function PullRequestGuideTab({
         {running ? <Spinner /> : <TriangleAlertIcon />}
         <AlertDescription>
           {running
-            ? "Rewriting this guide. You will be told when the new one is ready."
-            : (failure ?? "Written before the latest push.")}
+            ? tr("Rewriting this guide. You will be told when the new one is ready.")
+            : (failure ?? tr("Written before the latest push."))}
         </AlertDescription>
         {!running && canWrite ? <AlertAction>{writeButton("Rewrite", "xs")}</AlertAction> : null}
       </Alert>

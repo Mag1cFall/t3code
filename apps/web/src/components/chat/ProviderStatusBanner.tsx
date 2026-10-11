@@ -5,6 +5,7 @@ import { Alert, AlertAction, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button, InlineButton } from "../ui/button";
 import { formatProviderDriverKindLabel } from "../../providerModels";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import { tr } from "~/i18n";
 
 /** Unsupported and broken versions fail mid-turn, so they warn even when ready. */
 function getIncompatibleVersion(status: ServerProvider) {
@@ -71,18 +72,20 @@ export function getProviderStatusMessage(status: ServerProvider): string {
   if (status.message) return status.message;
   const providerName = status.displayName?.trim() || formatProviderDriverKindLabel(status.driver);
   if (!status.installed && hasProviderSetup(status)) {
-    return `Open provider setup to install ${formatProviderDriverKindLabel(status.driver)} on this environment.`;
+    return tr("Open provider setup to install {{value}} on this environment.", {
+      value: formatProviderDriverKindLabel(status.driver),
+    });
   }
   if (status.auth.status === "unauthenticated") {
     if (hasProviderSetup(status)) {
       return status.driver === "antigravity"
-        ? "Open provider setup to sign in with Google."
-        : "Open provider setup to sign in.";
+        ? tr("Open provider setup to sign in with Google.")
+        : tr("Open provider setup to sign in.");
     }
-    return "Sign in via the CLI to authenticate again.";
+    return tr("Sign in via the CLI to authenticate again.");
   }
   return status.status === "ready"
-    ? "No models are available for this provider."
+    ? tr("No models are available for this provider.")
     : status.status === "error"
       ? `${providerName} provider is unavailable.`
       : `${providerName} provider has limited availability.`;
@@ -132,13 +135,16 @@ export const ProviderStatusBanner = memo(function ProviderStatusBanner({
           </Tooltip>
           {onOpenProviderSetup && hasProviderSetup(status) ? (
             <InlineButton onClick={() => onOpenProviderSetup(status.instanceId)}>
-              Open provider setup
+              {tr("Open provider setup")}
             </InlineButton>
           ) : null}
         </AlertDescription>
         <AlertAction>
           <Button
-            aria-label={`Dismiss ${providerName} provider ${status.status}`}
+            aria-label={tr("Dismiss {{providerName}} provider {{status}}", {
+              providerName,
+              status: status.status,
+            })}
             onClick={onDismiss}
             size="icon-xs"
             variant="ghost-muted"

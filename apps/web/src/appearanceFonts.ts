@@ -16,6 +16,7 @@ import {
   MIN_INTERFACE_FONT_SIZE,
   MIN_PROMPT_FONT_SIZE,
 } from "@t3tools/contracts";
+import { tr } from "~/i18n";
 
 export const DEFAULT_SANS_FONT_STACK =
   '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif';
@@ -265,7 +266,7 @@ const MONO_GENERIC_CANDIDATES = [
   "Courier New",
 ] as const;
 
-const GENERIC_PROBE_TEXT = "RagIl10O@ fjord quiz";
+const GENERIC_PROBE_TEXT = tr("RagIl10O@ fjord quiz");
 
 /**
  * Advance width of the probe text laid out by the DOM - not canvas, whose

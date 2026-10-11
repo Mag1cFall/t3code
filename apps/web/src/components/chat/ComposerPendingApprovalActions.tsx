@@ -9,6 +9,7 @@ import { Button } from "../ui/button";
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from "../ui/menu";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { composerFloatingLayerProps } from "./composerEventScope";
+import { tr } from "~/i18n";
 
 interface ComposerPendingApprovalActionsProps {
   requestId: RuntimeRequestId;
@@ -23,10 +24,10 @@ interface ComposerPendingApprovalActionsProps {
 }
 
 const DEFAULT_APPROVAL_OPTIONS = [
-  { decision: "cancel", label: "Cancel" },
-  { decision: "decline", label: "Decline" },
-  { decision: "acceptForSession", label: "Always allow this session" },
-  { decision: "accept", label: "Approve" },
+  { decision: "cancel", label: tr("Cancel") },
+  { decision: "decline", label: tr("Decline") },
+  { decision: "acceptForSession", label: tr("Always allow this session") },
+  { decision: "accept", label: tr("Approve") },
 ] satisfies ReadonlyArray<ProviderApprovalOption>;
 
 export const ComposerPendingApprovalActions = memo(function ComposerPendingApprovalActions({
@@ -77,7 +78,9 @@ export const ComposerPendingApprovalActions = memo(function ComposerPendingAppro
         <Menu>
           <MenuTrigger
             disabled={disabled || isResponding}
-            render={<Button size="icon-xs" variant="outline" aria-label="More approval options" />}
+            render={
+              <Button size="icon-xs" variant="outline" aria-label={tr("More approval options")} />
+            }
           >
             <EllipsisIcon />
           </MenuTrigger>

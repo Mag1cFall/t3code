@@ -10,6 +10,7 @@ import { resolveBranchTriggerLabel, sanitizeNewRefName } from "./BranchToolbar.l
 import { MiddleTruncate } from "./ui/middle-truncate";
 import { Button } from "./ui/button";
 import { ComboboxTrigger } from "./ui/combobox";
+import { tr } from "~/i18n";
 
 /** Select a future worktree's base without changing the project's current checkout. */
 export function WorktreeBaseBranchPicker({
@@ -66,11 +67,14 @@ export function WorktreeBaseBranchPicker({
   const statusText =
     branches.error ??
     (branches.isPending && branches.data === null
-      ? "Loading refs..."
+      ? tr("Loading refs...")
       : branches.isFetchingNextPage
-        ? "Loading more refs..."
+        ? tr("Loading more refs...")
         : hasNextPage
-          ? `Showing ${branches.refs.length} of ${branches.data?.totalCount} refs`
+          ? tr("Showing {{length}} of {{value}} refs", {
+              length: branches.refs.length,
+              value: branches.data?.totalCount,
+            })
           : null);
   const handleOpenChange = (next: boolean) => {
     setOpen(next);

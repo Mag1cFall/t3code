@@ -1,5 +1,6 @@
 import type { FileDiffMetadata } from "@pierre/diffs";
 import type { PullRequestReviewGuideExcerpt, PullRequestReviewGuideStop } from "@t3tools/contracts";
+import { tr } from "~/i18n";
 
 /** One step forward or back, held to the tour's first and last stops. */
 export function stepTourPosition(current: number, delta: 1 | -1, stopCount: number): number {
@@ -19,7 +20,7 @@ export function stopFilePaths(stop: PullRequestReviewGuideStop): ReadonlyArray<s
 /** The rail's second line for a stop. */
 export function stopSubline(stop: PullRequestReviewGuideStop): string {
   const count = stopFilePaths(stop).length;
-  if (count === 0) return "Context, no code";
+  if (count === 0) return tr("Context, no code");
   return count === 1 ? "1 file" : `${count} files`;
 }
 

@@ -21,6 +21,7 @@ import {
 
 import { PrimaryEnvironmentHttpClient } from "./httpClient";
 import { runPrimaryHttp } from "../../lib/runtime";
+import { tr } from "~/i18n";
 
 const PrimaryEnvironmentRequestOperation = Schema.Literals([
   "fetch-session-state",
@@ -62,7 +63,10 @@ export class PrimaryEnvironmentRequestError extends Schema.TaggedError<PrimaryEn
   }
 
   override get message(): string {
-    return `Primary environment request failed during ${this.operation} (HTTP ${this.status}).`;
+    return tr("Primary environment request failed during {{operation}} (HTTP {{status}}).", {
+      operation: this.operation,
+      status: this.status,
+    });
   }
 }
 
@@ -76,7 +80,7 @@ export class PrimaryEnvironmentPairingCredentialRejectedError extends Schema.Tag
   },
 ) {
   override get message(): string {
-    return "Invalid pairing token. Check the token and try again.";
+    return tr("Invalid pairing token. Check the token and try again.");
   }
 }
 
@@ -92,7 +96,7 @@ export class PrimaryEnvironmentAuthSessionTimeoutError extends Schema.TaggedErro
   },
 ) {
   override get message(): string {
-    return "Timed out waiting for authenticated session after bootstrap.";
+    return tr("Timed out waiting for authenticated session after bootstrap.");
   }
 }
 
@@ -103,7 +107,7 @@ export class PrimaryEnvironmentPairingCredentialRequiredError extends Schema.Tag
   },
 ) {
   override get message(): string {
-    return "Enter a pairing token to continue.";
+    return tr("Enter a pairing token to continue.");
   }
 }
 
@@ -331,7 +335,7 @@ async function bootstrapServerAuth(urlCredential: string | null): Promise<Server
     return {
       status: "requires-auth",
       auth: currentSession.auth,
-      errorMessage: error instanceof Error ? error.message : "Authentication failed.",
+      errorMessage: error instanceof Error ? error.message : tr("Authentication failed."),
     };
   }
 }

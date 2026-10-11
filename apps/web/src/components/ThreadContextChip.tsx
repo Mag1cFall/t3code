@@ -5,6 +5,7 @@ import { MessagesSquareIcon } from "lucide-react";
 import { useThreadShell } from "~/state/entities";
 import { ContextChip, ContextChipLabel } from "./ContextChip";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
+import { tr } from "~/i18n";
 
 /**
  * Inline chip for an attached thread, in the composer and in sent messages. Prefers the
@@ -24,7 +25,7 @@ export function ThreadContextChip(props: {
           <ContextChip
             kind="thread"
             render={<Link to="/$environmentId/$threadId" params={{ environmentId, threadId }} />}
-            aria-label={`Thread, ${title}`}
+            aria-label={tr("Thread, {{title}}", { title })}
             data-markdown-copy={props.copyMarkdown}
             className="no-underline"
           >
@@ -33,7 +34,9 @@ export function ThreadContextChip(props: {
           </ContextChip>
         }
       />
-      <TooltipPopup side="top">{shell ? "Open thread" : "Thread no longer available"}</TooltipPopup>
+      <TooltipPopup side="top">
+        {shell ? tr("Open thread") : tr("Thread no longer available")}
+      </TooltipPopup>
     </Tooltip>
   );
 }

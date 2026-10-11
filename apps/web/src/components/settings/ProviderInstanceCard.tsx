@@ -66,6 +66,7 @@ import {
   getProviderVersionLabel,
   type ProviderStatusKey,
 } from "./providerStatus";
+import { tr } from "~/i18n";
 
 const ENVIRONMENT_VARIABLE_NAME_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 
@@ -195,9 +196,9 @@ function ProviderAuthEmail(props: { readonly email: string | undefined }) {
   return (
     <RedactedSensitiveText
       value={email}
-      ariaLabel="Toggle account email visibility"
-      revealTooltip="Click to reveal email"
-      hideTooltip="Click to hide email"
+      ariaLabel={tr("Toggle account email visibility")}
+      revealTooltip={tr("Click to reveal email")}
+      hideTooltip={tr("Click to hide email")}
       className="max-w-full truncate"
     />
   );
@@ -262,7 +263,7 @@ function ProviderEnvironmentFieldRow(props: {
   const inputId = `${props.idPrefix}-environment-${props.field.name}`;
   const value = props.variable?.valueRedacted ? "" : (props.variable?.value ?? "");
   const placeholder = props.variable?.valueRedacted
-    ? "Stored secret - enter a new value to replace"
+    ? tr("Stored secret - enter a new value to replace")
     : props.field.placeholder;
 
   return (
@@ -288,7 +289,7 @@ function ProviderEnvironmentFieldRow(props: {
               size="icon-sm"
               variant="ghost-destructive"
               onClick={() => props.onRemove(props.field)}
-              aria-label={`Clear ${props.field.label}`}
+              aria-label={tr("Clear {{label}}", { label: props.field.label })}
             >
               <XIcon className="size-3.5" />
             </Button>
@@ -382,12 +383,12 @@ export function ProviderEnvironmentSection(props: {
 
   return (
     <SettingsRow
-      title="Variables"
-      description="API keys, base URLs, and other per-instance CLI settings."
+      title={tr("Variables")}
+      description={tr("API keys, base URLs, and other per-instance CLI settings.")}
       control={
         <Button type="button" size="sm" variant="outline" onClick={addVariable}>
           <PlusIcon className="size-3" />
-          Add variable
+          {tr("Add variable")}
         </Button>
       }
     >
@@ -403,7 +404,7 @@ export function ProviderEnvironmentSection(props: {
                 onCommit={(name) => updateVariable(variable.id, { name: name.trim() })}
                 placeholder="VARIABLE_NAME"
                 spellCheck={false}
-                aria-label={`Environment variable name ${index + 1}`}
+                aria-label={tr("Environment variable name {{value}}", { value: index + 1 })}
               />
               <span className="hidden text-xs text-muted-foreground sm:inline" aria-hidden>
                 =
@@ -417,10 +418,12 @@ export function ProviderEnvironmentSection(props: {
                 type={variable.sensitive ? "password" : undefined}
                 autoComplete="off"
                 placeholder={
-                  variable.valueRedacted ? "Stored secret, enter a new value to replace" : "value"
+                  variable.valueRedacted
+                    ? tr("Stored secret, enter a new value to replace")
+                    : tr("value")
                 }
                 spellCheck={false}
-                aria-label={`Environment variable value ${index + 1}`}
+                aria-label={tr("Environment variable value {{value}}", { value: index + 1 })}
               />
               <Tooltip>
                 <TooltipTrigger
@@ -439,7 +442,9 @@ export function ProviderEnvironmentSection(props: {
                         });
                       }}
                       aria-pressed={variable.sensitive}
-                      aria-label={`Mark environment variable ${variable.name || index + 1} as sensitive`}
+                      aria-label={tr("Mark environment variable {{value}} as sensitive", {
+                        value: variable.name || index + 1,
+                      })}
                     >
                       <MorphIcon
                         className="size-3"
@@ -449,7 +454,7 @@ export function ProviderEnvironmentSection(props: {
                   }
                 />
                 <TooltipPopup side="top">
-                  {variable.sensitive ? "Sensitive, stored separately" : "Plain text"}
+                  {variable.sensitive ? tr("Sensitive, stored separately") : tr("Plain text")}
                 </TooltipPopup>
               </Tooltip>
               <Button
@@ -457,14 +462,16 @@ export function ProviderEnvironmentSection(props: {
                 size="icon-micro"
                 variant="ghost-destructive"
                 onClick={() => removeVariable(variable.id)}
-                aria-label={`Remove environment variable ${variable.name || index + 1}`}
+                aria-label={tr("Remove environment variable {{value}}", {
+                  value: variable.name || index + 1,
+                })}
               >
                 <XIcon className="size-3" />
               </Button>
             </div>
           ))}
           <p className="text-xs text-muted-foreground">
-            Sensitive values are stored separately and never returned to the app.
+            {tr("Sensitive values are stored separately and never returned to the app.")}
           </p>
         </div>
       ) : null}
@@ -584,7 +591,7 @@ export function ProviderInstanceCard({
   const statusStyle = PROVIDER_STATUS_STYLES[statusKey];
   const summary = enabled
     ? getProviderSummary(liveProvider)
-    : { headline: "Disabled", detail: null };
+    : { headline: tr("Disabled"), detail: null };
   const authEmail = liveProvider?.auth.email?.trim();
   const isAuthenticated = enabled && liveProvider?.auth.status === "authenticated";
   const authLabel =
@@ -604,7 +611,7 @@ export function ProviderInstanceCard({
   const updateProgress = isUpdating
     ? ((updateState?.status === "queued" || updateState?.status === "running"
         ? updateState.message
-        : null) ?? "Starting update")
+        : null) ?? tr("Starting update"))
     : null;
   const updateProblem =
     !isUpdating && (updateState?.status === "failed" || updateState?.status === "unchanged")
@@ -628,15 +635,15 @@ export function ProviderInstanceCard({
     onCopy: ({ providerName }) => {
       toastManager.add({
         type: "success",
-        title: `${providerName} update command copied`,
-        description: "Run it in a terminal when you are ready to update.",
+        title: tr("{{providerName}} update command copied", { providerName }),
+        description: tr("Run it in a terminal when you are ready to update."),
       });
     },
     onError: (error, { providerName }) => {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: `Could not copy ${providerName} update command`,
+          title: tr("Could not copy {{providerName}} update command", { providerName }),
           description: error.message,
         }),
       );
@@ -777,13 +784,13 @@ export function ProviderInstanceCard({
       ? "Incompatible"
       : compatibility?.status === "unsupported"
         ? "Unsupported"
-        : "Limited support"
+        : tr("Limited support")
     : summary.detail;
   const editorStatusNode =
     isAuthenticated && authEmail ? (
       <>
         {needsAttention ? statusDotNode : null}
-        <span>Authenticated as</span>
+        <span>{tr("Authenticated as")}</span>
         <ProviderAuthEmail email={authEmail} />
         {authLabel ? <span>· {authLabel}</span> : null}
         {inlineStatusDetail ? (
@@ -811,7 +818,9 @@ export function ProviderInstanceCard({
                   size={mode === "list" ? "icon-micro" : "icon-xs"}
                   variant="ghost-muted"
                   className={mode === "list" ? "pointer-events-auto relative shrink-0" : undefined}
-                  aria-label={`${updateProgress ? "Updating" : versionAdvisory.title} — view details`}
+                  aria-label={tr("{{value}} — view details", {
+                    value: updateProgress ? "Updating" : versionAdvisory.title,
+                  })}
                 >
                   {updateProgress ? (
                     <Spinner tone="muted" {...(mode === "list" ? { size: "sm" as const } : {})} />
@@ -829,7 +838,7 @@ export function ProviderInstanceCard({
           }
         />
         <TooltipPopup side="top">
-          {updateProgress ? "Updating" : versionAdvisory.title}
+          {updateProgress ? tr("Updating") : versionAdvisory.title}
         </TooltipPopup>
       </Tooltip>
       <PopoverPopup side="bottom" align="end" width="md" aria-label={versionAdvisory.title}>
@@ -858,10 +867,12 @@ export function ProviderInstanceCard({
             >
               {isUpdating ? <Spinner /> : <DownloadIcon />}
               {isUpdating
-                ? "Updating"
+                ? tr("Updating")
                 : versionAdvisory.targetVersion
-                  ? `Install ${getProviderVersionLabel(versionAdvisory.targetVersion)}`
-                  : "Update now"}
+                  ? tr("Install {{value}}", {
+                      value: getProviderVersionLabel(versionAdvisory.targetVersion),
+                    })
+                  : tr("Update now")}
             </Button>
           ) : null}
           {updateProgress || updateProblem ? (
@@ -878,7 +889,7 @@ export function ProviderInstanceCard({
           {onRunVersionAction && updateCommand ? (
             <div className="flex items-center gap-2 text-3xs font-medium uppercase tracking-wider text-muted-foreground">
               <span aria-hidden className="h-px flex-1 bg-border" />
-              or, update manually using
+              {tr("or, update manually using")}
               <span aria-hidden className="h-px flex-1 bg-border" />
             </div>
           ) : null}
@@ -896,13 +907,13 @@ export function ProviderInstanceCard({
                       variant="ghost-muted"
                       className="shrink-0"
                       onClick={() => copyToClipboard(updateCommand, { providerName: displayName })}
-                      aria-label="Copy update command"
+                      aria-label={tr("Copy update command")}
                     >
                       <CopyIcon className="size-3" />
                     </Button>
                   }
                 />
-                <TooltipPopup side="top">Copy command</TooltipPopup>
+                <TooltipPopup side="top">{tr("Copy command")}</TooltipPopup>
               </Tooltip>
             </div>
           ) : null}
@@ -930,7 +941,7 @@ export function ProviderInstanceCard({
             type="button"
             className="pointer-events-auto absolute inset-0 cursor-pointer rounded-md outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
             onClick={onSelect}
-            aria-label={`Select ${displayName}`}
+            aria-label={tr("Select {{displayName}}", { displayName })}
             aria-pressed={selected}
           />
           {titleIconNode}
@@ -956,7 +967,7 @@ export function ProviderInstanceCard({
                   className="pointer-events-auto line-clamp-2 [overflow-wrap:anywhere]"
                 >
                   {updateProgress ? (
-                    `Updating · ${updateProgress}`
+                    tr("Updating · {{updateProgress}}", { updateProgress })
                   ) : (
                     <>
                       {summary.headline}
@@ -973,7 +984,7 @@ export function ProviderInstanceCard({
             checked={enabled}
             disabled={readOnly}
             onCheckedChange={(checked) => updateEnabled(Boolean(checked))}
-            aria-label={`Enable ${displayName}`}
+            aria-label={tr("Enable {{displayName}}", { displayName })}
           />
         </span>
       </div>
@@ -1002,7 +1013,7 @@ export function ProviderInstanceCard({
             variant="ghost-destructive"
             disabled={readOnly}
             onClick={onDelete}
-            aria-label={`Delete instance ${instanceId}`}
+            aria-label={tr("Delete instance {{instanceId}}", { instanceId })}
           >
             <Trash2Icon />
           </Button>
@@ -1021,11 +1032,12 @@ export function ProviderInstanceCard({
     />
   ) : (
     <SettingsRow
-      title="Driver"
+      title={tr("Driver")}
       description={
         <span>
-          This instance uses <code className="text-foreground">{String(instance.driver)}</code>,
-          which is not available in this build. Its configuration is preserved.
+          {tr("This instance uses")}{" "}
+          <code className="text-foreground">{String(instance.driver)}</code>
+          {tr(", which is not available in this build. Its configuration is preserved.")}
         </span>
       }
     />
@@ -1035,7 +1047,7 @@ export function ProviderInstanceCard({
     <>
       <SettingsSection title={displayName} icon={titleIconNode} headerAction={editorHeaderAction}>
         <SettingsRow
-          title="Display name"
+          title={tr("Display name")}
           status={
             <>
               <ProviderStatusDiagnostic detail={statusDiagnostic}>
@@ -1065,7 +1077,7 @@ export function ProviderInstanceCard({
                     disabled={readOnly}
                   >
                     <ExternalLinkIcon />
-                    Continue authentication
+                    {tr("Continue authentication")}
                   </Button>
                 </div>
               ) : null}
@@ -1093,7 +1105,7 @@ export function ProviderInstanceCard({
                 className="min-w-0 flex-1 @min-[32rem]/settings-row:w-56"
                 value={instance.displayName ?? ""}
                 onCommit={updateDisplayName}
-                placeholder={driverOption?.label ?? "Instance label"}
+                placeholder={driverOption?.label ?? tr("Instance label")}
                 spellCheck={false}
               />
             </div>
@@ -1102,7 +1114,7 @@ export function ProviderInstanceCard({
       </SettingsSection>
 
       {setup || environmentFields.length > 0 ? (
-        <SettingsSection title="Setup">
+        <SettingsSection title={tr("Setup")}>
           {setup}
           <div
             inert={readOnly}
@@ -1136,7 +1148,7 @@ export function ProviderInstanceCard({
           <FoldedSettingsSection
             key={instanceId}
             id={`provider-instance-${instanceId}-runtime`}
-            title="Runtime"
+            title={tr("Runtime")}
             headerPlacement="outside"
           >
             {runtime ?? runtimeFields}
@@ -1144,7 +1156,7 @@ export function ProviderInstanceCard({
         </div>
       ) : !driverOption || deriveProviderSettingsFields(driverOption).length > 0 ? (
         <SettingsSection
-          title="Runtime"
+          title={tr("Runtime")}
           inert={readOnly}
           aria-disabled={readOnly || undefined}
           className={readOnly ? "opacity-50 select-none" : undefined}
@@ -1154,7 +1166,7 @@ export function ProviderInstanceCard({
       ) : null}
 
       <SettingsSection
-        title="Environment"
+        title={tr("Environment")}
         inert={readOnly}
         aria-disabled={readOnly || undefined}
         className={readOnly ? "opacity-50 select-none" : undefined}
@@ -1175,11 +1187,12 @@ export function ProviderInstanceCard({
       ) : null}
 
       {driverOption !== undefined ? (
-        <SettingsSection title="Models">
+        <SettingsSection title={tr("Models")}>
           <div className="px-3 py-3 sm:px-4">
             <p className="mb-3 text-xs text-muted-foreground">
-              Model preferences and custom models are saved on the selected environment and shared
-              across connected devices.
+              {tr(
+                "Model preferences and custom models are saved on the selected environment and shared across connected devices.",
+              )}
             </p>
             <ProviderModelsSection
               canManageCustomModels={!readOnly}

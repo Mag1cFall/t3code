@@ -100,6 +100,7 @@ import {
   saveUsagePagePreferences,
   type UsagePagePreferences,
 } from "./usagePagePreferences";
+import { tr } from "~/i18n";
 
 function isUsageMetric(value: string | null | undefined): value is UsageMetric {
   return METRIC_OPTIONS.some((option) => option.value === value);
@@ -383,9 +384,9 @@ export function UsagePage() {
       : `${formatDayShort(shownWindow.sinceDay)} to ${formatDayShort(shownWindow.untilDay)}`;
   const topbarContent = (
     <div className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 py-2 xl:flex">
-      <WorkspaceBreadcrumb ariaLabel="Usage breadcrumb" className="min-w-0">
+      <WorkspaceBreadcrumb ariaLabel={tr("Usage breadcrumb")} className="min-w-0">
         <WorkspaceBreadcrumbItem>
-          <h1>Usage</h1>
+          <h1>{tr("Usage")}</h1>
         </WorkspaceBreadcrumbItem>
         <WorkspaceBreadcrumbSeparator />
         <WorkspaceBreadcrumbItem className="min-w-10 shrink">
@@ -417,7 +418,7 @@ export function UsagePage() {
       ) : null}
       <div className="ms-auto hidden min-w-0 items-center justify-end gap-2 xl:flex">
         <ToggleGroup
-          aria-label="Usage metric"
+          aria-label={tr("Usage metric")}
           variant="segmented"
           value={[metric]}
           onValueChange={(next) => {
@@ -434,7 +435,7 @@ export function UsagePage() {
         {/* The period does not apply to Limits, so it stays in place but
             disabled; unmounting it shifted the metric toggle ~300px. */}
         <ToggleGroup
-          aria-label="Usage period"
+          aria-label={tr("Usage period")}
           variant="segmented"
           value={[String(windowDays)]}
           disabled={showingLimits}
@@ -451,7 +452,7 @@ export function UsagePage() {
         </ToggleGroup>
         <Button
           onClick={refreshWindow}
-          aria-label={showingLimits ? "Refresh limits" : "Refresh usage"}
+          aria-label={showingLimits ? tr("Refresh limits") : tr("Refresh usage")}
           aria-busy={isRefreshing}
           disabled={isRefreshing || (!showingLimits && !canReadDiagnostics)}
           size="icon-sm"
@@ -468,7 +469,7 @@ export function UsagePage() {
           }}
         >
           <SelectTrigger
-            aria-label="Usage metric"
+            aria-label={tr("Usage metric")}
             size="compact"
             variant="ghost"
             className="w-auto min-w-0"
@@ -491,7 +492,7 @@ export function UsagePage() {
           onValueChange={(value) => selectWindow(Number(value))}
         >
           <SelectTrigger
-            aria-label="Usage period"
+            aria-label={tr("Usage period")}
             size="compact"
             variant="ghost"
             className="w-auto min-w-0"
@@ -514,7 +515,7 @@ export function UsagePage() {
         </Select>
         <Button
           onClick={refreshWindow}
-          aria-label={showingLimits ? "Refresh limits" : "Refresh usage"}
+          aria-label={showingLimits ? tr("Refresh limits") : tr("Refresh usage")}
           aria-busy={isRefreshing}
           disabled={isRefreshing || (!showingLimits && !canReadDiagnostics)}
           size="icon-sm"
@@ -536,8 +537,12 @@ export function UsagePage() {
             {selectedEnvironments.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 {environments.length === 0
-                  ? `Connect an environment to see ${showingLimits ? "limits" : "usage"}.`
-                  : `Select an environment to see ${showingLimits ? "limits" : "usage"}.`}
+                  ? tr("Connect an environment to see {{value}}.", {
+                      value: showingLimits ? "limits" : "usage",
+                    })
+                  : tr("Select an environment to see {{value}}.", {
+                      value: showingLimits ? "limits" : "usage",
+                    })}
               </p>
             ) : showingLimits ? (
               <UsageLimitsSection
@@ -590,22 +595,23 @@ export function UsagePage() {
                       <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                         <span>
                           <span className={figureClass(loading.partial)}>
-                            {formatCount(merged.sessions)} sessions
+                            {formatCount(merged.sessions)} {tr("sessions")}
                           </span>
-                          {metric === "cost" && " · API estimate"}
+                          {metric === "cost" && tr(" · API estimate")}
                         </span>
                         {metric === "cost" && merged.costQuality.unpricedShare > 0 && (
                           <Popover>
                             <PopoverTrigger
                               openOnHover
                               render={<InlineButton tone="muted" />}
-                              aria-label="Unpriced usage details"
+                              aria-label={tr("Unpriced usage details")}
                             >
                               <InfoIcon className="size-3" aria-hidden />
                             </PopoverTrigger>
                             <PopoverPopup side="top" tooltipStyle>
-                              API estimate excludes{" "}
-                              {formatPercent(merged.costQuality.unpricedShare)} unpriced records.
+                              {tr("API estimate excludes")}{" "}
+                              {formatPercent(merged.costQuality.unpricedShare)}{" "}
+                              {tr("unpriced records.")}
                             </PopoverPopup>
                           </Popover>
                         )}
@@ -619,7 +625,7 @@ export function UsagePage() {
                         presentation.serverConfig?.providers.some(usesChatGptSharing),
                     ) ? (
                       <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-                        <span>ChatGPT shared usage</span>
+                        <span>{tr("ChatGPT shared usage")}</span>
                         <ChatGptUsageButton size="xs" />
                       </div>
                     ) : null}
@@ -698,8 +704,14 @@ export function UsagePage() {
                             )}
                           >
                             {metric === "cost"
-                              ? `${formatPercent(share)} of cost · ${formatTokens(totals?.totalTokens ?? 0)} tokens`
-                              : `${formatPercent(share)} of tokens · ${formatUsd(totals?.costUsd ?? 0)}`}
+                              ? tr("{{value}} of cost · {{value2}} tokens", {
+                                  value: formatPercent(share),
+                                  value2: formatTokens(totals?.totalTokens ?? 0),
+                                })
+                              : tr("{{value}} of tokens · {{value2}}", {
+                                  value: formatPercent(share),
+                                  value2: formatUsd(totals?.costUsd ?? 0),
+                                })}
                           </span>
                         </div>
                       );
@@ -708,8 +720,8 @@ export function UsagePage() {
 
                   <div className="flex min-w-0 flex-col gap-3">
                     <h2 className="text-sm font-medium text-foreground">
-                      {shownHourly ? "Hourly" : "Daily"}{" "}
-                      {metric === "tokens" ? "processed tokens" : "cost"}
+                      {shownHourly ? tr("Hourly") : tr("Daily")}{" "}
+                      {metric === "tokens" ? tr("processed tokens") : tr("cost")}
                     </h2>
                     <UsageProviderChart
                       providers={activeProviders}
@@ -727,31 +739,31 @@ export function UsagePage() {
                 </section>
 
                 <section className="flex flex-col gap-2">
-                  <h2 className="text-sm font-medium text-foreground">Totals</h2>
+                  <h2 className="text-sm font-medium text-foreground">{tr("Totals")}</h2>
                   <div className="grid grid-cols-2 gap-x-6 gap-y-4 py-1 md:grid-cols-5">
                     <Metric
                       loading={loading.partial}
-                      label="Processed tokens"
+                      label={tr("Processed tokens")}
                       value={formatTokens(merged.totalTokens)}
                     />
                     <Metric
                       loading={loading.partial}
-                      label="Cached input"
+                      label={tr("Cached input")}
                       value={formatTokens(merged.cachedInputTokens)}
                     />
                     <Metric
                       loading={loading.partial}
-                      label="Uncached input"
+                      label={tr("Uncached input")}
                       value={formatTokens(merged.uncachedInputTokens)}
                     />
                     <Metric
                       loading={loading.partial}
-                      label="Output"
+                      label={tr("Output")}
                       value={formatTokens(merged.outputTokens)}
                     />
                     <Metric
                       loading={loading.partial}
-                      label="Cache savings"
+                      label={tr("Cache savings")}
                       value={formatUsd(merged.costQuality.cacheSavingsUsd)}
                     />
                   </div>
@@ -766,20 +778,20 @@ export function UsagePage() {
                   >
                     {metric === "tokens" ? (
                       <UsageShareBar
-                        label="Tokens by type"
+                        label={tr("Tokens by type")}
                         segments={tokenTypeSegments(merged)}
                         format={formatTokens}
                       />
                     ) : (
                       <>
                         <UsageShareBar
-                          label="Cost by type"
+                          label={tr("Cost by type")}
                           segments={costTypeSegments(merged.categoryCost)}
                           format={formatUsd}
                         />
                         {merged.speedCost.fast + merged.speedCost.ultrafast > 0 ? (
                           <UsageShareBar
-                            label="Cost by speed"
+                            label={tr("Cost by speed")}
                             segments={speedCostSegments(merged.speedCost)}
                             format={formatUsd}
                             aside={<SpeedPremium premiumUsd={merged.speedCost.premium} />}
@@ -792,9 +804,9 @@ export function UsagePage() {
 
                 <section className="flex flex-col gap-3">
                   <div className="flex items-center justify-between gap-3">
-                    <h2 className="text-sm font-medium text-foreground">Breakdown</h2>
+                    <h2 className="text-sm font-medium text-foreground">{tr("Breakdown")}</h2>
                     <ToggleGroup
-                      aria-label="Usage breakdown"
+                      aria-label={tr("Usage breakdown")}
                       variant="segmented"
                       value={[breakdown]}
                       onValueChange={(next) => {
@@ -804,8 +816,8 @@ export function UsagePage() {
                     >
                       {(
                         [
-                          { value: "model", label: "Model" },
-                          { value: "time", label: shownHourly ? "Hour" : "Day" },
+                          { value: "model", label: tr("Model") },
+                          { value: "time", label: shownHourly ? tr("Hour") : tr("Day") },
                         ] as const
                       ).map((option) => (
                         <Toggle key={option.value} value={option.value}>
@@ -820,17 +832,19 @@ export function UsagePage() {
                       <thead>
                         <tr className="border-b border-border text-right text-xs text-muted-foreground">
                           <th className="py-2 pr-3 text-left font-normal">#</th>
-                          <th className="w-full py-2 text-left font-normal">Model</th>
-                          <th className="py-2 pl-6 font-normal">Cost</th>
-                          <th className="hidden py-2 pl-6 font-normal sm:table-cell">Share</th>
-                          <th className="py-2 pl-6 font-normal">Tokens</th>
+                          <th className="w-full py-2 text-left font-normal">{tr("Model")}</th>
+                          <th className="py-2 pl-6 font-normal">{tr("Cost")}</th>
+                          <th className="hidden py-2 pl-6 font-normal sm:table-cell">
+                            {tr("Share")}
+                          </th>
+                          <th className="py-2 pl-6 font-normal">{tr("Tokens")}</th>
                         </tr>
                       </thead>
                       <tbody>
                         {breakdownModels.length === 0 ? (
                           <tr>
                             <td colSpan={5} className="py-6 text-center text-muted-foreground">
-                              No activity in this window.
+                              {tr("No activity in this window.")}
                             </td>
                           </tr>
                         ) : (
@@ -879,7 +893,7 @@ export function UsagePage() {
                                 </td>
                                 <td className={cn("py-2.5 pl-6 text-foreground", rowFigures)}>
                                   {isModelCostUnknown(model) ? (
-                                    <span className="text-muted-foreground">Unpriced</span>
+                                    <span className="text-muted-foreground">{tr("Unpriced")}</span>
                                   ) : (
                                     formatUsd(model.costUsd)
                                   )}
@@ -908,14 +922,16 @@ export function UsagePage() {
                       </colgroup>
                       <thead>
                         <tr className="border-b border-border text-left text-xs text-muted-foreground">
-                          <th className="py-2 font-normal">{shownHourly ? "Hour" : "Day"}</th>
+                          <th className="py-2 font-normal">
+                            {shownHourly ? tr("Hour") : tr("Day")}
+                          </th>
                           {activeProviders.map((provider) => (
                             <th key={provider} className="py-2 text-right font-normal">
                               {PROVIDER_PRESENTATION[provider].label}
                             </th>
                           ))}
-                          <th className="py-2 text-right font-normal">Total</th>
-                          <th className="py-2 text-right font-normal">Tokens</th>
+                          <th className="py-2 text-right font-normal">{tr("Total")}</th>
+                          <th className="py-2 text-right font-normal">{tr("Tokens")}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -925,7 +941,7 @@ export function UsagePage() {
                               colSpan={activeProviders.length + 3}
                               className="py-6 text-center text-muted-foreground"
                             >
-                              No activity in this window.
+                              {tr("No activity in this window.")}
                             </td>
                           </tr>
                         ) : (
@@ -1011,7 +1027,7 @@ export function UsagePage() {
   );
 }
 
-const CURSOR_KEYCHAIN_COPY = "Requires access to your Cursor login in macOS Keychain.";
+const CURSOR_KEYCHAIN_COPY = tr("Requires access to your Cursor login in macOS Keychain.");
 
 function CursorEnableButton({
   environmentId,
@@ -1027,7 +1043,7 @@ function CursorEnableButton({
   readonly buttonText?: string;
 }) {
   const updateSettings = useAtomCommand(serverEnvironment.updateSettings, {
-    label: "enable Cursor account usage",
+    label: tr("enable Cursor account usage"),
   });
   const [pending, setPending] = useState(false);
   const enable = async () => {
@@ -1046,7 +1062,7 @@ function CursorEnableButton({
     <InlineButton
       disabled={pending}
       aria-busy={pending}
-      aria-label={`Enable Cursor usage from ${label}`}
+      aria-label={tr("Enable Cursor usage from {{label}}", { label })}
       onClick={() => void enable()}
     >
       {buttonText}
@@ -1057,7 +1073,7 @@ function CursorEnableButton({
       variant="outline"
       disabled={pending}
       aria-busy={pending}
-      aria-label={`Enable Cursor usage from ${label}`}
+      aria-label={tr("Enable Cursor usage from {{label}}", { label })}
       onClick={() => void enable()}
     >
       {buttonText}
@@ -1225,7 +1241,7 @@ function UsageCoverageNotice({
       ))}
       {duplicateSources.length > 0 ? (
         <span>
-          Counted once across environments sharing a transcript directory:{" "}
+          {tr("Counted once across environments sharing a transcript directory:")}{" "}
           {duplicateSources.join(", ")}
         </span>
       ) : null}
@@ -1259,7 +1275,7 @@ function UsageEnvironmentFilter({
 }) {
   const allSelected = selectedEnvironmentIds === null;
   const label = allSelected
-    ? "All environments"
+    ? tr("All environments")
     : selectedEnvironments.length === 1
       ? selectedEnvironments[0]!.label
       : `${selectedEnvironments.length} environments`;
@@ -1275,7 +1291,7 @@ function UsageEnvironmentFilter({
           {showUsageStatus && hasIssue ? (
             <CircleAlertIcon
               className="size-3.5 text-warning-foreground"
-              aria-label="Some environments could not report usage"
+              aria-label={tr("Some environments could not report usage")}
             />
           ) : (
             <ChevronDownIcon
@@ -1291,7 +1307,7 @@ function UsageEnvironmentFilter({
           closeOnClick={false}
           onCheckedChange={(checked) => onSelectionChange(checked ? null : new Set())}
         >
-          All environments
+          {tr("All environments")}
         </MenuCheckboxItem>
         <MenuSeparator />
         {environments.map((environment) => {
@@ -1307,7 +1323,7 @@ function UsageEnvironmentFilter({
                     environment.summary.contractVersion,
                     USAGE_CONTRACT_VERSION,
                   )
-                ? "Update required"
+                ? tr("Update required")
                 : !environment.isConnected
                   ? "Connecting…"
                   : progress.phase === "loading"
@@ -1346,11 +1362,13 @@ function UsageEnvironmentFilter({
           );
         })}
         {environments.length === 0 ? (
-          <p className="px-2 py-2 text-xs text-muted-foreground">No environments connected.</p>
+          <p className="px-2 py-2 text-xs text-muted-foreground">
+            {tr("No environments connected.")}
+          </p>
         ) : null}
         {showUsageStatus && isPartial ? (
           <p className="px-2 py-2 text-xs text-muted-foreground">
-            Totals are partial while selected environments scan.
+            {tr("Totals are partial while selected environments scan.")}
           </p>
         ) : null}
         {showUsageStatus ? (
@@ -1363,7 +1381,7 @@ function UsageEnvironmentFilter({
         <MenuSeparator />
         <MenuItem onClick={onOpenModelPrices}>
           <SlidersHorizontalIcon aria-hidden />
-          Model prices
+          {tr("Model prices")}
         </MenuItem>
       </MenuPopup>
     </Menu>
@@ -1381,9 +1399,9 @@ function UsageProviderFilter({
   const visible = PROVIDER_ORDER.filter((provider) => !hiddenProviders.has(provider));
   const label =
     visible.length === PROVIDER_ORDER.length
-      ? "All providers"
+      ? tr("All providers")
       : visible.length === 0
-        ? "No providers"
+        ? tr("No providers")
         : visible.length === 1
           ? PROVIDER_PRESENTATION[visible[0]!].label
           : `${visible.length} providers`;
@@ -1403,7 +1421,7 @@ function UsageProviderFilter({
           closeOnClick={false}
           onCheckedChange={(checked) => onChange(checked ? [] : PROVIDER_ORDER)}
         >
-          All providers
+          {tr("All providers")}
         </MenuCheckboxItem>
         <MenuSeparator />
         {PROVIDER_ORDER.map((provider) => (
@@ -1469,9 +1487,15 @@ function UsageSkeleton() {
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-sm font-medium text-foreground">Totals</h2>
+        <h2 className="text-sm font-medium text-foreground">{tr("Totals")}</h2>
         <MetricSkeletons
-          labels={["Processed tokens", "Cached input", "Uncached input", "Output", "Cache savings"]}
+          labels={[
+            tr("Processed tokens"),
+            tr("Cached input"),
+            tr("Uncached input"),
+            "Output",
+            tr("Cache savings"),
+          ]}
         />
       </section>
 
@@ -1485,7 +1509,7 @@ function UsageSkeleton() {
 
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-sm font-medium text-foreground">Breakdown</h2>
+          <h2 className="text-sm font-medium text-foreground">{tr("Breakdown")}</h2>
           <Skeleton shape="card" className="h-7 w-28" />
         </div>
         <Skeleton className="h-44" />

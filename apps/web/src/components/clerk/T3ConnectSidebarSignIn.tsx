@@ -5,6 +5,7 @@ import { hasCloudPublicConfig } from "../../cloud/publicConfig";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
 import { T3_CONNECT_ACCOUNT_PAGES } from "./T3ConnectAccountPages";
 import { useT3ConnectAuthPrompt } from "./useT3ConnectAuthPrompt";
+import { tr } from "~/i18n";
 
 export function T3ConnectSidebarSignIn() {
   if (!hasCloudPublicConfig()) return null;
@@ -58,7 +59,7 @@ function ConfiguredT3ConnectSidebarSignIn() {
         <SidebarMenuItem>
           <SidebarMenuButton onClick={openAuthPrompt}>
             <LogInIcon />
-            <span>Sign in to T3 Connect</span>
+            <span>{tr("Sign in to T3 Connect")}</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

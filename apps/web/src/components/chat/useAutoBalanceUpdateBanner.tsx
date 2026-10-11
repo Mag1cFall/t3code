@@ -25,6 +25,7 @@ import { InlineButton } from "../ui/button";
 import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import type { ComposerBannerStackItem } from "./ComposerBannerStack";
 import { ComposerServerUpdateIcon } from "./ComposerServerUpdateStatus";
+import { tr } from "~/i18n";
 
 /** Keep every machine's update visible while auto balance has no single update target. */
 export function useAutoBalanceUpdateBanner(
@@ -87,7 +88,11 @@ export function useAutoBalanceUpdateBanner(
   );
   const count = running || failed || machines.length;
   const status = running ? "running" : failed ? "failed" : "idle";
-  const prefix = running ? "Updating" : failed ? "Could not update" : "Update available for";
+  const prefix = running
+    ? "Updating"
+    : failed
+      ? tr("Could not update")
+      : tr("Update available for");
   const title = `${prefix} ${count} ${count === 1 ? "machine" : "machines"}`;
   return {
     id: `auto-balance-server-updates-${dismissedNotices.size}`,
@@ -99,7 +104,7 @@ export function useAutoBalanceUpdateBanner(
         <PopoverTrigger
           render={<InlineButton />}
           className="max-w-full"
-          aria-label={`${title}. View machines`}
+          aria-label={tr("{{title}}. View machines", { title })}
         >
           <span className="min-w-0 truncate">{title}</span>
         </PopoverTrigger>
@@ -112,14 +117,16 @@ export function useAutoBalanceUpdateBanner(
                   <ServerUpdateProgress state={machine.state} />
                 ) : !machine.remoteUpdate ? (
                   <>
-                    <div className="text-muted-foreground">Manual update required</div>
+                    <div className="text-muted-foreground">{tr("Manual update required")}</div>
                     <ServerUpdateAction {...machine} />
                   </>
                 ) : (
                   <div className="text-muted-foreground">
                     {machine.connected
-                      ? `Ready to update to ${machine.targetVersion}`
-                      : "Reconnect this machine to update"}
+                      ? tr("Ready to update to {{targetVersion}}", {
+                          targetVersion: machine.targetVersion,
+                        })
+                      : tr("Reconnect this machine to update")}
                   </div>
                 )}
               </div>
@@ -129,7 +136,12 @@ export function useAutoBalanceUpdateBanner(
       </Popover>
     ),
     description:
-      manual > 0 ? `${manual} ${manual === 1 ? "needs" : "need"} a manual update` : undefined,
+      manual > 0
+        ? tr("{{manual}} {{value}} a manual update", {
+            manual,
+            value: manual === 1 ? "needs" : "need",
+          })
+        : undefined,
     actions:
       running === 0 && targets.length > 0 ? (
         <ServerUpdatesAction
@@ -137,14 +149,17 @@ export function useAutoBalanceUpdateBanner(
           variant="ghost"
           label={
             failed > 0
-              ? "Retry"
+              ? tr("Retry")
               : targets.length === machines.length
-                ? "Update all"
-                : `Update ${targets.length} ${targets.length === 1 ? "machine" : "machines"}`
+                ? tr("Update all")
+                : tr("Update {{length}} {{value}}", {
+                    length: targets.length,
+                    value: targets.length === 1 ? "machine" : "machines",
+                  })
           }
         />
       ) : undefined,
-    dismissLabel: "Dismiss update notice",
+    dismissLabel: tr("Dismiss update notice"),
     ...(running
       ? {}
       : {

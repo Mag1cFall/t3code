@@ -6,6 +6,7 @@ import { Menu, MenuTrigger, MenuPopup, MenuGroup, MenuGroupLabel, MenuItem } fro
 import { PullRequestStackLayers } from "./PullRequestStackLayers";
 import { PullRequestStackHeader } from "./PullRequestStackHeader";
 import { PullRequestGlyph } from "./pullRequestIcons";
+import { tr } from "~/i18n";
 
 /** Mounted only while the menu is open, so list rows do not each fetch a stack. */
 function StackBody({
@@ -28,7 +29,9 @@ function StackBody({
           notice={query.notice}
           stale={!!query.error}
         />
-        {query.error ? <MenuItem onClick={query.refresh}>Retry stack refresh</MenuItem> : null}
+        {query.error ? (
+          <MenuItem onClick={query.refresh}>{tr("Retry stack refresh")}</MenuItem>
+        ) : null}
         <PullRequestStackLayers stack={query.data} reference={reference} onSelect={onSelect} />
       </>
     );
@@ -38,7 +41,9 @@ function StackBody({
       <PullRequestStackHeader number={stackNumber} />
       <MenuGroupLabel>
         {query.error ??
-          (query.isPending ? "Loading stack…" : "This pull request is no longer in a stack.")}
+          (query.isPending
+            ? tr("Loading stack…")
+            : tr("This pull request is no longer in a stack."))}
       </MenuGroupLabel>
     </>
   );
@@ -70,7 +75,11 @@ export function PullRequestStackPopover({
                   className="inline-flex shrink-0 cursor-pointer items-center gap-1 text-xs font-normal text-muted-foreground"
                 />
               }
-              aria-label={`Stack ${membership.number}, layer ${membership.position} of ${membership.size}`}
+              aria-label={tr("Stack {{number}}, layer {{position}} of {{size}}", {
+                number: membership.number,
+                position: membership.position,
+                size: membership.size,
+              })}
               onClick={(event) => event.stopPropagation()}
               onKeyDown={(event) => event.stopPropagation()}
             >
@@ -80,7 +89,11 @@ export function PullRequestStackPopover({
           }
         />
         <TooltipPopup>
-          View stack #{membership.number}, layer {membership.position} of {membership.size}
+          {tr("View stack #{{number}}, layer {{position}} of {{size}}", {
+            number: membership.number,
+            position: membership.position,
+            size: membership.size,
+          })}
         </TooltipPopup>
       </Tooltip>
       <MenuPopup

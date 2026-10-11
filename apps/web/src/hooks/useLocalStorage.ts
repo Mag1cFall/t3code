@@ -1,6 +1,7 @@
 import * as Schema from "effect/Schema";
 import * as Record from "effect/Record";
 import { useCallback, useMemo, useSyncExternalStore } from "react";
+import { tr } from "~/i18n";
 
 export class LocalStorageOperationError extends Schema.TaggedError<LocalStorageOperationError>()(
   "LocalStorageOperationError",
@@ -11,7 +12,10 @@ export class LocalStorageOperationError extends Schema.TaggedError<LocalStorageO
   },
 ) {
   override get message(): string {
-    return `Failed to ${this.operation} local storage item ${this.storageKey}.`;
+    return tr("Failed to {{operation}} local storage item {{storageKey}}.", {
+      operation: this.operation,
+      storageKey: this.storageKey,
+    });
   }
 }
 

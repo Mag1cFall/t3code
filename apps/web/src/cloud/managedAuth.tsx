@@ -13,6 +13,7 @@ import { runtime } from "../lib/runtime";
 import { appAtomRegistry } from "../rpc/atomRegistry";
 import { useAtomCommand } from "../state/use-atom-command";
 import { resolveRelayClerkTokenOptions } from "./publicConfig";
+import { tr } from "~/i18n";
 
 export function deactivateManagedRelayAuthentication(): void {
   setManagedRelaySession(appAtomRegistry, null);
@@ -63,7 +64,7 @@ export function ManagedRelayAuthProvider({ children }: { readonly children: Reac
           ),
         ]);
         for (const result of results) {
-          reportAtomCommandResult(result, { label: "cloud account cleanup" });
+          reportAtomCommandResult(result, { label: tr("cloud account cleanup") });
         }
       });
       return accountTransitionRef.current;
@@ -87,7 +88,7 @@ export function ManagedRelayAuthProvider({ children }: { readonly children: Reac
             await transition;
             activateSession();
           });
-          reportAtomCommandResult(result, { label: "cloud account activation" });
+          reportAtomCommandResult(result, { label: tr("cloud account activation") });
         })();
       };
       if (previousAccount !== undefined && previousAccount !== null && previousAccount !== userId) {

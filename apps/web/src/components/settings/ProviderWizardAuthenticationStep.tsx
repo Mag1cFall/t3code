@@ -8,6 +8,7 @@ import { WizardFooter, WizardPanel } from "../ui/wizard";
 import { ProviderAuthenticationSection } from "./ProviderAuthenticationSection";
 import { SettingsGroup } from "./SettingsGroup";
 import { SettingsRow } from "./settingsLayout";
+import { tr } from "~/i18n";
 
 /** Sign-in uses the saved instance's environment and credentials, just like chat. */
 export function ProviderWizardAuthenticationStep({
@@ -57,18 +58,18 @@ export function ProviderWizardAuthenticationStep({
             />
           ) : (
             <SettingsRow
-              title="Account"
+              title={tr("Account")}
               description={
                 isDiscovering
-                  ? "Discovering sign-in methods…"
+                  ? tr("Discovering sign-in methods…")
                   : (query.error ??
                     auth?.message ??
-                    "No in-app sign-in advertised. Follow the provider's docs to finish setup.")
+                    tr("No in-app sign-in advertised. Follow the provider's docs to finish setup."))
               }
               control={
                 isDiscovering ? (
                   <Button disabled size="sm" variant="outline">
-                    Sign in
+                    {tr("Sign in")}
                   </Button>
                 ) : provider?.setup?.documentationUrl ? (
                   <Button
@@ -78,7 +79,7 @@ export function ProviderWizardAuthenticationStep({
                       <a href={provider.setup.documentationUrl} target="_blank" rel="noreferrer" />
                     }
                   >
-                    Open docs
+                    {tr("Open docs")}
                   </Button>
                 ) : undefined
               }
@@ -93,7 +94,7 @@ export function ProviderWizardAuthenticationStep({
           disabled={active}
           onClick={onFinish}
         >
-          {signedIn ? "Done" : "Skip for now"}
+          {signedIn ? tr("Done") : tr("Skip for now")}
         </Button>
       </WizardFooter>
     </>

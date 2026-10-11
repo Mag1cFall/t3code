@@ -1,4 +1,5 @@
 import { type TimestampFormat } from "@t3tools/contracts/settings";
+import { tr } from "~/i18n";
 
 function getTimestampFormatOptions(
   timestampFormat: TimestampFormat,
@@ -320,13 +321,15 @@ export function formatExpiresInLabel(isoDate: string, nowMs: number = Date.now()
   if (diffMs <= 0) return "Expired";
 
   const totalSeconds = Math.floor(diffMs / 1000);
-  if (totalSeconds < 5) return "Expires in a moment";
-  if (totalSeconds < 60) return `Expires in ${totalSeconds}s`;
+  if (totalSeconds < 5) return tr("Expires in a moment");
+  if (totalSeconds < 60) return tr("Expires in {{totalSeconds}}s", { totalSeconds });
 
   if (totalSeconds < 3600) {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    return seconds === 0 ? `Expires in ${minutes}m` : `Expires in ${minutes}m ${seconds}s`;
+    return seconds === 0
+      ? tr("Expires in {{minutes}}m", { minutes })
+      : tr("Expires in {{minutes}}m {{seconds}}s", { minutes, seconds });
   }
 
   if (totalSeconds < 86_400) {
@@ -337,12 +340,12 @@ export function formatExpiresInLabel(isoDate: string, nowMs: number = Date.now()
     const parts = [`${hours}h`];
     if (minutes > 0) parts.push(`${minutes}m`);
     if (seconds > 0) parts.push(`${seconds}s`);
-    return `Expires in ${parts.join(" ")}`;
+    return tr("Expires in {{value}}", { value: parts.join(" ") });
   }
 
   const days = Math.floor(totalSeconds / 86_400);
   const remAfterDays = totalSeconds % 86_400;
-  if (remAfterDays === 0) return `Expires in ${days}d`;
+  if (remAfterDays === 0) return tr("Expires in {{days}}d", { days });
   const hours = Math.floor(remAfterDays / 3600);
   const rem = remAfterDays % 3600;
   const minutes = Math.floor(rem / 60);
@@ -351,5 +354,7 @@ export function formatExpiresInLabel(isoDate: string, nowMs: number = Date.now()
   if (hours > 0) tail.push(`${hours}h`);
   if (minutes > 0) tail.push(`${minutes}m`);
   if (seconds > 0) tail.push(`${seconds}s`);
-  return tail.length > 0 ? `Expires in ${days}d ${tail.join(" ")}` : `Expires in ${days}d`;
+  return tail.length > 0
+    ? tr("Expires in {{days}}d {{value}}", { days, value: tail.join(" ") })
+    : tr("Expires in {{days}}d", { days });
 }

@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
+import { tr } from "~/i18n";
 
 const PREVIOUS_WORKTREE_SELECT_VALUE = "previous-worktree";
 
@@ -92,7 +93,7 @@ export const BranchToolbarEnvModeSelector = memo(function BranchToolbarEnvModeSe
         <TooltipTrigger render={lockedRow} />
         <TooltipPopup>
           {forceNewWorktree
-            ? "Each model starts in its own worktree."
+            ? tr("Each model starts in its own worktree.")
             : resolveLockedWorkspaceLabel(activeWorktreePath, effectiveEnvMode)}
         </TooltipPopup>
       </Tooltip>
@@ -118,7 +119,7 @@ export const BranchToolbarEnvModeSelector = memo(function BranchToolbarEnvModeSe
             <ComposerSelectControl
               size="xs"
               className="min-w-0 shrink"
-              aria-label="Workspace"
+              aria-label={tr("Workspace")}
               data-composer-shortcut="composer.workspace"
               data-composer-context-control
               onMouseDownCapture={stopContextMenuMouseDown}
@@ -148,7 +149,7 @@ export const BranchToolbarEnvModeSelector = memo(function BranchToolbarEnvModeSe
         className={showPreviousWorktree ? "w-[min(21rem,calc(100vw-2rem))]" : undefined}
       >
         <SelectGroup>
-          <SelectGroupLabel>Workspace</SelectGroupLabel>
+          <SelectGroupLabel>{tr("Workspace")}</SelectGroupLabel>
           <SelectItem value="local">
             <span className="inline-flex items-center gap-1.5">
               {activeWorktreePath ? (

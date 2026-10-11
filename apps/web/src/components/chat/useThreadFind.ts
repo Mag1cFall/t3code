@@ -16,6 +16,7 @@ import {
 } from "./threadFind";
 import { subscribeThreadFindOpen } from "./threadFindActionBus";
 import { toastManager } from "../ui/toast";
+import { tr } from "~/i18n";
 
 const EMPTY_SKILLS: readonly InlineSkill[] = [];
 
@@ -64,8 +65,8 @@ export function useThreadFind({
     if (!enabled) {
       toastManager.add({
         id: "thread-find-unavailable",
-        title: "Thread search is unavailable on this server.",
-        description: "Update the server to enable it.",
+        title: tr("Thread search is unavailable on this server."),
+        description: tr("Update the server to enable it."),
       });
       return;
     }

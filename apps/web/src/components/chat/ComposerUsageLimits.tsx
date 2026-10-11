@@ -9,6 +9,7 @@ import { RedactedSensitiveText } from "../settings/RedactedSensitiveText";
 import { LimitWindows, ResetCredits } from "../usage/UsageLimits";
 import { ComposerBanner } from "./ComposerBanner";
 import type { ComposerBannerStackItem } from "./ComposerBannerStack";
+import { tr } from "~/i18n";
 
 /** Driver name, then the instance when there could be more than one of that driver. */
 function accountLabel(account: UsageLimitsReport["accounts"][number]): string {
@@ -31,9 +32,9 @@ function AccountSummary({ account }: { readonly account: UsageLimitsReport["acco
         <RedactedSensitiveText
           key={label}
           value={label}
-          ariaLabel="Toggle account label visibility"
-          revealTooltip="Click to reveal account"
-          hideTooltip="Click to hide account"
+          ariaLabel={tr("Toggle account label visibility")}
+          revealTooltip={tr("Click to reveal account")}
+          hideTooltip={tr("Click to hide account")}
           className="max-w-full truncate align-bottom font-sans text-xs leading-normal"
         />
       ) : (
@@ -63,9 +64,9 @@ export function usageLimitsBannerItem(
     variant: "info",
     priority: "notice",
     icon: <GaugeIcon />,
-    title: "Usage limits",
+    title: tr("Usage limits"),
     description: summary,
-    dismissLabel: "Dismiss usage limits",
+    dismissLabel: tr("Dismiss usage limits"),
     onDismiss,
     children: <UsageLimitsBannerBody report={report} environmentId={environmentId} />,
   };
@@ -112,7 +113,7 @@ function UsageLimitsBannerBody({
                   className="self-start"
                   onClick={() => void ensureLocalApi().shell.openExternal(externalUsage.url)}
                 >
-                  Manage usage
+                  {tr("Manage usage")}
                 </Button>
               ) : null}
               {resetCreditInput && account.limits.resetCredits ? (

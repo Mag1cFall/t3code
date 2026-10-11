@@ -25,6 +25,7 @@ export type SettingsFormDefinition = Pick<ProviderClientDefinition, "settingsSch
   readonly driverKind?: ProviderClientDefinition["driverKind"];
 };
 import { SettingsRow } from "./settingsLayout";
+import { tr } from "~/i18n";
 
 export interface ProviderSettingsFieldModel {
   readonly key: string;
@@ -118,15 +119,15 @@ export function deriveProviderSettingsFields(
           control: formAnnotation.control ?? "text",
           label:
             isLocalAcp && key === "commandPath"
-              ? "Executable"
+              ? tr("Executable")
               : (annotatedTitle ?? titleizeFieldKey(key)),
           ...(isLocalAcp && key === "commandPath"
-            ? { description: "Executable name or path on this environment." }
+            ? { description: tr("Executable name or path on this environment.") }
             : annotatedDescription !== undefined
               ? { description: annotatedDescription }
               : {}),
           ...(isLocalAcp && key === "commandPath"
-            ? { placeholder: "e.g. dsh" }
+            ? { placeholder: tr("e.g. dsh") }
             : formAnnotation.placeholder !== undefined
               ? { placeholder: formAnnotation.placeholder }
               : {}),
@@ -198,8 +199,8 @@ function ProviderCommandArguments({
 
   return (
     <SettingsRow
-      title="Arguments"
-      description="One literal argument per row, in launch order."
+      title={tr("Arguments")}
+      description={tr("One literal argument per row, in launch order.")}
       control={
         <Button
           type="button"
@@ -208,7 +209,7 @@ function ProviderCommandArguments({
           onClick={() => updateArguments([...rowsRef.current, makeCommandArgumentDraftRow("")])}
         >
           <PlusIcon />
-          Add argument
+          {tr("Add argument")}
         </Button>
       }
     >
@@ -227,7 +228,7 @@ function ProviderCommandArguments({
                     ),
                   )
                 }
-                aria-label={`Argument ${index + 1}`}
+                aria-label={tr("Argument {{value}}", { value: index + 1 })}
                 spellCheck={false}
               />
               <Button
@@ -237,7 +238,7 @@ function ProviderCommandArguments({
                 onClick={() =>
                   updateArguments(rowsRef.current.filter((current) => current.id !== argument.id))
                 }
-                aria-label={`Remove argument ${index + 1}`}
+                aria-label={tr("Remove argument {{value}}", { value: index + 1 })}
               >
                 <XIcon />
               </Button>
@@ -264,7 +265,8 @@ function secretFieldInputProps(field: ProviderSettingsFieldModel, config: unknow
   if (!field.secret) return { value: saved, placeholder: field.placeholder };
   return {
     value: "",
-    placeholder: saved.length > 0 ? "Stored secret, enter a new value to replace" : "Not set",
+    placeholder:
+      saved.length > 0 ? tr("Stored secret, enter a new value to replace") : tr("Not set"),
   };
 }
 

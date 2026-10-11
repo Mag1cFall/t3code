@@ -25,6 +25,7 @@ import {
   pullRequestChecksStatePresentation,
   summarizePullRequestChecks,
 } from "./pullRequestPresentation";
+import { tr } from "~/i18n";
 
 /**
  * The checks behind the rollup, for a row that only carries the rollup. Mounted by the popup, so
@@ -49,7 +50,7 @@ function LazyChecksBody({
   if (detailQuery.data === null) {
     return (
       <p className="text-muted-foreground text-xs">
-        {detailQuery.isPending ? "Loading checks…" : "No checks reported"}
+        {detailQuery.isPending ? tr("Loading checks…") : tr("No checks reported")}
       </p>
     );
   }
@@ -69,7 +70,7 @@ function ChecksBody({
   const canCollapse = attention.length + running.length > 0 && completed.length > 0;
   const visibleChecks = [...attention, ...running, ...(showAll || !canCollapse ? completed : [])];
   if (checks.length === 0) {
-    return <p className="text-muted-foreground text-xs">No checks reported</p>;
+    return <p className="text-muted-foreground text-xs">{tr("No checks reported")}</p>;
   }
   return (
     <>
@@ -97,11 +98,14 @@ function ChecksBody({
                     if (!check.url) return;
                     void openLink(check.url).catch((error: unknown) => {
                       console.error(error);
-                      toastManager.add({ type: "error", title: "Unable to open check details" });
+                      toastManager.add({
+                        type: "error",
+                        title: tr("Unable to open check details"),
+                      });
                     });
                   }}
                 >
-                  Details
+                  {tr("Details")}
                 </button>
               )}
             </li>
@@ -115,7 +119,7 @@ function ChecksBody({
           aria-expanded={showAll}
           onClick={() => setShowAll(!showAll)}
         >
-          {showAll ? "Show less" : "Show all"}
+          {showAll ? tr("Show less") : tr("Show all")}
         </Button>
       ) : null}
     </>
@@ -168,8 +172,8 @@ export function PullRequestChecksPopover({
         nativeButton={variant === "count"}
         aria-label={
           variant === "count"
-            ? `Open checks: ${summary ?? presentation.label}`
-            : `Checks: ${presentation.label}`
+            ? tr("Open checks: {{value}}", { value: summary ?? presentation.label })
+            : tr("Checks: {{label}}", { label: presentation.label })
         }
         render={
           variant === "count" ? (
@@ -192,7 +196,7 @@ export function PullRequestChecksPopover({
                 {runningCount}/{checks.length}
               </span>
             ) : failedCount > 0 ? (
-              <span className="tabular-nums">{failedCount} failed</span>
+              <span className="tabular-nums">{tr("{{failedCount}} failed", { failedCount })}</span>
             ) : null}
           </>
         ) : null}
@@ -202,7 +206,7 @@ export function PullRequestChecksPopover({
         {summary === null ? null : <p className="mb-2 text-muted-foreground text-xs">{summary}</p>}
         {stale ? (
           <p className="text-muted-foreground text-xs">
-            Check details are out of date. Refresh the pull request to update them.
+            {tr("Check details are out of date. Refresh the pull request to update them.")}
           </p>
         ) : checks !== undefined ? (
           <ChecksBody checks={checks} threadRef={threadRef} />

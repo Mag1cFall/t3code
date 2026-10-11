@@ -40,6 +40,7 @@ import {
   type TerminalContextDraft,
 } from "./terminalContext";
 import type { ReviewCommentContext } from "~/reviewCommentContext";
+import { tr } from "~/i18n";
 
 /**
  * Builds the wire records behind a draft's inline references, and the reverse for reading a
@@ -105,7 +106,7 @@ export function pullRequestContextDisplayState(
 
 export function pullRequestContextKindLabel(comment: ReviewCommentPresentation): string {
   const state = pullRequestContextDisplayState(comment);
-  if (state === null) return "Pull request";
+  if (state === null) return tr("Pull request");
   return `${state[0]!.toUpperCase()}${state.slice(1)} pull request`;
 }
 
@@ -116,7 +117,7 @@ export function previewAnnotationContextLabel(annotation: PreviewAnnotationPaylo
       ? `${comment.slice(0, PREVIEW_LABEL_MAX_CHARS - 1)}…`
       : comment;
   }
-  return annotation.pageTitle?.trim() || "Preview annotation";
+  return annotation.pageTitle?.trim() || tr("Preview annotation");
 }
 
 export function terminalContextReference(context: TerminalContextDraft): ComposerContextReference {

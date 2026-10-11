@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { Toggle, ToggleGroup } from "../ui/toggle-group";
 import { PullRequestMarkdown } from "./PullRequestMarkdown";
+import { tr } from "~/i18n";
 
 /**
  * The box a body is rewritten in — a description, or a remark already posted. It owns the draft
@@ -90,7 +91,7 @@ export function PullRequestMarkdownEditor({
       }}
     >
       <ToggleGroup
-        aria-label="Markdown editor mode"
+        aria-label={tr("Markdown editor mode")}
         variant="segmented"
         value={[preview ? "preview" : "write"]}
         disabled={saving}
@@ -99,13 +100,13 @@ export function PullRequestMarkdownEditor({
           if (mode === "write" || mode === "preview") setPreview(mode === "preview");
         }}
       >
-        <Toggle value="write">Write</Toggle>
-        <Toggle value="preview">Preview</Toggle>
+        <Toggle value="write">{tr("Write")}</Toggle>
+        <Toggle value="preview">{tr("Preview")}</Toggle>
       </ToggleGroup>
       {preview ? (
         <div className="rounded-lg border border-border/60 px-3 py-2">
           {empty ? (
-            <p className="text-xs text-muted-foreground">Nothing to preview.</p>
+            <p className="text-xs text-muted-foreground">{tr("Nothing to preview.")}</p>
           ) : (
             <PullRequestMarkdown
               text={draft}
@@ -128,7 +129,7 @@ export function PullRequestMarkdownEditor({
       )}
       <div className="flex justify-end gap-2">
         <Button size="xs" variant="ghost" disabled={saving} onClick={onCancel}>
-          Cancel
+          {tr("Cancel")}
         </Button>
         <Button
           size="xs"
@@ -144,7 +145,7 @@ export function PullRequestMarkdownEditor({
             onSave(draft);
           }}
         >
-          {saving ? "Saving..." : "Save"}
+          {saving ? tr("Saving...") : tr("Save")}
         </Button>
       </div>
     </div>

@@ -32,6 +32,7 @@ import { ProjectActionsList } from "./ProjectActionsList";
 import { useProjectScriptSettings } from "./useProjectScriptSettings";
 import { SettingsRow, SettingsSection } from "./settingsLayout";
 import { useSettingsScope } from "./SettingsScopeContext";
+import { tr } from "~/i18n";
 
 /**
  * A project's actions on each selected environment. Actions belong to a
@@ -126,7 +127,7 @@ export function ProjectActionsSettings() {
         setRequest({
           scriptId: null,
           initial: payload,
-          error: error instanceof Error ? error.message : "Failed to import action.",
+          error: error instanceof Error ? error.message : tr("Failed to import action."),
         });
       }
     },
@@ -134,13 +135,15 @@ export function ProjectActionsSettings() {
   );
 
   return (
-    <SettingsSection id="project-actions" title="Actions">
+    <SettingsSection id="project-actions" title={tr("Actions")}>
       <SettingsRow
         serverScoped
         settingKeys={["defaultProjectScripts"]}
         mixed={mixed}
-        title="Actions"
-        description="Commands that run in this project's checkout or its worktree, with optional shortcuts."
+        title={tr("Actions")}
+        description={tr(
+          "Commands that run in this project's checkout or its worktree, with optional shortcuts.",
+        )}
         onResetOverride={() => void persist(() => null)}
         control={
           <div className="flex flex-wrap items-center gap-1.5">
@@ -157,14 +160,14 @@ export function ProjectActionsSettings() {
                     />
                   }
                 >
-                  Import scripts
+                  {tr("Import scripts")}
                   <ChevronDownIcon className="size-3.5" />
                 </MenuTrigger>
                 <MenuPopup align="end">
                   <MenuGroup>
-                    <MenuGroupLabel>Import from t3.json</MenuGroupLabel>
+                    <MenuGroupLabel>{tr("Import from t3.json")}</MenuGroupLabel>
                     <p className="px-2 pb-2 text-pretty text-sm text-muted-foreground">
-                      Add actions declared by this checkout without editing them first.
+                      {tr("Add actions declared by this checkout without editing them first.")}
                     </p>
                   </MenuGroup>
                   <MenuSeparator />
@@ -192,15 +195,17 @@ export function ProjectActionsSettings() {
               onClick={() => setRequest({ scriptId: null, initial: EMPTY_PROJECT_SCRIPT_INPUT })}
             >
               <PlusIcon className="size-3.5" />
-              Add action
+              {tr("Add action")}
             </Button>
           </div>
         }
       />
       {mixed ? (
         <SettingsRow
-          title="Different actions across environments"
-          description="Choose one environment to edit its list. Adding an action here adds it on every selected environment."
+          title={tr("Different actions across environments")}
+          description={tr(
+            "Choose one environment to edit its list. Adding an action here adds it on every selected environment.",
+          )}
         />
       ) : (
         <ProjectActionsList
@@ -212,8 +217,10 @@ export function ProjectActionsSettings() {
       )}
       {t3File.status === "invalid" ? (
         <SettingsRow
-          title="t3.json is invalid"
-          description="A t3.json exists in this checkout but fails to parse, so every action and icon it declares is ignored. Check the JSON syntax and icon values."
+          title={tr("t3.json is invalid")}
+          description={tr(
+            "A t3.json exists in this checkout but fails to parse, so every action and icon it declares is ignored. Check the JSON syntax and icon values.",
+          )}
           className="text-warning"
         />
       ) : null}

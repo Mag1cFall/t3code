@@ -50,6 +50,7 @@ import {
 } from "./settingsSearch";
 import { useAvailableSettingsSearchItems } from "./useAvailableSettingsSearchItems";
 import { validateSettingsScopeSearch } from "./settingsScope";
+import { tr } from "~/i18n";
 
 const SnapShotIcon = createLucideIcon("snap-shot", [
   [
@@ -264,8 +265,8 @@ export function SettingsSidebarNav({ pathname }: { pathname: string }) {
                   setActiveResultIndex(0);
                 }}
                 onKeyDown={handleSearchKeyDown}
-                placeholder="Search"
-                aria-label="Search settings"
+                placeholder={tr("Search")}
+                aria-label={tr("Search settings")}
                 role="combobox"
                 aria-autocomplete="list"
                 aria-expanded={isSearching && hasResults}
@@ -283,7 +284,7 @@ export function SettingsSidebarNav({ pathname }: { pathname: string }) {
                   size="icon-micro"
                   variant="ghost-muted"
                   className="shrink-0"
-                  aria-label="Clear settings search"
+                  aria-label={tr("Clear settings search")}
                   onClick={() => {
                     clearSearch();
                     searchInputRef.current?.focus();
@@ -300,14 +301,14 @@ export function SettingsSidebarNav({ pathname }: { pathname: string }) {
                 role="status"
                 className="px-2 py-6 text-center text-xs text-sidebar-muted-foreground"
               >
-                No settings found
+                {tr("No settings found")}
               </p>
             ) : null}
             {isSearching ? (
               <SidebarMenu
                 id={hasResults ? "settings-search-results" : undefined}
                 role={hasResults ? "listbox" : undefined}
-                aria-label={hasResults ? "Settings search results" : undefined}
+                aria-label={hasResults ? tr("Settings search results") : undefined}
               >
                 {results.map((item, index) => (
                   <SidebarMenuItem key={item.id} role="presentation">

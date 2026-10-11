@@ -14,6 +14,7 @@ import { SnapShotShortcutKeys } from "../desktop/SnapShotShortcutKeys";
 import { Button } from "../ui/button";
 import { keybindingFromKeyboardEvent } from "./KeybindingsSettings.logic";
 import { createRecordingRequestTracker } from "./SnapShotSettings.logic";
+import { tr } from "~/i18n";
 
 const MODIFIER_FROM_KEY: Readonly<Record<string, SnapShotModifier>> = {
   Shift: "shift",
@@ -71,7 +72,7 @@ export function useSnapShotShortcutRecorder({
     } catch (error) {
       if (!requests.owns(request)) return;
       requests.clear();
-      onError(error instanceof Error ? error.message : "Could not start shortcut recording.");
+      onError(error instanceof Error ? error.message : tr("Could not start shortcut recording."));
     }
   };
   useEffect(
@@ -96,7 +97,7 @@ export function useSnapShotShortcutRecorder({
       const [left, right] = MODIFIER_CODES[modifier];
       if (held.has(left) && held.has(right)) {
         if (!allowModifierPairs) {
-          onError("Add a letter, number, or function key to your shortcut.");
+          onError(tr("Add a letter, number, or function key to your shortcut."));
           return;
         }
         stopRecording();
@@ -127,8 +128,10 @@ export function useSnapShotShortcutRecorder({
         disabled={disabled}
         aria-label={
           displayShortcut
-            ? `Record snapshot shortcut, currently ${formatSnapShotShortcutLabel(displayShortcut)}`
-            : "Change snapshot shortcut"
+            ? tr("Record snapshot shortcut, currently {{value}}", {
+                value: formatSnapShotShortcutLabel(displayShortcut),
+              })
+            : tr("Change snapshot shortcut")
         }
         aria-pressed={recording}
         data-keybinding-capture=""
@@ -138,11 +141,11 @@ export function useSnapShotShortcutRecorder({
         onBlur={stopRecording}
       >
         {recording ? (
-          "Press shortcut…"
+          tr("Press shortcut…")
         ) : !displayShortcut ? (
-          "Change shortcut"
+          tr("Change shortcut")
         ) : !allowModifierPairs && isModifierPairShortcut(displayShortcut) ? (
-          "Choose shortcut"
+          tr("Choose shortcut")
         ) : (
           <SnapShotShortcutKeys shortcut={displayShortcut} />
         )}

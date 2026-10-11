@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { appAtomRegistry } from "~/rpc/atomRegistry";
 import { projectEnvironment } from "~/state/projects";
+import { tr } from "~/i18n";
 
 /** Loads only requested directories; collapsing a folder keeps its children cached. */
 export function useDirectoryEntries(environmentId: EnvironmentId, cwd: string) {
@@ -71,7 +72,7 @@ export function useDirectoryEntries(environmentId: EnvironmentId, cwd: string) {
             setErrors((previous) =>
               new Map(previous).set(
                 directoryPath,
-                cause instanceof Error ? cause.message : "Unable to load folder.",
+                cause instanceof Error ? cause.message : tr("Unable to load folder."),
               ),
             );
           }

@@ -170,32 +170,33 @@ import {
 import { searchableSetting } from "./settingsSearch";
 import { ProjectFavicon } from "../ProjectFavicon";
 import { PanelAnimationsPreview } from "./PanelAnimationsPreview";
+import { tr } from "~/i18n";
 
 const ENVIRONMENT_IDENTIFICATION_LABELS: Record<EnvironmentIdentificationMode, string> = {
   artwork: "Artwork",
-  pill: "Version pill",
+  pill: tr("Version pill"),
   none: "None",
 };
 
 const RESPONSE_STREAMING_MODE_LABELS: Record<ResponseStreamingMode, string> = {
-  turn: "Wait for the full response",
-  paragraph: "Show finished paragraphs",
+  turn: tr("Wait for the full response"),
+  paragraph: tr("Show finished paragraphs"),
 };
 
 const RESPONSE_STREAMING_MODE_DESCRIPTIONS: Record<ResponseStreamingMode, string> = {
-  turn: "Text appears once the agent finishes its turn.",
-  paragraph: "Each paragraph or code block appears as soon as it is complete.",
+  turn: tr("Text appears once the agent finishes its turn."),
+  paragraph: tr("Each paragraph or code block appears as soon as it is complete."),
 };
 
 const SIDEBAR_PROJECT_SORT_ORDER_LABELS: Record<SidebarProjectSortOrder, string> = {
-  updated_at: "Last user message",
-  created_at: "Created at",
+  updated_at: tr("Last user message"),
+  created_at: tr("Created at"),
   manual: "Manual",
 };
 const isSidebarProjectSortOrder = Schema.is(SidebarProjectSortOrder);
 
 const TIMESTAMP_FORMAT_LABELS = {
-  locale: "System default",
+  locale: tr("System default"),
   "12-hour": "12-hour",
   "24-hour": "24-hour",
 } as const;
@@ -214,13 +215,13 @@ const DIFF_LAYOUT_LABELS: Record<DiffLayout, string> = {
 const QUIT_CONFIRMATION_MODE_LABELS: Record<QuitConfirmationMode, string> = {
   direct: "Direct",
   hold: "Hold",
-  "double-click": "Double press",
+  "double-click": tr("Double press"),
 };
 
 const BACKGROUND_ACTIVITY_PROFILE_LABELS: Record<BackgroundActivityProfile, string> = {
   balanced: "Balanced",
   performance: "Performance",
-  "battery-saver": "Battery saver",
+  "battery-saver": tr("Battery saver"),
 };
 
 type BackgroundActivityProfileOption = BackgroundActivityProfile | "advanced";
@@ -231,12 +232,12 @@ const BACKGROUND_ACTIVITY_PROFILE_OPTION_LABELS: Record<BackgroundActivityProfil
 };
 
 const BACKGROUND_ACTIVITY_PROFILE_DESCRIPTIONS: Record<BackgroundActivityProfile, string> = {
-  balanced: "Pauses probes for idle clients, locked hosts, or low power mode.",
-  performance: "Allows scoped background probes while any subscribed client remains connected.",
-  "battery-saver": "Also pauses background probes when the host or client is on battery.",
+  balanced: tr("Pauses probes for idle clients, locked hosts, or low power mode."),
+  performance: tr("Allows scoped background probes while any subscribed client remains connected."),
+  "battery-saver": tr("Also pauses background probes when the host or client is on battery."),
 };
 
-const ADVANCED_BACKGROUND_ACTIVITY_DESCRIPTION = "Uses custom intervals.";
+const ADVANCED_BACKGROUND_ACTIVITY_DESCRIPTION = tr("Uses custom intervals.");
 
 const DEFAULT_DRIVER_KIND = ProviderDriverKind.make("codex");
 const BACKGROUND_ACTIVITY_BOOLEAN_OVERRIDES: ReadonlyArray<{
@@ -247,10 +248,10 @@ const BACKGROUND_ACTIVITY_BOOLEAN_OVERRIDES: ReadonlyArray<{
     | "pauseWhenOnBattery";
   readonly label: string;
 }> = [
-  { key: "pauseWhenHostLocked", label: "Pause when host is locked" },
-  { key: "pauseWhenHostLowPower", label: "Pause on host low power" },
-  { key: "pauseWhenClientLowPower", label: "Pause on client low power" },
-  { key: "pauseWhenOnBattery", label: "Pause on battery" },
+  { key: "pauseWhenHostLocked", label: tr("Pause when host is locked") },
+  { key: "pauseWhenHostLowPower", label: tr("Pause on host low power") },
+  { key: "pauseWhenClientLowPower", label: tr("Pause on client low power") },
+  { key: "pauseWhenOnBattery", label: tr("Pause on battery") },
 ];
 
 function resetBackgroundActivitySettings() {
@@ -272,7 +273,7 @@ function backgroundActivityProfileSettings(profile: BackgroundActivityProfile) {
 function AboutVersionTitle() {
   return (
     <span className="inline-flex items-baseline gap-2">
-      <span>Version</span>
+      <span>{tr("Version")}</span>
       <code className="text-2xs font-medium text-muted-foreground">{APP_VERSION}</code>
     </span>
   );
@@ -308,8 +309,9 @@ function AboutVersionSection() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not change update track",
-              description: error instanceof Error ? error.message : "Update track change failed.",
+              title: tr("Could not change update track"),
+              description:
+                error instanceof Error ? error.message : tr("Update track change failed."),
             }),
           );
         })
@@ -331,8 +333,8 @@ function AboutVersionSection() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not download update",
-            description: error instanceof Error ? error.message : "Download failed.",
+            title: tr("Could not download update"),
+            description: error instanceof Error ? error.message : tr("Download failed."),
           }),
         );
       });
@@ -354,8 +356,8 @@ function AboutVersionSection() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not confirm update",
-            description: error instanceof Error ? error.message : "Update confirmation failed.",
+            title: tr("Could not confirm update"),
+            description: error instanceof Error ? error.message : tr("Update confirmation failed."),
           }),
         );
         return;
@@ -370,8 +372,8 @@ function AboutVersionSection() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not install update",
-              description: error instanceof Error ? error.message : "Install failed.",
+              title: tr("Could not install update"),
+              description: error instanceof Error ? error.message : tr("Install failed."),
             }),
           );
         })
@@ -387,9 +389,9 @@ function AboutVersionSection() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not check for updates",
+              title: tr("Could not check for updates"),
               description:
-                result.state.message ?? "Automatic updates are not available in this build.",
+                result.state.message ?? tr("Automatic updates are not available in this build."),
             }),
           );
         }
@@ -398,8 +400,8 @@ function AboutVersionSection() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not check for updates",
-            description: error instanceof Error ? error.message : "Update check failed.",
+            title: tr("Could not check for updates"),
+            description: error instanceof Error ? error.message : tr("Update check failed."),
           }),
         );
       });
@@ -416,14 +418,14 @@ function AboutVersionSection() {
   const statusLabel: Record<string, string> = {
     checking: "Checking…",
     downloading: "Downloading…",
-    "up-to-date": "Up to Date",
+    "up-to-date": tr("Up to Date"),
   };
   const buttonLabel =
-    actionLabel[action] ?? statusLabel[updateState?.status ?? ""] ?? "Check for Updates";
+    actionLabel[action] ?? statusLabel[updateState?.status ?? ""] ?? tr("Check for Updates");
   const description =
     action === "download" || action === "install"
-      ? "Update available."
-      : "Current version of the application.";
+      ? tr("Update available.")
+      : tr("Current version of the application.");
 
   return (
     <>
@@ -452,7 +454,7 @@ function AboutVersionSection() {
       {hasDesktopBridge ? (
         <SettingsRow
           {...searchableSetting("update-track")}
-          description="Use stable releases or nightly builds. Switch back anytime."
+          description={tr("Use stable releases or nightly builds. Switch back anytime.")}
           control={
             <Select
               value={selectedUpdateChannel}
@@ -463,19 +465,19 @@ function AboutVersionSection() {
               <SelectTrigger
                 size="sm"
                 className="w-full sm:w-40"
-                aria-label="Update track"
+                aria-label={tr("Update track")}
                 disabled={isChangingUpdateChannel}
               >
                 <SelectValue>
-                  {selectedUpdateChannel === "nightly" ? "Nightly" : "Stable"}
+                  {selectedUpdateChannel === "nightly" ? tr("Nightly") : tr("Stable")}
                 </SelectValue>
               </SelectTrigger>
               <SelectPopup align="end" alignItemWithTrigger={false}>
                 <SelectItem hideIndicator value="latest">
-                  Stable
+                  {tr("Stable")}
                 </SelectItem>
                 <SelectItem hideIndicator value="nightly">
-                  Nightly
+                  {tr("Nightly")}
                 </SelectItem>
               </SelectPopup>
             </Select>
@@ -484,7 +486,7 @@ function AboutVersionSection() {
       ) : selectedHostedAppChannel ? (
         <SettingsRow
           {...searchableSetting("update-track")}
-          description="Switches the hosted app release channel."
+          description={tr("Switches the hosted app release channel.")}
           control={
             <Select
               value={selectedHostedAppChannel}
@@ -495,15 +497,15 @@ function AboutVersionSection() {
                 );
               }}
             >
-              <SelectTrigger size="sm" className="w-full sm:w-40" aria-label="Update track">
+              <SelectTrigger size="sm" className="w-full sm:w-40" aria-label={tr("Update track")}>
                 <SelectValue>{HOSTED_APP_CHANNEL_LABEL}</SelectValue>
               </SelectTrigger>
               <SelectPopup align="end" alignItemWithTrigger={false}>
                 <SelectItem hideIndicator value="latest">
-                  Latest
+                  {tr("Latest")}
                 </SelectItem>
                 <SelectItem hideIndicator value="nightly">
-                  Nightly
+                  {tr("Nightly")}
                 </SelectItem>
               </SelectPopup>
             </Select>
@@ -538,127 +540,133 @@ export function useSettingsRestore(onRestored?: () => void) {
   const changedSettingLabels = useMemo(
     () => [
       ...(theme !== "system" ? ["Theme"] : []),
-      ...(!followSystem ? ["Follow system"] : []),
-      ...(themeHalves !== null ? ["Theme mix"] : []),
+      ...(!followSystem ? [tr("Follow system")] : []),
+      ...(themeHalves !== null ? [tr("Theme mix")] : []),
       ...(settings.appearanceContrast !== DEFAULT_UNIFIED_SETTINGS.appearanceContrast
         ? ["Contrast"]
         : []),
-      ...(settings.glassOpacity !== DEFAULT_UNIFIED_SETTINGS.glassOpacity ? ["Glass opacity"] : []),
-      ...(settings.diffColorScheme !== DEFAULT_UNIFIED_SETTINGS.diffColorScheme
-        ? ["Diff colors"]
+      ...(settings.glassOpacity !== DEFAULT_UNIFIED_SETTINGS.glassOpacity
+        ? [tr("Glass opacity")]
         : []),
-      ...(settings.chatWidth !== DEFAULT_UNIFIED_SETTINGS.chatWidth ? ["Chat width"] : []),
+      ...(settings.diffColorScheme !== DEFAULT_UNIFIED_SETTINGS.diffColorScheme
+        ? [tr("Diff colors")]
+        : []),
+      ...(settings.chatWidth !== DEFAULT_UNIFIED_SETTINGS.chatWidth ? [tr("Chat width")] : []),
       ...(settings.panelAnimationDurationMs !== DEFAULT_UNIFIED_SETTINGS.panelAnimationDurationMs
-        ? ["Panel animations"]
+        ? [tr("Panel animations")]
         : []),
       ...(settings.environmentIdentificationMode !==
       DEFAULT_UNIFIED_SETTINGS.environmentIdentificationMode
-        ? ["Environment identification"]
+        ? [tr("Environment identification")]
         : []),
       ...(settings.timestampFormat !== DEFAULT_UNIFIED_SETTINGS.timestampFormat
-        ? ["Time format"]
+        ? [tr("Time format")]
         : []),
       ...(settings.notificationMode !== DEFAULT_UNIFIED_SETTINGS.notificationMode
-        ? ["Thread notifications"]
+        ? [tr("Thread notifications")]
         : []),
       ...(settings.inAppNotificationsEnabled !== DEFAULT_UNIFIED_SETTINGS.inAppNotificationsEnabled
-        ? ["In-app notifications"]
+        ? [tr("In-app notifications")]
         : []),
       ...(settings.sidebarThreadPreviewCount !== DEFAULT_UNIFIED_SETTINGS.sidebarThreadPreviewCount
-        ? ["Visible threads"]
+        ? [tr("Visible threads")]
         : []),
       ...(settings.sidebarProjectGroupingMode !==
       DEFAULT_UNIFIED_SETTINGS.sidebarProjectGroupingMode
         ? ["Project Grouping"]
         : []),
       ...(settings.sidebarProjectSortOrder !== DEFAULT_UNIFIED_SETTINGS.sidebarProjectSortOrder
-        ? ["Project order"]
+        ? [tr("Project order")]
         : []),
       ...(settings.sidebarWorkingShelfEnabled !==
       DEFAULT_UNIFIED_SETTINGS.sidebarWorkingShelfEnabled
-        ? ["Working section"]
+        ? [tr("Working section")]
         : []),
       ...(settings.sidebarAutoSettleAfterDays !==
       DEFAULT_UNIFIED_SETTINGS.sidebarAutoSettleAfterDays
-        ? ["Auto-settle inactive threads"]
+        ? [tr("Auto-settle inactive threads")]
         : []),
       ...(settings.sidebarAutoSettleOnMerge !== DEFAULT_UNIFIED_SETTINGS.sidebarAutoSettleOnMerge
-        ? ["Auto-settle merged threads"]
+        ? [tr("Auto-settle merged threads")]
         : []),
       ...(settings.autoResumeLimitedThreads !== DEFAULT_UNIFIED_SETTINGS.autoResumeLimitedThreads
-        ? ["Auto-resume limited threads"]
+        ? [tr("Auto-resume limited threads")]
         : []),
       ...(settings.snoozeLimitedThreads !== DEFAULT_UNIFIED_SETTINGS.snoozeLimitedThreads
-        ? ["Snooze limited threads"]
+        ? [tr("Snooze limited threads")]
         : []),
-      ...(settings.wordWrap !== DEFAULT_UNIFIED_SETTINGS.wordWrap ? ["Word wrap"] : []),
+      ...(settings.wordWrap !== DEFAULT_UNIFIED_SETTINGS.wordWrap ? [tr("Word wrap")] : []),
       ...(settings.persistComposerContextStrip !==
       DEFAULT_UNIFIED_SETTINGS.persistComposerContextStrip
-        ? ["Composer context"]
+        ? [tr("Composer context")]
         : []),
       ...getChangedTypographySettingLabels(settings),
       ...(settings.diffFilesCollapsed !== DEFAULT_UNIFIED_SETTINGS.diffFilesCollapsed
-        ? ["Default diff file state"]
+        ? [tr("Default diff file state")]
         : []),
       ...(settings.diffIgnoreWhitespace !== DEFAULT_UNIFIED_SETTINGS.diffIgnoreWhitespace
-        ? ["Diff whitespace changes"]
+        ? [tr("Diff whitespace changes")]
         : []),
-      ...(settings.diffLayout !== DEFAULT_UNIFIED_SETTINGS.diffLayout ? ["Diff layout"] : []),
+      ...(settings.diffLayout !== DEFAULT_UNIFIED_SETTINGS.diffLayout ? [tr("Diff layout")] : []),
       ...(settings.proactivePanelsEnabled !== DEFAULT_UNIFIED_SETTINGS.proactivePanelsEnabled
-        ? ["Proactive panels"]
+        ? [tr("Proactive panels")]
         : []),
       ...(settings.showSkillsInSlashMenu !== DEFAULT_UNIFIED_SETTINGS.showSkillsInSlashMenu
-        ? ["Show skills in slash menu"]
+        ? [tr("Show skills in slash menu")]
         : []),
       ...(settings.composerCollapseOnScroll !== DEFAULT_UNIFIED_SETTINGS.composerCollapseOnScroll
-        ? ["Collapse composer on scroll"]
+        ? [tr("Collapse composer on scroll")]
         : []),
       ...(settings.composerRichTextEnabled !== DEFAULT_UNIFIED_SETTINGS.composerRichTextEnabled
-        ? ["Rich text composer"]
+        ? [tr("Rich text composer")]
         : []),
-      ...(settings.sendShortcut !== DEFAULT_UNIFIED_SETTINGS.sendShortcut ? ["Send shortcut"] : []),
+      ...(settings.sendShortcut !== DEFAULT_UNIFIED_SETTINGS.sendShortcut
+        ? [tr("Send shortcut")]
+        : []),
       ...(settings.followUpBehavior !== DEFAULT_UNIFIED_SETTINGS.followUpBehavior
-        ? ["Follow-up behavior"]
+        ? [tr("Follow-up behavior")]
         : []),
       ...(settings.contextWindowMeterEnabled !== DEFAULT_UNIFIED_SETTINGS.contextWindowMeterEnabled
-        ? ["Context window indicator"]
+        ? [tr("Context window indicator")]
         : []),
       ...(settings.responseStreamingMode !== DEFAULT_UNIFIED_SETTINGS.responseStreamingMode
-        ? ["Response streaming"]
+        ? [tr("Response streaming")]
         : []),
       ...(settings.enableProviderUpdateChecks !==
       DEFAULT_UNIFIED_SETTINGS.enableProviderUpdateChecks
-        ? ["Provider update checks"]
+        ? [tr("Provider update checks")]
         : []),
       ...(settings.continueThreadsAfterServerUpdate !==
       DEFAULT_UNIFIED_SETTINGS.continueThreadsAfterServerUpdate
-        ? ["Continue threads after restarts"]
+        ? [tr("Continue threads after restarts")]
         : []),
-      ...(isBackgroundActivityDirty ? ["Background activity"] : []),
+      ...(isBackgroundActivityDirty ? [tr("Background activity")] : []),
       ...(settings.defaultThreadEnvMode !== DEFAULT_UNIFIED_SETTINGS.defaultThreadEnvMode
-        ? ["New thread mode"]
+        ? [tr("New thread mode")]
         : []),
       ...(settings.newWorktreesStartFromOrigin !==
       DEFAULT_UNIFIED_SETTINGS.newWorktreesStartFromOrigin
-        ? ["New worktrees start from origin"]
+        ? [tr("New worktrees start from origin")]
         : []),
       ...(settings.addProjectBaseDirectory !== DEFAULT_UNIFIED_SETTINGS.addProjectBaseDirectory
-        ? ["Add project base directory"]
+        ? [tr("Add project base directory")]
         : []),
       ...(settings.confirmThreadUnpin !== DEFAULT_UNIFIED_SETTINGS.confirmThreadUnpin
-        ? ["Unpin confirmation"]
+        ? [tr("Unpin confirmation")]
         : []),
       ...(settings.confirmThreadArchive !== DEFAULT_UNIFIED_SETTINGS.confirmThreadArchive
-        ? ["Archive confirmation"]
+        ? [tr("Archive confirmation")]
         : []),
       ...(settings.confirmThreadDelete !== DEFAULT_UNIFIED_SETTINGS.confirmThreadDelete
-        ? ["Delete confirmation"]
+        ? [tr("Delete confirmation")]
         : []),
-      ...(settings.confirmQuit !== DEFAULT_UNIFIED_SETTINGS.confirmQuit ? ["Quit shortcut"] : []),
-      ...(isTextGenerationModelDirty ? ["Text generation model"] : []),
+      ...(settings.confirmQuit !== DEFAULT_UNIFIED_SETTINGS.confirmQuit
+        ? [tr("Quit shortcut")]
+        : []),
+      ...(isTextGenerationModelDirty ? [tr("Text generation model")] : []),
       ...getChangedBrowserSettingLabels(settings),
       ...(settings.enableAgentBrowserAccess !== DEFAULT_UNIFIED_SETTINGS.enableAgentBrowserAccess
-        ? ["Agent browser access"]
+        ? [tr("Agent browser access")]
         : []),
     ],
     [
@@ -730,9 +738,10 @@ export function useSettingsRestore(onRestored?: () => void) {
     if (changedSettingLabels.length === 0) return;
     const api = readLocalApi();
     const confirmed = await (api ?? ensureLocalApi()).dialogs.confirm(
-      ["Restore default settings?", `This will reset: ${changedSettingLabels.join(", ")}.`].join(
-        "\n",
-      ),
+      [
+        tr("Restore default settings?"),
+        tr("This will reset: {{value}}.", { value: changedSettingLabels.join(", ") }),
+      ].join("\n"),
       { variant: "destructive" },
     );
     if (!confirmed) return;
@@ -760,8 +769,8 @@ export function useSettingsRestore(onRestored?: () => void) {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Couldn’t restore theme settings",
-          description: "Try again.",
+          title: tr("Couldn’t restore theme settings"),
+          description: tr("Try again."),
         }),
       );
     };
@@ -902,9 +911,9 @@ function BackgroundActivityAdvancedDialog({
     <Dialog open={open && canWriteSettings} onOpenChange={onOpenChange}>
       <DialogPopup className="max-w-xl">
         <DialogHeader>
-          <DialogTitle>Background Activity</DialogTitle>
+          <DialogTitle>{tr("Background Activity")}</DialogTitle>
           <DialogDescription>
-            Tune the shared power policy and the background intervals that feed it.
+            {tr("Tune the shared power policy and the background intervals that feed it.")}
           </DialogDescription>
         </DialogHeader>
         <DialogPanel>
@@ -914,9 +923,11 @@ function BackgroundActivityAdvancedDialog({
           >
             <div className="flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0 space-y-1">
-                <div className="text-sm font-medium">Shared policy</div>
+                <div className="text-sm font-medium">{tr("Shared policy")}</div>
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  Controls whether background work may run after a subscribed interval fires.
+                  {tr(
+                    "Controls whether background work may run after a subscribed interval fires.",
+                  )}
                 </p>
               </div>
               <Select
@@ -936,7 +947,7 @@ function BackgroundActivityAdvancedDialog({
                 <SelectTrigger
                   size="sm"
                   className="w-full sm:w-40"
-                  aria-label="Shared background policy"
+                  aria-label={tr("Shared background policy")}
                 >
                   <SelectValue>{BACKGROUND_ACTIVITY_PROFILE_LABELS[activeProfile]}</SelectValue>
                 </SelectTrigger>
@@ -960,7 +971,7 @@ function BackgroundActivityAdvancedDialog({
                   {searchableSetting("git-fetch-interval").title}
                 </div>
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  Refresh remote branch status in the background.
+                  {tr("Refresh remote branch status in the background.")}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-2">
@@ -985,20 +996,20 @@ function BackgroundActivityAdvancedDialog({
                   }
                 >
                   <NumberFieldGroup>
-                    <NumberFieldDecrement aria-label="Decrease Git fetch interval" />
-                    <NumberFieldInput aria-label="Git fetch interval in seconds" />
-                    <NumberFieldIncrement aria-label="Increase Git fetch interval" />
+                    <NumberFieldDecrement aria-label={tr("Decrease Git fetch interval")} />
+                    <NumberFieldInput aria-label={tr("Git fetch interval in seconds")} />
+                    <NumberFieldIncrement aria-label={tr("Increase Git fetch interval")} />
                   </NumberFieldGroup>
                 </NumberField>
-                <span className="text-xs text-muted-foreground">seconds</span>
+                <span className="text-xs text-muted-foreground">{tr("seconds")}</span>
               </div>
             </div>
 
             <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0 space-y-1">
-                <div className="text-sm font-medium">Provider health interval</div>
+                <div className="text-sm font-medium">{tr("Provider health interval")}</div>
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  Refresh provider availability, versions, auth state, and model metadata.
+                  {tr("Refresh provider availability, versions, auth state, and model metadata.")}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-2">
@@ -1023,20 +1034,20 @@ function BackgroundActivityAdvancedDialog({
                   }
                 >
                   <NumberFieldGroup>
-                    <NumberFieldDecrement aria-label="Decrease provider health interval" />
-                    <NumberFieldInput aria-label="Provider health interval in seconds" />
-                    <NumberFieldIncrement aria-label="Increase provider health interval" />
+                    <NumberFieldDecrement aria-label={tr("Decrease provider health interval")} />
+                    <NumberFieldInput aria-label={tr("Provider health interval in seconds")} />
+                    <NumberFieldIncrement aria-label={tr("Increase provider health interval")} />
                   </NumberFieldGroup>
                 </NumberField>
-                <span className="text-xs text-muted-foreground">seconds</span>
+                <span className="text-xs text-muted-foreground">{tr("seconds")}</span>
               </div>
             </div>
 
             <div className="flex flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0 space-y-1">
-                <div className="text-sm font-medium">Host power monitor</div>
+                <div className="text-sm font-medium">{tr("Host power monitor")}</div>
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  Poll host power state while clients are active.
+                  {tr("Poll host power state while clients are active.")}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-2">
@@ -1061,20 +1072,20 @@ function BackgroundActivityAdvancedDialog({
                   }
                 >
                   <NumberFieldGroup>
-                    <NumberFieldDecrement aria-label="Decrease active host power interval" />
-                    <NumberFieldInput aria-label="Active host power interval in seconds" />
-                    <NumberFieldIncrement aria-label="Increase active host power interval" />
+                    <NumberFieldDecrement aria-label={tr("Decrease active host power interval")} />
+                    <NumberFieldInput aria-label={tr("Active host power interval in seconds")} />
+                    <NumberFieldIncrement aria-label={tr("Increase active host power interval")} />
                   </NumberFieldGroup>
                 </NumberField>
-                <span className="text-xs text-muted-foreground">seconds</span>
+                <span className="text-xs text-muted-foreground">{tr("seconds")}</span>
               </div>
             </div>
 
             <div className="flex flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0 space-y-1">
-                <div className="text-sm font-medium">Idle host monitor</div>
+                <div className="text-sm font-medium">{tr("Idle host monitor")}</div>
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  Poll host power state when no foreground client is active.
+                  {tr("Poll host power state when no foreground client is active.")}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-2">
@@ -1099,12 +1110,12 @@ function BackgroundActivityAdvancedDialog({
                   }
                 >
                   <NumberFieldGroup>
-                    <NumberFieldDecrement aria-label="Decrease idle host power interval" />
-                    <NumberFieldInput aria-label="Idle host power interval in seconds" />
-                    <NumberFieldIncrement aria-label="Increase idle host power interval" />
+                    <NumberFieldDecrement aria-label={tr("Decrease idle host power interval")} />
+                    <NumberFieldInput aria-label={tr("Idle host power interval in seconds")} />
+                    <NumberFieldIncrement aria-label={tr("Increase idle host power interval")} />
                   </NumberFieldGroup>
                 </NumberField>
-                <span className="text-xs text-muted-foreground">seconds</span>
+                <span className="text-xs text-muted-foreground">{tr("seconds")}</span>
               </div>
             </div>
 
@@ -1141,9 +1152,9 @@ function BackgroundActivityAdvancedDialog({
             disabled={!canWriteSettings}
             onClick={() => updateSettings(resetBackgroundActivitySettings())}
           >
-            Reset all
+            {tr("Reset all")}
           </Button>
-          <Button onClick={() => onOpenChange(false)}>Done</Button>
+          <Button onClick={() => onOpenChange(false)}>{tr("Done")}</Button>
         </DialogFooter>
       </DialogPopup>
     </Dialog>
@@ -1191,7 +1202,7 @@ export function AppearanceSettingsPanel() {
 
   return (
     <SettingsPageContainer>
-      <SettingsSection id="appearance" title="Colors & themes" variant="plain" hideTitle>
+      <SettingsSection id="appearance" title={tr("Colors & themes")} variant="plain" hideTitle>
         <div id={searchableSetting("theme").id}>
           <ThemeLibrary
             appearanceMode={appearanceMode}
@@ -1209,10 +1220,10 @@ export function AppearanceSettingsPanel() {
         </div>
       </SettingsSection>
 
-      <SettingsSection id="appearance-interface" title="Interface">
+      <SettingsSection id="appearance-interface" title={tr("Interface")}>
         <SettingsRow
           {...searchableSetting("setting-appearance-contrast")}
-          description="Adjust the contrast of colors and borders across the interface."
+          description={tr("Adjust the contrast of colors and borders across the interface.")}
           resetAction={
             settings.appearanceContrast !== DEFAULT_UNIFIED_SETTINGS.appearanceContrast ? (
               <SettingResetButton
@@ -1234,7 +1245,7 @@ export function AppearanceSettingsPanel() {
                 {settings.appearanceContrast}%
               </output>
               <input
-                aria-label="Contrast"
+                aria-label={tr("Contrast")}
                 className="settings-slider min-w-0 flex-1"
                 id="appearance-contrast"
                 max={MAX_APPEARANCE_CONTRAST}
@@ -1260,11 +1271,11 @@ export function AppearanceSettingsPanel() {
 
         <SettingsRow
           {...searchableSetting("setting-glass-opacity")}
-          description="Higher values make menus, dialogs, and the composer more solid."
+          description={tr("Higher values make menus, dialogs, and the composer more solid.")}
           resetAction={
             settings.glassOpacity !== DEFAULT_UNIFIED_SETTINGS.glassOpacity ? (
               <SettingResetButton
-                label="glass opacity"
+                label={tr("glass opacity")}
                 onClick={() =>
                   updateSettings({ glassOpacity: DEFAULT_UNIFIED_SETTINGS.glassOpacity })
                 }
@@ -1280,7 +1291,7 @@ export function AppearanceSettingsPanel() {
                 {settings.glassOpacity}%
               </output>
               <input
-                aria-label="Glass opacity"
+                aria-label={tr("Glass opacity")}
                 className="settings-slider min-w-0 flex-1"
                 id="glass-opacity"
                 max={MAX_GLASS_OPACITY}
@@ -1307,11 +1318,11 @@ export function AppearanceSettingsPanel() {
         {showEnvironmentIdentification ? (
           <SettingsRow
             {...searchableSetting("environment-identification")}
-            description="Choose how Dev and Nightly environments are identified."
+            description={tr("Choose how Dev and Nightly environments are identified.")}
             resetAction={
               settings.environmentIdentificationMode !== DEFAULT_ENVIRONMENT_IDENTIFICATION_MODE ? (
                 <SettingResetButton
-                  label="environment identification"
+                  label={tr("environment identification")}
                   onClick={() =>
                     updateSettings({
                       environmentIdentificationMode: DEFAULT_ENVIRONMENT_IDENTIFICATION_MODE,
@@ -1332,7 +1343,7 @@ export function AppearanceSettingsPanel() {
                 <SelectTrigger
                   size="sm"
                   className="w-full sm:w-40"
-                  aria-label="Environment identification"
+                  aria-label={tr("Environment identification")}
                 >
                   <SelectValue>
                     {ENVIRONMENT_IDENTIFICATION_LABELS[settings.environmentIdentificationMode]}
@@ -1352,11 +1363,11 @@ export function AppearanceSettingsPanel() {
 
         <SettingsRow
           {...searchableSetting("diff-color-scheme")}
-          description="Choose colors for additions and deletions, including change counts."
+          description={tr("Choose colors for additions and deletions, including change counts.")}
           resetAction={
             settings.diffColorScheme !== DEFAULT_UNIFIED_SETTINGS.diffColorScheme ? (
               <SettingResetButton
-                label="diff colors"
+                label={tr("diff colors")}
                 onClick={() =>
                   updateSettings({ diffColorScheme: DEFAULT_UNIFIED_SETTINGS.diffColorScheme })
                 }
@@ -1372,7 +1383,7 @@ export function AppearanceSettingsPanel() {
                     updateSettings({ diffColorScheme: value });
                 }}
               >
-                <SelectTrigger size="sm" className="w-full min-w-0" aria-label="Diff colors">
+                <SelectTrigger size="sm" className="w-full min-w-0" aria-label={tr("Diff colors")}>
                   <span
                     aria-hidden="true"
                     className={
@@ -1385,12 +1396,14 @@ export function AppearanceSettingsPanel() {
                     <span className="size-2 rounded-full bg-diff-addition" />
                   </span>
                   <SelectValue>
-                    {settings.diffColorScheme === "blue-orange" ? "Blue & orange" : "Red & green"}
+                    {settings.diffColorScheme === "blue-orange"
+                      ? tr("Blue & orange")
+                      : tr("Red & green")}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectPopup align="end" alignItemWithTrigger={false}>
-                  <SelectItem value="red-green">Red & green (default)</SelectItem>
-                  <SelectItem value="blue-orange">Blue & orange</SelectItem>
+                  <SelectItem value="red-green">{tr("Red & green (default)")}</SelectItem>
+                  <SelectItem value="blue-orange">{tr("Blue & orange")}</SelectItem>
                 </SelectPopup>
               </Select>
             </div>
@@ -1399,12 +1412,14 @@ export function AppearanceSettingsPanel() {
 
         <SettingsRow
           {...searchableSetting("composer-context")}
-          description="Keep branch and worktree controls below the composer after a thread starts."
+          description={tr(
+            "Keep branch and worktree controls below the composer after a thread starts.",
+          )}
           resetAction={
             settings.persistComposerContextStrip !==
             DEFAULT_UNIFIED_SETTINGS.persistComposerContextStrip ? (
               <SettingResetButton
-                label="composer context"
+                label={tr("composer context")}
                 onClick={() =>
                   updateSettings({
                     persistComposerContextStrip:
@@ -1420,18 +1435,18 @@ export function AppearanceSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ persistComposerContextStrip: Boolean(checked) })
               }
-              aria-label="Keep composer context visible in active threads"
+              aria-label={tr("Keep composer context visible in active threads")}
             />
           }
         />
 
         <SettingsRow
           {...searchableSetting("chat-width")}
-          description="Set how wide messages and the composer can grow on large screens."
+          description={tr("Set how wide messages and the composer can grow on large screens.")}
           resetAction={
             settings.chatWidth !== DEFAULT_UNIFIED_SETTINGS.chatWidth ? (
               <SettingResetButton
-                label="chat width"
+                label={tr("chat width")}
                 onClick={() => updateSettings({ chatWidth: DEFAULT_UNIFIED_SETTINGS.chatWidth })}
               />
             ) : null
@@ -1445,13 +1460,13 @@ export function AppearanceSettingsPanel() {
                     updateSettings({ chatWidth: value });
                 }}
               >
-                <SelectTrigger size="sm" className="w-full min-w-0" aria-label="Chat width">
+                <SelectTrigger size="sm" className="w-full min-w-0" aria-label={tr("Chat width")}>
                   <SelectValue>{CHAT_WIDTH_LABELS[settings.chatWidth]}</SelectValue>
                 </SelectTrigger>
                 <SelectPopup align="end" alignItemWithTrigger={false}>
-                  <SelectItem value="comfortable">Comfortable (default)</SelectItem>
-                  <SelectItem value="wide">Wide</SelectItem>
-                  <SelectItem value="full">Full</SelectItem>
+                  <SelectItem value="comfortable">{tr("Comfortable (default)")}</SelectItem>
+                  <SelectItem value="wide">{tr("Wide")}</SelectItem>
+                  <SelectItem value="full">{tr("Full")}</SelectItem>
                 </SelectPopup>
               </Select>
             </div>
@@ -1459,10 +1474,10 @@ export function AppearanceSettingsPanel() {
         />
       </SettingsSection>
 
-      <SettingsSection id="motion" title="Motion">
+      <SettingsSection id="motion" title={tr("Motion")}>
         <SettingsRow
           {...searchableSetting("panel-animations")}
-          description="Set how fast panels open and close."
+          description={tr("Set how fast panels open and close.")}
           control={
             <div className="grid w-full grid-cols-[5rem_minmax(0,1fr)] items-center gap-3 sm:w-auto sm:grid-cols-[7rem_13rem] sm:gap-4">
               <PanelAnimationsPreview durationMs={settings.panelAnimationDurationMs} />
@@ -1471,10 +1486,12 @@ export function AppearanceSettingsPanel() {
                   className="min-w-16 rounded-md bg-muted px-2 py-1 text-center font-mono text-xs font-medium tabular-nums text-foreground"
                   htmlFor="panel-animation-duration"
                 >
-                  {settings.panelAnimationDurationMs} ms
+                  {tr("{{panelAnimationDurationMs}} ms", {
+                    panelAnimationDurationMs: settings.panelAnimationDurationMs,
+                  })}
                 </output>
                 <input
-                  aria-label="Panel animation duration"
+                  aria-label={tr("Panel animation duration")}
                   className="settings-slider min-w-0 flex-1"
                   id="panel-animation-duration"
                   max={MAX_PANEL_ANIMATION_DURATION_MS}
@@ -1501,7 +1518,7 @@ export function AppearanceSettingsPanel() {
             settings.panelAnimationDurationMs !==
             DEFAULT_UNIFIED_SETTINGS.panelAnimationDurationMs ? (
               <SettingResetButton
-                label="panel animations"
+                label={tr("panel animations")}
                 onClick={() =>
                   updateSettings({
                     panelAnimationDurationMs: DEFAULT_UNIFIED_SETTINGS.panelAnimationDurationMs,
@@ -1525,8 +1542,8 @@ function useFontDefaultFamilies() {
   // hardcoded.
   const defaults = useMemo(
     () => ({
-      sans: resolveDefaultFamilyLabel(DEFAULT_SANS_FONT_STACK) ?? "System default",
-      code: resolveDefaultFamilyLabel(DEFAULT_CODE_FONT_STACK) ?? "System monospace",
+      sans: resolveDefaultFamilyLabel(DEFAULT_SANS_FONT_STACK) ?? tr("System default"),
+      code: resolveDefaultFamilyLabel(DEFAULT_CODE_FONT_STACK) ?? tr("System monospace"),
     }),
     [],
   );
@@ -1545,7 +1562,7 @@ function InterfaceFontRow({ preview }: { preview?: ReactNode }) {
   return (
     <FontFamilySettingsRow
       {...searchableSetting("interface-font")}
-      description="Everything outside code blocks and the terminal."
+      description={tr("Everything outside code blocks and the terminal.")}
       defaultFamily={defaults.sans}
       defaultValue={DEFAULT_UNIFIED_SETTINGS.fontFamilySans}
       value={settings.fontFamilySans}
@@ -1557,7 +1574,7 @@ function InterfaceFontRow({ preview }: { preview?: ReactNode }) {
         })
       }
       size={{
-        label: "Interface font size",
+        label: tr("Interface font size"),
         min: MIN_INTERFACE_FONT_SIZE,
         max: MAX_INTERFACE_FONT_SIZE,
         value: settings.fontSizeInterface,
@@ -1576,7 +1593,7 @@ function PromptFontRow() {
   return (
     <FontFamilySettingsRow
       {...searchableSetting("prompt-font")}
-      description="Only the box you write prompts in. Mono works well here."
+      description={tr("Only the box you write prompts in. Mono works well here.")}
       defaultFamily={defaults.interfaceFamily}
       defaultValue={DEFAULT_UNIFIED_SETTINGS.fontFamilyComposer}
       value={settings.fontFamilyComposer}
@@ -1588,7 +1605,7 @@ function PromptFontRow() {
         })
       }
       size={{
-        label: "Prompt font size",
+        label: tr("Prompt font size"),
         min: MIN_PROMPT_FONT_SIZE,
         max: MAX_PROMPT_FONT_SIZE,
         value: settings.fontSizePrompt,
@@ -1602,7 +1619,7 @@ function PromptFontRow() {
 
 function CodeFontRow({
   title,
-  description = "Code blocks, diffs, and file previews.",
+  description = tr("Code blocks, diffs, and file previews."),
   preview,
 }: {
   title?: string;
@@ -1629,7 +1646,7 @@ function CodeFontRow({
       }
       requireMonospace
       size={{
-        label: "Code font size",
+        label: tr("Code font size"),
         min: MIN_CODE_FONT_SIZE,
         max: MAX_CODE_FONT_SIZE,
         value: settings.fontSizeCode,
@@ -1648,7 +1665,7 @@ function TerminalFontRow() {
   return (
     <FontFamilySettingsRow
       {...searchableSetting("terminal-font")}
-      description="Terminal output, independent from code blocks and diffs."
+      description={tr("Terminal output, independent from code blocks and diffs.")}
       defaultFamily={defaults.code}
       defaultValue={DEFAULT_UNIFIED_SETTINGS.fontFamilyTerminal}
       value={settings.fontFamilyTerminal}
@@ -1661,7 +1678,7 @@ function TerminalFontRow() {
       }
       requireMonospace
       size={{
-        label: "Terminal font size",
+        label: tr("Terminal font size"),
         min: MIN_TERMINAL_FONT_SIZE,
         max: MAX_TERMINAL_FONT_SIZE,
         value: settings.fontSizeTerminal,
@@ -1689,11 +1706,11 @@ function FontSmoothingRow() {
   return (
     <SettingsRow
       {...searchableSetting("font-smoothing")}
-      description="Use thinner grayscale text smoothing instead of the macOS default."
+      description={tr("Use thinner grayscale text smoothing instead of the macOS default.")}
       resetAction={
         settings.fontSmoothing !== DEFAULT_UNIFIED_SETTINGS.fontSmoothing ? (
           <SettingResetButton
-            label="font smoothing"
+            label={tr("font smoothing")}
             onClick={() =>
               updateSettings({ fontSmoothing: DEFAULT_UNIFIED_SETTINGS.fontSmoothing })
             }
@@ -1704,7 +1721,7 @@ function FontSmoothingRow() {
         <Switch
           checked={settings.fontSmoothing}
           onCheckedChange={(checked) => updateSettings({ fontSmoothing: Boolean(checked) })}
-          aria-label="Font smoothing"
+          aria-label={tr("Font smoothing")}
         />
       }
     />
@@ -1717,11 +1734,13 @@ function WordWrapRow() {
   return (
     <SettingsRow
       {...searchableSetting("word-wrap")}
-      description="Wrap long lines in code blocks, tables, diffs, and file previews by default."
+      description={tr(
+        "Wrap long lines in code blocks, tables, diffs, and file previews by default.",
+      )}
       resetAction={
         settings.wordWrap !== DEFAULT_UNIFIED_SETTINGS.wordWrap ? (
           <SettingResetButton
-            label="word wrapping"
+            label={tr("word wrapping")}
             onClick={() => updateSettings({ wordWrap: DEFAULT_UNIFIED_SETTINGS.wordWrap })}
           />
         ) : null
@@ -1730,7 +1749,7 @@ function WordWrapRow() {
         <Switch
           checked={settings.wordWrap}
           onCheckedChange={(checked) => updateSettings({ wordWrap: Boolean(checked) })}
-          aria-label="Wrap code, tables, diffs, and file previews by default"
+          aria-label={tr("Wrap code, tables, diffs, and file previews by default")}
         />
       }
     />
@@ -1760,8 +1779,8 @@ function SimpleFontRows() {
     <>
       <InterfaceFontRow preview={<PromptFontPreview />} />
       <CodeFontRow
-        title="Monospace font"
-        description="Code blocks, diffs, file previews, and the terminal."
+        title={tr("Monospace font")}
+        description={tr("Code blocks, diffs, file previews, and the terminal.")}
         preview={
           <>
             <CodeFontPreview />
@@ -1821,14 +1840,14 @@ function TypographySection() {
   return (
     <SettingsSection
       id="typography"
-      title="Typography"
+      title={tr("Typography")}
       headerAction={
         <label className="flex cursor-pointer items-center gap-2 text-xs font-medium text-muted-foreground">
-          Advanced
+          {tr("Advanced")}
           <Switch
             checked={advanced}
             onCheckedChange={(checked) => setAdvanced(Boolean(checked))}
-            aria-label="Show advanced typography settings"
+            aria-label={tr("Show advanced typography settings")}
           />
         </label>
       }
@@ -1940,7 +1959,7 @@ function FontFamilySettingsRow({
   const familyControl =
     fontEnumeration.status === "granted" ? (
       <FontFamilyPicker
-        ariaLabel={`${title} family`}
+        ariaLabel={tr("{{title}} family", { title })}
         defaultFamily={defaultFamily}
         selectedFamily={trimmed}
         requireMonospace={requireMonospace}
@@ -1950,7 +1969,7 @@ function FontFamilySettingsRow({
     ) : (
       <Input
         size="sm"
-        aria-label={`${title} family`}
+        aria-label={tr("{{title}} family", { title })}
         aria-invalid={draftPending || undefined}
         autoCapitalize="off"
         autoComplete="off"
@@ -2010,13 +2029,13 @@ function FontFamilySettingsRow({
         }}
       >
         <SelectTrigger size="sm" className="w-22 shrink-0" aria-label={size.label}>
-          <SelectValue>{size.value} px</SelectValue>
+          <SelectValue>{tr("{{value}} px", { value: size.value })}</SelectValue>
         </SelectTrigger>
         <SelectPopup align="end" alignItemWithTrigger={false}>
           {Array.from({ length: size.max - size.min + 1 }, (_, index) => size.min + index).map(
             (px) => (
               <SelectItem hideIndicator key={px} value={String(px)}>
-                {px} px
+                {tr("{{px}} px", { px })}
               </SelectItem>
             ),
           )}
@@ -2076,7 +2095,7 @@ function AutoSettleDaysInput({
         }
       }}
       onBlur={() => setDraft(String(value))}
-      aria-label="Days of inactivity before auto-settle"
+      aria-label={tr("Days of inactivity before auto-settle")}
     />
   );
 }
@@ -2121,7 +2140,7 @@ function LegacyFeaturesSection() {
       <Collapsible open={open} onOpenChange={setOpen}>
         <CollapsibleTrigger className="group flex min-h-8 w-full items-center gap-2 px-3 sm:px-4">
           <h2 className="text-sm font-normal text-foreground/70 transition-colors group-hover:text-foreground">
-            Legacy features
+            {tr("Legacy features")}
           </h2>
           <ChevronRightIcon className="size-4 text-muted-foreground transition-transform duration-200 group-data-panel-open:rotate-90" />
         </CollapsibleTrigger>
@@ -2129,40 +2148,46 @@ function LegacyFeaturesSection() {
           <SettingsGroup>
             <SettingsRow
               {...searchableSetting("legacy-plan-mode")}
-              description="Restore Build/Plan, /plan, /default, and Shift+Tab. Off uses build mode."
+              description={tr(
+                "Restore Build/Plan, /plan, /default, and Shift+Tab. Off uses build mode.",
+              )}
               control={
                 <Switch
                   checked={settings.planModeEnabled}
                   onCheckedChange={(checked) => {
                     updateSettings({ planModeEnabled: Boolean(checked) });
                   }}
-                  aria-label="Plan mode (legacy)"
+                  aria-label={tr("Plan mode (legacy)")}
                 />
               }
             />
             <SettingsRow
               {...searchableSetting("legacy-context-window-indicator")}
-              description="Shows context window usage as a circular indicator in the composer."
+              description={tr(
+                "Shows context window usage as a circular indicator in the composer.",
+              )}
               control={
                 <Switch
                   checked={settings.contextWindowMeterEnabled}
                   onCheckedChange={(checked) =>
                     updateSettings({ contextWindowMeterEnabled: Boolean(checked) })
                   }
-                  aria-label="Context window indicator (legacy)"
+                  aria-label={tr("Context window indicator (legacy)")}
                 />
               }
             />
             <SettingsRow
               {...searchableSetting("legacy-sidebar")}
-              description="Restore per-project thread trees instead of the default flat sidebar."
+              description={tr(
+                "Restore per-project thread trees instead of the default flat sidebar.",
+              )}
               control={
                 <Switch
                   checked={settings.legacySidebarEnabled}
                   onCheckedChange={(checked) =>
                     updateSettings({ legacySidebarEnabled: Boolean(checked) })
                   }
-                  aria-label="Sidebar (legacy)"
+                  aria-label={tr("Sidebar (legacy)")}
                 />
               }
             />
@@ -2176,9 +2201,12 @@ function LegacyFeaturesSection() {
 export function GeneralSettingsPanel() {
   const modifierLabel = isMacPlatform(navigator.platform) ? "⌘" : "Ctrl";
   const sendShortcutOptions = [
-    { value: "enter", label: "Enter" },
-    { value: "mod-enter-multiline", label: `${modifierLabel} + Enter for multiline prompts` },
-    { value: "mod-enter", label: `${modifierLabel} + Enter always` },
+    { value: "enter", label: tr("Enter") },
+    {
+      value: "mod-enter-multiline",
+      label: tr("{{modifierLabel}} + Enter for multiline prompts", { modifierLabel }),
+    },
+    { value: "mod-enter", label: tr("{{modifierLabel}} + Enter always", { modifierLabel }) },
   ] as const;
   const settings = useScopedSettings();
   const updateSettings = useUpdateScopedSettings();
@@ -2251,9 +2279,10 @@ export function GeneralSettingsPanel() {
   const mixedTextGenerationModel = useScopedSettingsMixed(["textGenerationModelSelection"]);
   const backgroundActivityDescription =
     backgroundActivityProfileOption === "advanced"
-      ? `${ADVANCED_BACKGROUND_ACTIVITY_DESCRIPTION} Shared policy: ${
-          BACKGROUND_ACTIVITY_PROFILE_LABELS[activeBackgroundActivityProfile]
-        }.`
+      ? tr("{{ADVANCED_BACKGROUND_ACTIVITY_DESCRIPTION}} Shared policy: {{value}}.", {
+          ADVANCED_BACKGROUND_ACTIVITY_DESCRIPTION,
+          value: BACKGROUND_ACTIVITY_PROFILE_LABELS[activeBackgroundActivityProfile],
+        })
       : BACKGROUND_ACTIVITY_PROFILE_DESCRIPTIONS[resolvedBackgroundActivity.profile];
   const canResetBackgroundActivity = !Equal.equals(
     settings.backgroundActivity,
@@ -2263,15 +2292,15 @@ export function GeneralSettingsPanel() {
   return (
     <SettingsPageContainer>
       <ProjectDefaultsSettings category="general" />
-      <SettingsSection id="organization" title="Organization">
+      <SettingsSection id="organization" title={tr("Organization")}>
         <SettingsRow
           {...searchableSetting("project-grouping")}
-          description="Combine matching repositories across environments."
+          description={tr("Combine matching repositories across environments.")}
           resetAction={
             settings.sidebarProjectGroupingMode !==
             DEFAULT_UNIFIED_SETTINGS.sidebarProjectGroupingMode ? (
               <SettingResetButton
-                label="project grouping"
+                label={tr("project grouping")}
                 onClick={() =>
                   updateSettings({
                     sidebarProjectGroupingMode: DEFAULT_UNIFIED_SETTINGS.sidebarProjectGroupingMode,
@@ -2295,18 +2324,18 @@ export function GeneralSettingsPanel() {
                   ),
                 });
               }}
-              aria-label="Project grouping"
+              aria-label={tr("Project grouping")}
             />
           }
         />
         <SettingsRow
           {...searchableSetting("project-order")}
-          description="Order of projects in the sidebar project picker and command palette."
+          description={tr("Order of projects in the sidebar project picker and command palette.")}
           resetAction={
             settings.sidebarProjectSortOrder !==
             DEFAULT_UNIFIED_SETTINGS.sidebarProjectSortOrder ? (
               <SettingResetButton
-                label="project order"
+                label={tr("project order")}
                 onClick={() =>
                   updateSettings({
                     sidebarProjectSortOrder: DEFAULT_UNIFIED_SETTINGS.sidebarProjectSortOrder,
@@ -2324,7 +2353,7 @@ export function GeneralSettingsPanel() {
                 }
               }}
             >
-              <SelectTrigger size="sm" className="w-full sm:w-44" aria-label="Project order">
+              <SelectTrigger size="sm" className="w-full sm:w-44" aria-label={tr("Project order")}>
                 <SelectValue>
                   {SIDEBAR_PROJECT_SORT_ORDER_LABELS[settings.sidebarProjectSortOrder]}
                 </SelectValue>
@@ -2343,7 +2372,9 @@ export function GeneralSettingsPanel() {
         <SettingsRow
           serverScoped
           {...searchableSetting("auto-resume-limited-threads")}
-          description="Resume usage-limit stops at the reported reset time. Each thread can cancel its scheduled continuation."
+          description={tr(
+            "Resume usage-limit stops at the reported reset time. Each thread can cancel its scheduled continuation.",
+          )}
           settingKeys={["autoResumeLimitedThreads"]}
           control={
             <ScopedSwitch
@@ -2352,14 +2383,16 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ autoResumeLimitedThreads: Boolean(checked) })
               }
-              aria-label="Auto-resume limited threads"
+              aria-label={tr("Auto-resume limited threads")}
             />
           }
         />
         <SettingsRow
           serverScoped
           {...searchableSetting("snooze-limited-threads")}
-          description="Snooze usage-limit stops until the reported reset time. Combine with auto-resume to continue when they wake."
+          description={tr(
+            "Snooze usage-limit stops until the reported reset time. Combine with auto-resume to continue when they wake.",
+          )}
           settingKeys={["snoozeLimitedThreads"]}
           control={
             <ScopedSwitch
@@ -2368,19 +2401,21 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ snoozeLimitedThreads: Boolean(checked) })
               }
-              aria-label="Snooze limited threads"
+              aria-label={tr("Snooze limited threads")}
             />
           }
         />
 
         <SettingsRow
           {...searchableSetting("working-shelf")}
-          description="Fold working and monitoring threads into a Working section. They return to the top of the inbox when they need you."
+          description={tr(
+            "Fold working and monitoring threads into a Working section. They return to the top of the inbox when they need you.",
+          )}
           resetAction={
             settings.sidebarWorkingShelfEnabled !==
             DEFAULT_UNIFIED_SETTINGS.sidebarWorkingShelfEnabled ? (
               <SettingResetButton
-                label="working section"
+                label={tr("working section")}
                 onClick={() =>
                   updateSettings({
                     sidebarWorkingShelfEnabled: DEFAULT_UNIFIED_SETTINGS.sidebarWorkingShelfEnabled,
@@ -2395,7 +2430,7 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ sidebarWorkingShelfEnabled: Boolean(checked) })
               }
-              aria-label="Working section (beta)"
+              aria-label={tr("Working section (beta)")}
             />
           }
         />
@@ -2406,12 +2441,14 @@ export function GeneralSettingsPanel() {
               serverScoped
               settingKeys={["sidebarAutoSettleOnMerge"]}
               {...searchableSetting("auto-settle-merged-threads")}
-              description="Settle a thread when its pull request merges. Closed pull requests still settle automatically."
+              description={tr(
+                "Settle a thread when its pull request merges. Closed pull requests still settle automatically.",
+              )}
               resetAction={
                 settings.sidebarAutoSettleOnMerge !==
                 DEFAULT_UNIFIED_SETTINGS.sidebarAutoSettleOnMerge ? (
                   <SettingResetButton
-                    label="auto-settle on merge"
+                    label={tr("auto-settle on merge")}
                     onClick={() =>
                       updateSettings({
                         sidebarAutoSettleOnMerge: DEFAULT_UNIFIED_SETTINGS.sidebarAutoSettleOnMerge,
@@ -2427,7 +2464,7 @@ export function GeneralSettingsPanel() {
                   onCheckedChange={(checked) =>
                     updateSettings({ sidebarAutoSettleOnMerge: Boolean(checked) })
                   }
-                  aria-label="Auto-settle merged threads"
+                  aria-label={tr("Auto-settle merged threads")}
                 />
               }
             />
@@ -2436,7 +2473,9 @@ export function GeneralSettingsPanel() {
               serverScoped
               settingKeys={["sidebarAutoSettleAfterDays"]}
               {...searchableSetting("auto-settle-inactive-threads")}
-              description="Sidebar threads with no activity for this long settle automatically."
+              description={tr(
+                "Sidebar threads with no activity for this long settle automatically.",
+              )}
               resetAction={
                 settings.sidebarAutoSettleAfterDays !==
                 DEFAULT_UNIFIED_SETTINGS.sidebarAutoSettleAfterDays ? (
@@ -2460,7 +2499,7 @@ export function GeneralSettingsPanel() {
                       sidebarAutoSettleAfterDays: checked ? AUTO_SETTLE_DEFAULT_DAYS : null,
                     })
                   }
-                  aria-label="Auto-settle inactive threads"
+                  aria-label={tr("Auto-settle inactive threads")}
                 />
               }
             />
@@ -2469,7 +2508,7 @@ export function GeneralSettingsPanel() {
                 serverScoped
                 settingKeys={["sidebarAutoSettleAfterDays"]}
                 title={searchableSetting("days-before-auto-settle").title}
-                description="Any new activity un-settles a thread automatically."
+                description={tr("Any new activity un-settles a thread automatically.")}
                 control={
                   <AutoSettleDaysInput
                     value={settings.sidebarAutoSettleAfterDays}
@@ -2482,26 +2521,28 @@ export function GeneralSettingsPanel() {
         ) : null}
       </SettingsSection>
 
-      <SettingsSection id="behavior" title="Behavior">
+      <SettingsSection id="behavior" title={tr("Behavior")}>
         <NotificationSettings />
         <SettingsRow
           {...searchableSetting("in-app-notifications")}
-          description="Show a toast when another thread finishes, fails, or needs input or approval while this app has focus."
+          description={tr(
+            "Show a toast when another thread finishes, fails, or needs input or approval while this app has focus.",
+          )}
           control={
             <Switch
               checked={settings.inAppNotificationsEnabled}
               onCheckedChange={(checked) => updateSettings({ inAppNotificationsEnabled: checked })}
-              aria-label="In-app notifications"
+              aria-label={tr("In-app notifications")}
             />
           }
         />
         <SettingsRow
           {...searchableSetting("time-format")}
-          description="System default follows your browser or OS clock preference."
+          description={tr("System default follows your browser or OS clock preference.")}
           resetAction={
             settings.timestampFormat !== DEFAULT_UNIFIED_SETTINGS.timestampFormat ? (
               <SettingResetButton
-                label="time format"
+                label={tr("time format")}
                 onClick={() =>
                   updateSettings({
                     timestampFormat: DEFAULT_UNIFIED_SETTINGS.timestampFormat,
@@ -2519,7 +2560,11 @@ export function GeneralSettingsPanel() {
                 }
               }}
             >
-              <SelectTrigger size="sm" className="w-full sm:w-40" aria-label="Timestamp format">
+              <SelectTrigger
+                size="sm"
+                className="w-full sm:w-40"
+                aria-label={tr("Timestamp format")}
+              >
                 <SelectValue>{TIMESTAMP_FORMAT_LABELS[settings.timestampFormat]}</SelectValue>
               </SelectTrigger>
               <SelectPopup align="end" alignItemWithTrigger={false}>
@@ -2542,13 +2587,13 @@ export function GeneralSettingsPanel() {
           {...searchableSetting("response-streaming")}
           description={
             mixedResponseStreamingMode
-              ? "The selected targets use different streaming modes."
+              ? tr("The selected targets use different streaming modes.")
               : RESPONSE_STREAMING_MODE_DESCRIPTIONS[settings.responseStreamingMode]
           }
           resetAction={
             settings.responseStreamingMode !== DEFAULT_UNIFIED_SETTINGS.responseStreamingMode ? (
               <SettingResetButton
-                label="response streaming"
+                label={tr("response streaming")}
                 onClick={() =>
                   updateSettings({
                     responseStreamingMode: DEFAULT_UNIFIED_SETTINGS.responseStreamingMode,
@@ -2566,7 +2611,11 @@ export function GeneralSettingsPanel() {
                 }
               }}
             >
-              <SelectTrigger size="sm" className="w-full sm:w-56" aria-label="Response streaming">
+              <SelectTrigger
+                size="sm"
+                className="w-full sm:w-56"
+                aria-label={tr("Response streaming")}
+              >
                 <SelectValue>
                   {(value: ResponseStreamingMode | null) =>
                     value === null ? "Mixed" : RESPONSE_STREAMING_MODE_LABELS[value]
@@ -2586,11 +2635,11 @@ export function GeneralSettingsPanel() {
         />
         <SettingsRow
           {...searchableSetting("hide-whitespace-changes")}
-          description="Set whether the diff panel ignores whitespace-only edits by default."
+          description={tr("Set whether the diff panel ignores whitespace-only edits by default.")}
           resetAction={
             settings.diffIgnoreWhitespace !== DEFAULT_UNIFIED_SETTINGS.diffIgnoreWhitespace ? (
               <SettingResetButton
-                label="diff whitespace changes"
+                label={tr("diff whitespace changes")}
                 onClick={() =>
                   updateSettings({
                     diffIgnoreWhitespace: DEFAULT_UNIFIED_SETTINGS.diffIgnoreWhitespace,
@@ -2605,17 +2654,19 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ diffIgnoreWhitespace: Boolean(checked) })
               }
-              aria-label="Hide whitespace changes by default"
+              aria-label={tr("Hide whitespace changes by default")}
             />
           }
         />
         <SettingsRow
           {...searchableSetting("default-diff-file-state")}
-          description="Start with files expanded or collapsed when opening diffs or a pull request's Code tab."
+          description={tr(
+            "Start with files expanded or collapsed when opening diffs or a pull request's Code tab.",
+          )}
           resetAction={
             settings.diffFilesCollapsed !== DEFAULT_UNIFIED_SETTINGS.diffFilesCollapsed ? (
               <SettingResetButton
-                label="default diff file state"
+                label={tr("default diff file state")}
                 onClick={() =>
                   updateSettings({
                     diffFilesCollapsed: DEFAULT_UNIFIED_SETTINGS.diffFilesCollapsed,
@@ -2636,16 +2687,18 @@ export function GeneralSettingsPanel() {
               <SelectTrigger
                 size="sm"
                 className="w-full sm:w-40"
-                aria-label="Default diff file state"
+                aria-label={tr("Default diff file state")}
               >
-                <SelectValue>{settings.diffFilesCollapsed ? "Collapsed" : "Expanded"}</SelectValue>
+                <SelectValue>
+                  {settings.diffFilesCollapsed ? tr("Collapsed") : tr("Expanded")}
+                </SelectValue>
               </SelectTrigger>
               <SelectPopup align="end" alignItemWithTrigger={false}>
                 <SelectItem hideIndicator value="expanded">
-                  Expanded
+                  {tr("Expanded")}
                 </SelectItem>
                 <SelectItem hideIndicator value="collapsed">
-                  Collapsed
+                  {tr("Collapsed")}
                 </SelectItem>
               </SelectPopup>
             </Select>
@@ -2653,11 +2706,13 @@ export function GeneralSettingsPanel() {
         />
         <SettingsRow
           {...searchableSetting("diff-layout")}
-          description="Show diffs stacked or side by side. The toggle in the diff toolbar changes this too."
+          description={tr(
+            "Show diffs stacked or side by side. The toggle in the diff toolbar changes this too.",
+          )}
           resetAction={
             settings.diffLayout !== DEFAULT_UNIFIED_SETTINGS.diffLayout ? (
               <SettingResetButton
-                label="diff layout"
+                label={tr("diff layout")}
                 onClick={() => updateSettings({ diffLayout: DEFAULT_UNIFIED_SETTINGS.diffLayout })}
               />
             ) : null
@@ -2671,7 +2726,7 @@ export function GeneralSettingsPanel() {
                 }
               }}
             >
-              <SelectTrigger size="sm" className="w-full sm:w-40" aria-label="Diff layout">
+              <SelectTrigger size="sm" className="w-full sm:w-40" aria-label={tr("Diff layout")}>
                 <SelectValue>{DIFF_LAYOUT_LABELS[settings.diffLayout]}</SelectValue>
               </SelectTrigger>
               <SelectPopup align="end" alignItemWithTrigger={false}>
@@ -2688,11 +2743,13 @@ export function GeneralSettingsPanel() {
 
         <SettingsRow
           {...searchableSetting("proactive-panels")}
-          description="Open linked pull requests first. Otherwise, open Changes for edits to at least 3 files or 50 lines."
+          description={tr(
+            "Open linked pull requests first. Otherwise, open Changes for edits to at least 3 files or 50 lines.",
+          )}
           resetAction={
             settings.proactivePanelsEnabled !== DEFAULT_UNIFIED_SETTINGS.proactivePanelsEnabled ? (
               <SettingResetButton
-                label="proactive panels"
+                label={tr("proactive panels")}
                 onClick={() =>
                   updateSettings({
                     proactivePanelsEnabled: DEFAULT_UNIFIED_SETTINGS.proactivePanelsEnabled,
@@ -2707,18 +2764,20 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ proactivePanelsEnabled: Boolean(checked) })
               }
-              aria-label="Proactive panels"
+              aria-label={tr("Proactive panels")}
             />
           }
         />
 
         <SettingsRow
           {...searchableSetting("skills-in-slash-menu")}
-          description="Also include skills in the / command menu. Skills always appear when you type $."
+          description={tr(
+            "Also include skills in the / command menu. Skills always appear when you type $.",
+          )}
           resetAction={
             settings.showSkillsInSlashMenu !== DEFAULT_UNIFIED_SETTINGS.showSkillsInSlashMenu ? (
               <SettingResetButton
-                label="skills in slash menu"
+                label={tr("skills in slash menu")}
                 onClick={() =>
                   updateSettings({
                     showSkillsInSlashMenu: DEFAULT_UNIFIED_SETTINGS.showSkillsInSlashMenu,
@@ -2733,19 +2792,19 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ showSkillsInSlashMenu: Boolean(checked) })
               }
-              aria-label="Show skills in slash menu"
+              aria-label={tr("Show skills in slash menu")}
             />
           }
         />
 
         <SettingsRow
           {...searchableSetting("composer-rich-text")}
-          description="Show formatted Markdown as you type."
+          description={tr("Show formatted Markdown as you type.")}
           resetAction={
             settings.composerRichTextEnabled !==
             DEFAULT_UNIFIED_SETTINGS.composerRichTextEnabled ? (
               <SettingResetButton
-                label="rich text composer"
+                label={tr("rich text composer")}
                 onClick={() =>
                   updateSettings({
                     composerRichTextEnabled: DEFAULT_UNIFIED_SETTINGS.composerRichTextEnabled,
@@ -2760,19 +2819,21 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ composerRichTextEnabled: Boolean(checked) })
               }
-              aria-label="Rich text composer"
+              aria-label={tr("Rich text composer")}
             />
           }
         />
 
         <SettingsRow
           {...searchableSetting("composer-collapse")}
-          description="Rest the composer of an existing thread into a single line when you scroll the conversation. Focus the composer or start typing to expand it again."
+          description={tr(
+            "Rest the composer of an existing thread into a single line when you scroll the conversation. Focus the composer or start typing to expand it again.",
+          )}
           resetAction={
             settings.composerCollapseOnScroll !==
             DEFAULT_UNIFIED_SETTINGS.composerCollapseOnScroll ? (
               <SettingResetButton
-                label="collapse composer on scroll"
+                label={tr("collapse composer on scroll")}
                 onClick={() =>
                   updateSettings({
                     composerCollapseOnScroll: DEFAULT_UNIFIED_SETTINGS.composerCollapseOnScroll,
@@ -2787,18 +2848,18 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ composerCollapseOnScroll: Boolean(checked) })
               }
-              aria-label="Collapse composer on scroll"
+              aria-label={tr("Collapse composer on scroll")}
             />
           }
         />
 
         <SettingsRow
           {...searchableSetting("send-shortcut")}
-          description="Choose when Enter sends a prompt or inserts a new line"
+          description={tr("Choose when Enter sends a prompt or inserts a new line")}
           resetAction={
             settings.sendShortcut !== DEFAULT_UNIFIED_SETTINGS.sendShortcut ? (
               <SettingResetButton
-                label="send shortcut"
+                label={tr("send shortcut")}
                 onClick={() =>
                   updateSettings({ sendShortcut: DEFAULT_UNIFIED_SETTINGS.sendShortcut })
                 }
@@ -2816,7 +2877,7 @@ export function GeneralSettingsPanel() {
               <SelectTrigger
                 size="sm"
                 className="w-auto min-w-0 max-w-full"
-                aria-label="Send shortcut"
+                aria-label={tr("Send shortcut")}
               >
                 <SelectValue>
                   {
@@ -2842,15 +2903,21 @@ export function GeneralSettingsPanel() {
         <SettingsRow
           {...searchableSetting("follow-up-behavior")}
           description={
-            "Queue follow-ups while the agent runs or steer the current run. " +
+            tr("Queue follow-ups while the agent runs or steer the current run. ") +
             (settings.sendShortcut === "mod-enter-multiline"
-              ? `Press ${modifierLabel} + Enter for single-line prompts or ${modifierLabel} + Shift + Enter for multiline prompts to do the opposite for one message.`
-              : `Press ${modifierLabel}${settings.sendShortcut === "mod-enter" ? " + Shift" : ""} + Enter to do the opposite for one message.`)
+              ? tr(
+                  "Press {{modifierLabel}} + Enter for single-line prompts or {{modifierLabel2}} + Shift + Enter for multiline prompts to do the opposite for one message.",
+                  { modifierLabel, modifierLabel2: modifierLabel },
+                )
+              : tr("Press {{modifierLabel}}{{value}} + Enter to do the opposite for one message.", {
+                  modifierLabel,
+                  value: settings.sendShortcut === "mod-enter" ? " + Shift" : "",
+                }))
           }
           resetAction={
             settings.followUpBehavior !== DEFAULT_UNIFIED_SETTINGS.followUpBehavior ? (
               <SettingResetButton
-                label="follow-up behavior"
+                label={tr("follow-up behavior")}
                 onClick={() =>
                   updateSettings({
                     followUpBehavior: DEFAULT_UNIFIED_SETTINGS.followUpBehavior,
@@ -2868,14 +2935,18 @@ export function GeneralSettingsPanel() {
                 }
               }}
             >
-              <SelectTrigger size="sm" className="w-auto min-w-0" aria-label="Follow-up behavior">
+              <SelectTrigger
+                size="sm"
+                className="w-auto min-w-0"
+                aria-label={tr("Follow-up behavior")}
+              >
                 <SelectValue>
-                  {settings.followUpBehavior === "queue" ? "Queue" : "Steer"}
+                  {settings.followUpBehavior === "queue" ? tr("Queue") : tr("Steer")}
                 </SelectValue>
               </SelectTrigger>
               <SelectPopup align="end" alignItemWithTrigger={false}>
-                <SelectItem value="queue">Queue</SelectItem>
-                <SelectItem value="steer">Steer</SelectItem>
+                <SelectItem value="queue">{tr("Queue")}</SelectItem>
+                <SelectItem value="steer">{tr("Steer")}</SelectItem>
               </SelectPopup>
             </Select>
           }
@@ -2885,12 +2956,12 @@ export function GeneralSettingsPanel() {
           serverScoped
           settingKeys={["enableProviderUpdateChecks"]}
           {...searchableSetting("provider-update-checks")}
-          description="Check installed provider CLIs for newer available versions."
+          description={tr("Check installed provider CLIs for newer available versions.")}
           resetAction={
             settings.enableProviderUpdateChecks !==
             DEFAULT_UNIFIED_SETTINGS.enableProviderUpdateChecks ? (
               <SettingResetButton
-                label="provider update checks"
+                label={tr("provider update checks")}
                 onClick={() =>
                   updateSettings({
                     enableProviderUpdateChecks: DEFAULT_UNIFIED_SETTINGS.enableProviderUpdateChecks,
@@ -2906,7 +2977,7 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ enableProviderUpdateChecks: Boolean(checked) })
               }
-              aria-label="Check provider versions"
+              aria-label={tr("Check provider versions")}
             />
           }
         />
@@ -2915,7 +2986,9 @@ export function GeneralSettingsPanel() {
           {...searchableSetting("continue-threads-after-server-update")}
           serverScoped
           settingKeys={["continueThreadsAfterServerUpdate"]}
-          description="Automatically resume interrupted threads after an update, crash, or machine restart on the selected environments."
+          description={tr(
+            "Automatically resume interrupted threads after an update, crash, or machine restart on the selected environments.",
+          )}
           status={
             !supportsRestartContinuation
               ? "All selected connected environments must support restart continuation."
@@ -2926,7 +2999,7 @@ export function GeneralSettingsPanel() {
             settings.continueThreadsAfterServerUpdate !==
               DEFAULT_UNIFIED_SETTINGS.continueThreadsAfterServerUpdate ? (
               <SettingResetButton
-                label="continue threads after restarts"
+                label={tr("continue threads after restarts")}
                 onClick={() =>
                   updateSettings({
                     continueThreadsAfterServerUpdate:
@@ -2944,7 +3017,7 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ continueThreadsAfterServerUpdate: Boolean(checked) })
               }
-              aria-label="Continue threads after restarts"
+              aria-label={tr("Continue threads after restarts")}
             />
           }
         />
@@ -2957,8 +3030,9 @@ export function GeneralSettingsPanel() {
             <span className="inline-flex items-center gap-1.5">
               {searchableSetting("background-activity").title}
               <PolicyTooltip>
-                This shared policy gates background work such as Git refreshes and provider health
-                probes after their individual intervals elapse.
+                {tr(
+                  "This shared policy gates background work such as Git refreshes and provider health probes after their individual intervals elapse.",
+                )}
               </PolicyTooltip>
             </span>
           }
@@ -2966,7 +3040,7 @@ export function GeneralSettingsPanel() {
           resetAction={
             canResetBackgroundActivity ? (
               <SettingResetButton
-                label="background activity"
+                label={tr("background activity")}
                 onClick={() => updateSettings(resetBackgroundActivitySettings())}
               />
             ) : null
@@ -2992,7 +3066,7 @@ export function GeneralSettingsPanel() {
                 <SelectTrigger
                   size="sm"
                   className="w-full sm:w-40"
-                  aria-label="Background activity profile"
+                  aria-label={tr("Background activity profile")}
                 >
                   <SelectValue>
                     {(value: BackgroundActivityProfileOption | null) =>
@@ -3013,7 +3087,9 @@ export function GeneralSettingsPanel() {
                   <SelectItem hideIndicator value="advanced" disabled={!isEnvironmentScope}>
                     {isEnvironmentScope
                       ? BACKGROUND_ACTIVITY_PROFILE_OPTION_LABELS.advanced
-                      : `${BACKGROUND_ACTIVITY_PROFILE_OPTION_LABELS.advanced} (one environment)`}
+                      : tr("{{advanced}} (one environment)", {
+                          advanced: BACKGROUND_ACTIVITY_PROFILE_OPTION_LABELS.advanced,
+                        })}
                   </SelectItem>
                 </SelectPopup>
               </Select>
@@ -3024,14 +3100,14 @@ export function GeneralSettingsPanel() {
                       <Button
                         size="icon-sm"
                         variant="outline"
-                        aria-label="Configure advanced background activity"
+                        aria-label={tr("Configure advanced background activity")}
                         onClick={() => setBackgroundActivityDialogOpen(true)}
                       >
                         <SettingsIcon className="size-4" />
                       </Button>
                     }
                   />
-                  <TooltipPopup side="top">Configure background activity</TooltipPopup>
+                  <TooltipPopup side="top">{tr("Configure background activity")}</TooltipPopup>
                 </Tooltip>
               ) : null}
               <BackgroundActivityAdvancedDialog
@@ -3043,17 +3119,19 @@ export function GeneralSettingsPanel() {
         />
       </SettingsSection>
 
-      <SettingsSection id="projects-and-threads" title="Projects & threads">
+      <SettingsSection id="projects-and-threads" title={tr("Projects & threads")}>
         <SettingsRow
           serverScoped
           settingKeys={["newWorktreesStartFromOrigin"]}
           {...searchableSetting("start-from-origin")}
-          description="Creates the worktree from the latest matching branch on origin instead of your local branch."
+          description={tr(
+            "Creates the worktree from the latest matching branch on origin instead of your local branch.",
+          )}
           resetAction={
             settings.newWorktreesStartFromOrigin !==
             DEFAULT_UNIFIED_SETTINGS.newWorktreesStartFromOrigin ? (
               <SettingResetButton
-                label="new worktrees start from origin"
+                label={tr("new worktrees start from origin")}
                 onClick={() =>
                   updateSettings({
                     newWorktreesStartFromOrigin:
@@ -3070,7 +3148,7 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ newWorktreesStartFromOrigin: Boolean(checked) })
               }
-              aria-label="Start new worktrees from origin by default"
+              aria-label={tr("Start new worktrees from origin by default")}
             />
           }
         />
@@ -3078,12 +3156,12 @@ export function GeneralSettingsPanel() {
           serverScoped
           settingKeys={["addProjectBaseDirectory"]}
           {...searchableSetting("add-project-starts-in")}
-          description='Leave empty to use "~/" when the Add Project browser opens.'
+          description={tr('Leave empty to use "~/" when the Add Project browser opens.')}
           resetAction={
             settings.addProjectBaseDirectory !==
             DEFAULT_UNIFIED_SETTINGS.addProjectBaseDirectory ? (
               <SettingResetButton
-                label="add project base directory"
+                label={tr("add project base directory")}
                 onClick={() =>
                   updateSettings({
                     addProjectBaseDirectory: DEFAULT_UNIFIED_SETTINGS.addProjectBaseDirectory,
@@ -3098,22 +3176,22 @@ export function GeneralSettingsPanel() {
               className="w-full sm:w-72"
               value={mixedAddProjectBaseDirectory ? "" : settings.addProjectBaseDirectory}
               onCommit={(next) => updateSettings({ addProjectBaseDirectory: next })}
-              placeholder={mixedAddProjectBaseDirectory ? "Mixed" : "~/"}
+              placeholder={mixedAddProjectBaseDirectory ? tr("Mixed") : "~/"}
               spellCheck={false}
-              aria-label="Add project base directory"
+              aria-label={tr("Add project base directory")}
             />
           }
         />
       </SettingsSection>
 
-      <SettingsSection id="confirmations" title="Confirmations">
+      <SettingsSection id="confirmations" title={tr("Confirmations")}>
         <SettingsRow
           {...searchableSetting("unpin-confirmation")}
-          description="Ask before unpinning a thread from the pinned section."
+          description={tr("Ask before unpinning a thread from the pinned section.")}
           resetAction={
             settings.confirmThreadUnpin !== DEFAULT_UNIFIED_SETTINGS.confirmThreadUnpin ? (
               <SettingResetButton
-                label="unpin confirmation"
+                label={tr("unpin confirmation")}
                 onClick={() =>
                   updateSettings({
                     confirmThreadUnpin: DEFAULT_UNIFIED_SETTINGS.confirmThreadUnpin,
@@ -3128,18 +3206,20 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ confirmThreadUnpin: Boolean(checked) })
               }
-              aria-label="Confirm thread unpinning"
+              aria-label={tr("Confirm thread unpinning")}
             />
           }
         />
 
         <SettingsRow
           {...searchableSetting("archive-confirmation")}
-          description="Require a second click on the inline archive action before a thread is archived."
+          description={tr(
+            "Require a second click on the inline archive action before a thread is archived.",
+          )}
           resetAction={
             settings.confirmThreadArchive !== DEFAULT_UNIFIED_SETTINGS.confirmThreadArchive ? (
               <SettingResetButton
-                label="archive confirmation"
+                label={tr("archive confirmation")}
                 onClick={() =>
                   updateSettings({
                     confirmThreadArchive: DEFAULT_UNIFIED_SETTINGS.confirmThreadArchive,
@@ -3154,18 +3234,18 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ confirmThreadArchive: Boolean(checked) })
               }
-              aria-label="Confirm thread archiving"
+              aria-label={tr("Confirm thread archiving")}
             />
           }
         />
 
         <SettingsRow
           {...searchableSetting("delete-confirmation")}
-          description="Ask before deleting a thread and its chat history."
+          description={tr("Ask before deleting a thread and its chat history.")}
           resetAction={
             settings.confirmThreadDelete !== DEFAULT_UNIFIED_SETTINGS.confirmThreadDelete ? (
               <SettingResetButton
-                label="delete confirmation"
+                label={tr("delete confirmation")}
                 onClick={() =>
                   updateSettings({
                     confirmThreadDelete: DEFAULT_UNIFIED_SETTINGS.confirmThreadDelete,
@@ -3180,7 +3260,7 @@ export function GeneralSettingsPanel() {
               onCheckedChange={(checked) =>
                 updateSettings({ confirmThreadDelete: Boolean(checked) })
               }
-              aria-label="Confirm thread deletion"
+              aria-label={tr("Confirm thread deletion")}
             />
           }
         />
@@ -3188,11 +3268,11 @@ export function GeneralSettingsPanel() {
         {isElectron ? (
           <SettingsRow
             {...searchableSetting("quit-confirmation")}
-            description="Hold mode also quits on two quick presses."
+            description={tr("Hold mode also quits on two quick presses.")}
             resetAction={
               settings.confirmQuit !== DEFAULT_UNIFIED_SETTINGS.confirmQuit ? (
                 <SettingResetButton
-                  label="quit shortcut behavior"
+                  label={tr("quit shortcut behavior")}
                   onClick={() =>
                     updateSettings({ confirmQuit: DEFAULT_UNIFIED_SETTINGS.confirmQuit })
                   }
@@ -3211,7 +3291,7 @@ export function GeneralSettingsPanel() {
                 <SelectTrigger
                   size="sm"
                   className="w-full sm:w-40"
-                  aria-label="Quit shortcut behavior"
+                  aria-label={tr("Quit shortcut behavior")}
                 >
                   <SelectValue>{QUIT_CONFIRMATION_MODE_LABELS[settings.confirmQuit]}</SelectValue>
                 </SelectTrigger>
@@ -3228,16 +3308,18 @@ export function GeneralSettingsPanel() {
         ) : null}
       </SettingsSection>
 
-      <SettingsSection id="text-generation" title="Text generation">
+      <SettingsSection id="text-generation" title={tr("Text generation")}>
         <SettingsRow
           serverScoped
           settingKeys={["textGenerationModelSelection"]}
           {...searchableSetting("text-generation-model")}
-          description="Used for thread titles and other generated text on connected devices with this provider. Source control can override it."
+          description={tr(
+            "Used for thread titles and other generated text on connected devices with this provider. Source control can override it.",
+          )}
           resetAction={
             hasServerTargets && isTextGenerationModelDirty ? (
               <SettingResetButton
-                label="text generation model"
+                label={tr("text generation model")}
                 onClick={() =>
                   updateSettings({
                     textGenerationModelSelection:
@@ -3250,11 +3332,11 @@ export function GeneralSettingsPanel() {
           control={
             !hasServerTargets ? (
               <span className="text-sm text-muted-foreground">
-                Connect an environment to choose its text generation model.
+                {tr("Connect an environment to choose its text generation model.")}
               </span>
             ) : !hasTextGenerationProvider ? (
               <span className="text-sm text-muted-foreground">
-                No text generation providers available.
+                {tr("No text generation providers available.")}
               </span>
             ) : (
               <div className="flex flex-wrap items-center justify-end gap-1.5">
@@ -3266,7 +3348,7 @@ export function GeneralSettingsPanel() {
                   instanceEntries={textGenerationModelInstanceEntries}
                   modelOptionsByInstance={textGenerationModelOptionsByInstance}
                   triggerClassName={SETTINGS_PICKER_TRIGGER_CLASSNAME}
-                  {...(mixedTextGenerationModel ? { triggerLabel: "Mixed" } : {})}
+                  {...(mixedTextGenerationModel ? { triggerLabel: tr("Mixed") } : {})}
                   getModelDisabledReason={textGenerationModelDisabledReason}
                   {...(environmentId
                     ? {
@@ -3283,7 +3365,7 @@ export function GeneralSettingsPanel() {
                     if (reason) {
                       toastManager.add({
                         type: "error",
-                        title: "Text generation model not saved",
+                        title: tr("Text generation model not saved"),
                         description: reason,
                       });
                       return;
@@ -3341,7 +3423,7 @@ export function GeneralSettingsPanel() {
         />
       </SettingsSection>
 
-      <SettingsSection id="about" title="About">
+      <SettingsSection id="about" title={tr("About")}>
         {isElectron || HOSTED_APP_CHANNEL ? (
           <AboutVersionSection />
         ) : (
@@ -3349,32 +3431,34 @@ export function GeneralSettingsPanel() {
             <SettingsRow
               id={searchableSetting("app-version").id}
               title={<AboutVersionTitle />}
-              description="Current version of the application."
+              description={tr("Current version of the application.")}
             />
             {IS_NIGHTLY_BUILD ? <NightlyMobileBetaRow /> : null}
           </>
         )}
         <SettingsRow
           {...searchableSetting("privacy-policy")}
-          description="How we handle your data, including the anonymous usage data T3 Code collects."
+          description={tr(
+            "How we handle your data, including the anonymous usage data T3 Code collects.",
+          )}
           control={
             <Button
               render={<a href={PRIVACY_POLICY_URL} target="_blank" rel="noreferrer noopener" />}
               size="sm"
               variant="outline"
             >
-              View policy
+              {tr("View policy")}
             </Button>
           }
         />
       </SettingsSection>
-      <SettingsSection title="Diagnostics">
+      <SettingsSection title={tr("Diagnostics")}>
         <SettingsRow
           {...searchableSetting("diagnostics")}
           description={
             isEnvironmentScope
-              ? "Inspect processes, resource use, and logs on this environment."
-              : "Inspect processes, resource use, and logs on one environment at a time."
+              ? tr("Inspect processes, resource use, and logs on this environment.")
+              : tr("Inspect processes, resource use, and logs on one environment at a time.")
           }
           control={
             <Button
@@ -3384,20 +3468,20 @@ export function GeneralSettingsPanel() {
               size="sm"
               variant="outline"
             >
-              View diagnostics
+              {tr("View diagnostics")}
             </Button>
           }
         />
         <SettingsRow
           {...searchableSetting("open-source-licenses")}
-          description="Notices for dependencies, assets, and optional tools used by T3 Code."
+          description={tr("Notices for dependencies, assets, and optional tools used by T3 Code.")}
           control={
             <Button
               render={<Link to="/settings/open-source-licenses" />}
               size="sm"
               variant="outline"
             >
-              View licenses
+              {tr("View licenses")}
             </Button>
           }
         />
@@ -3472,8 +3556,8 @@ export function ArchivedThreadsPanel() {
       if (!api) return;
       const clicked = await api.contextMenu.show(
         [
-          { id: "unarchive", label: "Unarchive" },
-          { id: "delete", label: "Delete", destructive: true },
+          { id: "unarchive", label: tr("Unarchive") },
+          { id: "delete", label: tr("Delete"), destructive: true },
         ],
         position,
       );
@@ -3487,8 +3571,8 @@ export function ArchivedThreadsPanel() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to unarchive thread",
-              description: error instanceof Error ? error.message : "An error occurred.",
+              title: tr("Failed to unarchive thread"),
+              description: error instanceof Error ? error.message : tr("An error occurred."),
             }),
           );
         }
@@ -3504,8 +3588,8 @@ export function ArchivedThreadsPanel() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to delete thread",
-              description: error instanceof Error ? error.message : "An error occurred.",
+              title: tr("Failed to delete thread"),
+              description: error instanceof Error ? error.message : tr("An error occurred."),
             }),
           );
         }
@@ -3530,16 +3614,16 @@ export function ArchivedThreadsPanel() {
                   <ArchiveIcon className="size-3.5 text-muted-foreground" />
                 )}
                 {isLoadingArchive
-                  ? "Loading archived threads"
+                  ? tr("Loading archived threads")
                   : archiveError
-                    ? "Could not load archived threads"
-                    : "No archived threads"}
+                    ? tr("Could not load archived threads")
+                    : tr("No archived threads")}
               </span>
             }
             description={
               isLoadingArchive
-                ? "Checking connected environments."
-                : (archiveError ?? "Archived threads will appear here.")
+                ? tr("Checking connected environments.")
+                : (archiveError ?? tr("Archived threads will appear here."))
             }
           />
         </SettingsSection>
@@ -3571,9 +3655,9 @@ export function ArchivedThreadsPanel() {
                       toastManager.add(
                         stackedThreadToast({
                           type: "error",
-                          title: "Archived thread action failed",
+                          title: tr("Archived thread action failed"),
                           description:
-                            error instanceof Error ? error.message : "An error occurred.",
+                            error instanceof Error ? error.message : tr("An error occurred."),
                         }),
                       );
                     }
@@ -3582,8 +3666,9 @@ export function ArchivedThreadsPanel() {
                 title={thread.title}
                 description={
                   <>
-                    Archived {formatRelativeTimeLabel(thread.archivedAt ?? thread.createdAt)}
-                    {" \u00b7 Created "}
+                    {tr("Archived")}{" "}
+                    {formatRelativeTimeLabel(thread.archivedAt ?? thread.createdAt)}
+                    {tr(" · Created ")}
                     {formatRelativeTimeLabel(thread.createdAt)}
                   </>
                 }
@@ -3607,9 +3692,9 @@ export function ArchivedThreadsPanel() {
                           toastManager.add(
                             stackedThreadToast({
                               type: "error",
-                              title: "Failed to unarchive thread",
+                              title: tr("Failed to unarchive thread"),
                               description:
-                                error instanceof Error ? error.message : "An error occurred.",
+                                error instanceof Error ? error.message : tr("An error occurred."),
                             }),
                           );
                         }
@@ -3617,7 +3702,7 @@ export function ArchivedThreadsPanel() {
                     }}
                   >
                     <ArchiveX className="size-3.5" />
-                    <span>Unarchive</span>
+                    <span>{tr("Unarchive")}</span>
                   </Button>
                 }
               />

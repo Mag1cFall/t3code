@@ -23,6 +23,7 @@ import {
 } from "../threadNotifications";
 import { resolveSidebarThreadStatus } from "./Sidebar.logic";
 import { toastManager } from "./ui/toast";
+import { tr } from "~/i18n";
 
 export function ThreadNotificationCoordinator() {
   const environmentIds = useEnvironmentIds();
@@ -156,14 +157,14 @@ function EnvironmentNotifications({
       if (!kind) continue;
       const title =
         kind === "completion"
-          ? "Thread completed"
+          ? tr("Thread completed")
           : status === "approval"
-            ? "Approval needed"
+            ? tr("Approval needed")
             : status === "limited"
-              ? "Usage limit reached"
+              ? tr("Usage limit reached")
               : status === "failed"
-                ? "Thread failed"
-                : "Input needed";
+                ? tr("Thread failed")
+                : tr("Input needed");
       if (hasNotificationSound(mode)) {
         void playNotificationSound(kind, () =>
           hasNotificationSound(getClientSettings().notificationMode),
@@ -193,7 +194,7 @@ function EnvironmentNotifications({
               ),
           },
           actionProps: {
-            children: "Open thread",
+            children: tr("Open thread"),
             onClick: () => {
               toastManager.close(toastId);
               void navigate({

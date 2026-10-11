@@ -21,6 +21,7 @@ import { OpenInPicker } from "./OpenInPicker";
 import { ThreadDetailsSection } from "./ThreadDetailsSection";
 import { ThreadAutomationsPanel } from "./ThreadAutomationsPanel";
 import { ThreadRelationshipsPanel } from "./ThreadRelationshipsControl";
+import { tr } from "~/i18n";
 
 export interface ThreadDetailsPanelProps extends Pick<
   ComponentProps<typeof ThreadDetailsCard>,
@@ -101,7 +102,7 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
         <>
           <ThreadDetailsSection
             headingId="thread-details-workspace-heading"
-            title="Workspace"
+            title={tr("Workspace")}
             separated={false}
             showHeading={false}
           >
@@ -147,7 +148,7 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
           {props.gitCwd ? (
             <ThreadDetailsSection
               headingId="thread-details-version-control-heading"
-              title="Version Control"
+              title={tr("Version Control")}
               showHeading={false}
               separated={density === "full"}
             >

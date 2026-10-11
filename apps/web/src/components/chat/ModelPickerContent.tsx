@@ -52,6 +52,7 @@ import {
   type ProviderInstanceEntry,
 } from "../../providerInstances";
 import { providerModelKey, sortProviderModelItems } from "../../modelOrdering";
+import { tr } from "~/i18n";
 
 type ModelPickerItem = {
   slug: string;
@@ -913,7 +914,7 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
           >
             <ComboboxSearchInput
               ref={searchInputRef}
-              placeholder="Search models..."
+              placeholder={tr("Search models...")}
               value={searchQuery}
               onChange={(e) => {
                 if (!isSearching) setSearchHeight(pickerContentRef.current?.offsetHeight ?? 0);
@@ -993,9 +994,13 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
                           className="group w-full cursor-pointer"
                         >
                           <div className="min-w-0 flex-1 text-left">
-                            <div className="text-xs font-medium leading-snug">Legacy models</div>
+                            <div className="text-xs font-medium leading-snug">
+                              {tr("Legacy models")}
+                            </div>
                             <div className="mt-1 text-xs font-normal leading-snug text-muted-foreground/70">
-                              {legacySection.legacyModels.length} models
+                              {tr("{{length}} models", {
+                                length: legacySection.legacyModels.length,
+                              })}
                             </div>
                           </div>
                           <ChevronRightIcon
@@ -1076,14 +1081,14 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
                       }}
                     >
                       {providerSetupEntries.length > 1
-                        ? `Set up ${entry.displayName}`
-                        : "Open provider setup"}
+                        ? tr("Set up {{displayName}}", { displayName: entry.displayName })
+                        : tr("Open provider setup")}
                     </InlineButton>
                   </div>
                 ))}
               </div>
             ) : (
-              <ComboboxEmpty className="empty:h-0">No models found</ComboboxEmpty>
+              <ComboboxEmpty className="empty:h-0">{tr("No models found")}</ComboboxEmpty>
             )}
             {updateRequiredNotices.map(({ instanceId, notice }) => (
               <p
@@ -1097,7 +1102,7 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
                     void navigate({ to: "/settings/providers" });
                   }}
                 >
-                  Provider settings
+                  {tr("Provider settings")}
                 </InlineButton>
               </p>
             ))}

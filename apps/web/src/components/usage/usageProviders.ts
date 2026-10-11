@@ -1,6 +1,7 @@
 import type { UsageProviderKind } from "@t3tools/contracts";
 
 import { ProviderDriverKind } from "@t3tools/contracts";
+import { tr } from "~/i18n";
 
 type UsageProviderPresentation = {
   readonly label: string;
@@ -25,7 +26,7 @@ export const PROVIDER_PRESENTATION = {
     driverKind: ProviderDriverKind.make("claudeAgent"),
   },
   grok: {
-    label: "Grok Build",
+    label: tr("Grok Build"),
     // Contrast-aware neutral between the Codex series and muted chart chrome.
     color: "color-mix(in oklab, var(--contrast-foreground) 72%, var(--background))",
     driverKind: ProviderDriverKind.make("grok"),

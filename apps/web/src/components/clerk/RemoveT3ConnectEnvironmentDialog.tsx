@@ -11,6 +11,7 @@ import {
 } from "../ui/alert-dialog";
 import { Button, InlineButton } from "../ui/button";
 import { useT3ConnectAccountPage } from "./T3ConnectAccountPages";
+import { tr } from "~/i18n";
 
 /**
  * Confirms removing a T3 Connect environment from this device. Removal here
@@ -43,12 +44,14 @@ export function RemoveT3ConnectEnvironmentDialog({
       >
         <AlertDialogPopup>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove {shownLabel} from this device?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {tr("Remove {{shownLabel}} from this device?", { shownLabel })}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This forgets its pairing, credentials, and cached threads here.
+              {tr("This forgets its pairing, credentials, and cached threads here.")}
             </AlertDialogDescription>
             <AlertDialogDescription>
-              It stays on your T3 Connect account and keeps its host space. Deregister it in{" "}
+              {tr("It stays on your T3 Connect account and keeps its host space. Deregister it in")}{" "}
               {openAccountPage ? (
                 <InlineButton
                   onClick={() => {
@@ -56,18 +59,20 @@ export function RemoveT3ConnectEnvironmentDialog({
                     openAccountPage();
                   }}
                 >
-                  T3 Connect settings
+                  {tr("T3 Connect settings")}
                 </InlineButton>
               ) : (
-                "T3 Connect settings"
+                tr("T3 Connect settings")
               )}{" "}
-              to free it.
+              {tr("to free it.")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogClose render={<Button variant="outline" />}>Cancel</AlertDialogClose>
+            <AlertDialogClose render={<Button variant="outline" />}>
+              {tr("Cancel")}
+            </AlertDialogClose>
             <Button variant="destructive" onClick={onConfirm}>
-              Remove from this device
+              {tr("Remove from this device")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogPopup>

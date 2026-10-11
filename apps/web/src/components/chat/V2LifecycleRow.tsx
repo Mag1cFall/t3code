@@ -46,6 +46,7 @@ import { cn } from "~/lib/utils";
 import { TimelineSystemDivider } from "./TimelineSystemDivider";
 import { Button, InlineButton } from "../ui/button";
 import { T3Wordmark } from "../T3Wordmark";
+import { tr } from "~/i18n";
 
 const LIFECYCLE_TYPES = new Set<OrchestrationV2TurnItem["type"]>([
   "run_interrupt_request",
@@ -81,7 +82,7 @@ export function V2LifecycleRow(props: {
           <span aria-hidden="true" className="font-mono">
             ■
           </span>
-          <span className="font-medium">Interrupt requested</span>
+          <span className="font-medium">{tr("Interrupt requested")}</span>
           <span aria-hidden="true" className="opacity-50">
             ·
           </span>
@@ -96,7 +97,7 @@ export function V2LifecycleRow(props: {
   if (item.type === "run_interrupt_result") {
     return (
       <TimelineSystemDivider
-        label="Run interrupted"
+        label={tr("Run interrupted")}
         detail={item.message}
         tone="danger"
         icon={XIcon}
@@ -110,12 +111,12 @@ export function V2LifecycleRow(props: {
         : `${item.beforeTokenCount ?? "?"} → ${item.afterTokenCount ?? "?"} tokens`;
     const label =
       item.status === "failed"
-        ? "Context compaction failed"
+        ? tr("Context compaction failed")
         : item.status === "cancelled" || item.status === "interrupted"
-          ? "Context compaction stopped"
+          ? tr("Context compaction stopped")
           : item.status === "pending" || item.status === "running" || item.status === "waiting"
-            ? "Compacting context"
-            : "Context compacted";
+            ? tr("Compacting context")
+            : tr("Context compacted");
     return (
       <TimelineSystemDivider label={label} detail={item.summary ?? tokenDetail} icon={MinusIcon} />
     );
@@ -124,7 +125,7 @@ export function V2LifecycleRow(props: {
     const { from: fromEndpoints, to } = resolveHandoffEndpoints(item, props.runs);
     return (
       <TimelineSystemDivider
-        label="Context handoff"
+        label={tr("Context handoff")}
         icon={ArrowRightLeftIcon}
         showDetailSeparator={false}
         tone={item.status === "failed" ? "danger" : "neutral"}
@@ -161,9 +162,11 @@ export function V2LifecycleRow(props: {
     const relatedThreadId = item.source.type === "run" ? item.source.threadId : item.targetThreadId;
     return (
       <TimelineSystemDivider
-        label={item.source.type === "run" ? "Forked from conversation" : "Conversation fork"}
+        label={
+          item.source.type === "run" ? tr("Forked from conversation") : tr("Conversation fork")
+        }
         icon={GitForkIcon}
-        actionLabel={item.source.type === "run" ? "Open source conversation" : "Open fork"}
+        actionLabel={item.source.type === "run" ? tr("Open source conversation") : tr("Open fork")}
         onAction={() => props.onOpenThread(relatedThreadId)}
       />
     );
@@ -179,15 +182,15 @@ export function V2LifecycleRow(props: {
             <MessageSquareIcon className="size-4 text-secondary-label" aria-hidden />
           </span>
           <span className="min-w-0 flex-1 truncate text-sm font-medium">
-            {item.title ?? "Created thread"}
+            {item.title ?? tr("Created thread")}
           </span>
           <Button
             size="xs"
             variant="outline"
-            aria-label={`Open ${item.title ?? "created thread"}`}
+            aria-label={tr("Open {{value}}", { value: item.title ?? "created thread" })}
             onClick={() => props.onOpenThread(item.targetThreadId)}
           >
-            Open chat
+            {tr("Open chat")}
           </Button>
         </div>
       );
@@ -196,13 +199,18 @@ export function V2LifecycleRow(props: {
       <WorkLogRow
         data-v2-item-type={item.type}
         icon={<T3Wordmark className="size-4 text-icon-muted" aria-hidden />}
-        label={<>Created thread{item.title ? ` · ${item.title}` : ""}</>}
+        label={
+          <>
+            {tr("Created thread")}
+            {item.title ? ` · ${item.title}` : ""}
+          </>
+        }
         trailing={
           <InlineButton
-            aria-label={`Open ${item.title ?? "created thread"}`}
+            aria-label={tr("Open {{value}}", { value: item.title ?? "created thread" })}
             onClick={() => props.onOpenThread(item.targetThreadId)}
           >
-            Open chat
+            {tr("Open chat")}
           </InlineButton>
         }
       />
@@ -245,14 +253,14 @@ const STATUS_VISUALS: Record<
   OrchestrationV2TurnItem["status"],
   { dotClass: string; label: string }
 > = {
-  pending: { dotClass: "bg-info", label: "Queued" },
-  running: { dotClass: "bg-info", label: "Running" },
-  waiting: { dotClass: "bg-info", label: "Waiting" },
-  idle: { dotClass: "bg-muted-foreground/50", label: "Idle · resumable" },
-  completed: { dotClass: "bg-success", label: "Completed" },
-  failed: { dotClass: "bg-destructive", label: "Failed" },
-  cancelled: { dotClass: "bg-muted-foreground/60", label: "Stopped" },
-  interrupted: { dotClass: "bg-muted-foreground/60", label: "Stopped" },
+  pending: { dotClass: "bg-info", label: tr("Queued") },
+  running: { dotClass: "bg-info", label: tr("Running") },
+  waiting: { dotClass: "bg-info", label: tr("Waiting") },
+  idle: { dotClass: "bg-muted-foreground/50", label: tr("Idle · resumable") },
+  completed: { dotClass: "bg-success", label: tr("Completed") },
+  failed: { dotClass: "bg-destructive", label: tr("Failed") },
+  cancelled: { dotClass: "bg-muted-foreground/60", label: tr("Stopped") },
+  interrupted: { dotClass: "bg-muted-foreground/60", label: tr("Stopped") },
 };
 
 function subagentStatusVisual(status: OrchestrationV2TurnItem["status"]) {
@@ -504,7 +512,7 @@ function SubagentTimelineLink(props: {
             <button
               type="button"
               data-v2-item-type="subagent"
-              aria-label={`Open ${props.title}`}
+              aria-label={tr("Open {{title}}", { title: props.title })}
               aria-description={statusLabel}
               onClick={() => props.onOpenThread(threadId)}
               className={cn(

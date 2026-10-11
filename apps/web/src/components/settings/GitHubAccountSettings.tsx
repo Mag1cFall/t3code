@@ -11,6 +11,7 @@ import { Switch } from "../ui/switch";
 import { groupGitHubAccounts, nextGitHubHosts } from "./GitHubAccountSettings.logic";
 import { readGitHubSettings } from "@t3tools/client-runtime/source-control-clients";
 import { redactedPlaceholder } from "./RedactedSensitiveText";
+import { tr } from "~/i18n";
 
 /** Sentinel select value for "follow gh's active login"; logins never contain spaces. */
 const ACTIVE_ACCOUNT = "active gh account";
@@ -32,7 +33,7 @@ function RedactedLogin(props: {
       <span className="select-none blur-xs" aria-hidden>
         {redactedPlaceholder(props.account)}
       </span>
-      <span className="sr-only">{props.label ?? "Hidden account"}</span>
+      <span className="sr-only">{props.label ?? tr("Hidden account")}</span>
     </span>
   );
 }
@@ -53,7 +54,7 @@ export function GitHubAccountSettings({
   const github = useEnvironmentSettings(environmentId, readGitHubSettings);
   const hosts = github.hosts;
   const updateSettings = useAtomCommand(serverEnvironment.updateSettings, {
-    label: "save GitHub account settings",
+    label: tr("save GitHub account settings"),
   });
   const [saving, setSaving] = useState(false);
   const [revealed, setRevealed] = useState(false);
@@ -82,8 +83,9 @@ export function GitHubAccountSettings({
   if (groups.length === 0) {
     return (
       <p className="text-xs text-muted-foreground">
-        Sign in with <code className="rounded bg-muted px-1 py-px text-2xs">gh auth login</code> on
-        the server host, then rescan to choose accounts here.
+        {tr("Sign in with")}{" "}
+        <code className="rounded bg-muted px-1 py-px text-2xs">gh auth login</code>{" "}
+        {tr("on the server host, then rescan to choose accounts here.")}
       </p>
     );
   }
@@ -92,14 +94,14 @@ export function GitHubAccountSettings({
     <div className="grid gap-4">
       <div className="flex items-center justify-between gap-3">
         <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground">
-          Choose which <code className="rounded bg-muted px-1 py-px text-2xs">gh</code> login each
-          GitHub host uses, or turn a host off.
+          {tr("Choose which")} <code className="rounded bg-muted px-1 py-px text-2xs">gh</code>{" "}
+          {tr("login each GitHub host uses, or turn a host off.")}
         </p>
         <Button
           size="icon-xs"
           variant="ghost-muted"
           onClick={() => setRevealed((current) => !current)}
-          aria-label={revealed ? "Hide GitHub accounts" : "Reveal GitHub accounts"}
+          aria-label={revealed ? tr("Hide GitHub accounts") : tr("Reveal GitHub accounts")}
           aria-pressed={revealed}
         >
           {revealed ? <EyeOffIcon /> : <EyeIcon />}
@@ -118,7 +120,7 @@ export function GitHubAccountSettings({
                 <span className="text-xs font-medium text-foreground">{group.host}</span>
                 {group.selectable.length === 1 && group.selectable[0] !== undefined ? (
                   <p className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
-                    <span>Signed in as</span>
+                    <span>{tr("Signed in as")}</span>
                     <RedactedLogin revealed={revealed} account={group.selectable[0]} />
                   </p>
                 ) : null}
@@ -126,13 +128,13 @@ export function GitHubAccountSettings({
               <Switch
                 checked={enabled}
                 disabled={saving}
-                aria-label={`Use GitHub on ${group.host}`}
+                aria-label={tr("Use GitHub on {{host}}", { host: group.host })}
                 onCheckedChange={(checked) => void save(group.host, { enabled: checked })}
               />
             </div>
             {group.selectable.length > 1 ? (
               <div className="flex items-center justify-between gap-3">
-                <span className="text-xs text-muted-foreground">Account</span>
+                <span className="text-xs text-muted-foreground">{tr("Account")}</span>
                 <div className="w-64 max-w-full">
                   <Select
                     value={pinned}
@@ -144,12 +146,15 @@ export function GitHubAccountSettings({
                       });
                     }}
                   >
-                    <SelectTrigger size="sm" aria-label={`GitHub account for ${group.host}`}>
+                    <SelectTrigger
+                      size="sm"
+                      aria-label={tr("GitHub account for {{host}}", { host: group.host })}
+                    >
                       <SelectValue>
                         {(value: string) =>
                           value === ACTIVE_ACCOUNT ? (
                             <span className="flex min-w-0 items-center gap-1">
-                              Active gh account
+                              {tr("Active gh account")}
                               {group.activeAccount ? (
                                 <>
                                   (
@@ -170,7 +175,7 @@ export function GitHubAccountSettings({
                     <SelectPopup align="end" alignItemWithTrigger={false}>
                       <SelectItem value={ACTIVE_ACCOUNT}>
                         <span className="flex min-w-0 items-center gap-1">
-                          Active gh account
+                          {tr("Active gh account")}
                           {group.activeAccount ? (
                             <>
                               (<RedactedLogin revealed={revealed} account={group.activeAccount} />)
@@ -183,7 +188,7 @@ export function GitHubAccountSettings({
                           <RedactedLogin
                             revealed={revealed}
                             account={account}
-                            label={`Account ${index + 1}`}
+                            label={tr("Account {{value}}", { value: index + 1 })}
                           />
                         </SelectItem>
                       ))}
@@ -195,7 +200,7 @@ export function GitHubAccountSettings({
             {stalePin ? (
               <div className="flex items-center justify-between gap-3">
                 <p className="text-xs text-warning">
-                  The chosen login is no longer signed in, so the active gh login is used.
+                  {tr("The chosen login is no longer signed in, so the active gh login is used.")}
                 </p>
                 <Button
                   size="xs"
@@ -203,7 +208,7 @@ export function GitHubAccountSettings({
                   disabled={saving}
                   onClick={() => void save(group.host, { account: null })}
                 >
-                  Use active login
+                  {tr("Use active login")}
                 </Button>
               </div>
             ) : null}
@@ -213,13 +218,17 @@ export function GitHubAccountSettings({
                 className="flex min-w-0 flex-wrap items-center gap-1 text-xs text-muted-foreground/70"
               >
                 <RedactedLogin revealed={revealed} account={entry.account} />
-                <span>can't be used: {entry.error ?? "gh reports this login as invalid."}</span>
+                <span>
+                  {tr("can't be used:")} {entry.error ?? tr("gh reports this login as invalid.")}
+                </span>
               </p>
             ))}
             {group.environmentVariable ? (
               <p className="text-xs text-warning">
-                {group.environmentVariable} is set on the server, so it overrides the account chosen
-                here until it is unset.
+                {tr(
+                  "{{environmentVariable}} is set on the server, so it overrides the account chosen here until it is unset.",
+                  { environmentVariable: group.environmentVariable },
+                )}
               </p>
             ) : null}
           </div>

@@ -5,6 +5,7 @@ import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 
 import { isCommentSubmitShortcut } from "./commentSubmitShortcut";
+import { tr } from "~/i18n";
 
 interface DiffCommentSecondaryAction {
   readonly label: string;
@@ -37,7 +38,7 @@ export function DiffCommentAnnotation({
   onCancel,
   onComment,
   onDelete,
-  placeholder = "Add a comment…",
+  placeholder = tr("Add a comment…"),
   submitLabel = "Comment",
   pending = false,
   secondaryAction,
@@ -71,7 +72,7 @@ export function DiffCommentAnnotation({
             <Button
               variant="ghost-muted"
               size="icon-xs"
-              aria-label="Delete comment"
+              aria-label={tr("Delete comment")}
               onClick={onDelete}
             >
               <Trash2 className="size-3" />
@@ -95,7 +96,7 @@ export function DiffCommentAnnotation({
         size="sm"
         value={displayedText}
         placeholder={placeholder}
-        aria-label={`Comment on lines ${rangeLabel}`}
+        aria-label={tr("Comment on lines {{rangeLabel}}", { rangeLabel })}
         onChange={(event) => (onTextChange ?? setLocalDraftText)(event.target.value)}
         onFocus={(event) => {
           const end = event.currentTarget.value.length;
@@ -113,9 +114,11 @@ export function DiffCommentAnnotation({
         }}
       />
       <div className="mt-1.5 flex items-center gap-1">
-        <span className="mr-auto text-3xs text-muted-foreground/70">⌘/Ctrl Enter to send</span>
+        <span className="mr-auto text-3xs text-muted-foreground/70">
+          {tr("⌘/Ctrl Enter to send")}
+        </span>
         <Button variant="ghost-muted" size="xs" onClick={onCancel}>
-          Cancel
+          {tr("Cancel")}
         </Button>
         {secondaryAction ? (
           <Button

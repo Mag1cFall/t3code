@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { GhosttyTerminalSurface } from "../../terminal/ghostty/surface";
 import { ensureLocalApi } from "../../localApi";
 import { terminalThemeFromApp } from "../ThreadTerminalDrawer";
+import { tr } from "~/i18n";
 
 /** Loaded only for an interactive login. PTY input is serialized by the parent. */
 export default function ProviderAuthTerminal({
@@ -44,7 +45,7 @@ export default function ProviderAuthTerminal({
         if (/^https?:\/\//i.test(url))
           void ensureLocalApi()
             .shell.openExternal(url)
-            .catch(() => setError("Could not open the provider link."));
+            .catch(() => setError(tr("Could not open the provider link.")));
       },
     })
       .then((terminal) => {
@@ -56,7 +57,7 @@ export default function ProviderAuthTerminal({
         terminal.write(latest.current.output);
         written.current = latest.current.offset;
       })
-      .catch(() => setError("Could not load the sign-in terminal. Cancel and retry sign-in."));
+      .catch(() => setError(tr("Could not load the sign-in terminal. Cancel and retry sign-in.")));
     return () => {
       disposed = true;
       surface.current?.dispose();
@@ -67,7 +68,7 @@ export default function ProviderAuthTerminal({
     <>
       <div
         ref={mount}
-        aria-label="Provider sign-in terminal"
+        aria-label={tr("Provider sign-in terminal")}
         className="relative h-64 overflow-hidden rounded-md border border-border"
       />
       {error ? (

@@ -8,6 +8,7 @@ import { DISCONNECTED_COMPOSER_PLACEHOLDER } from "../../composerPlaceholder";
 import { resolveDiffThemeName, type DiffThemeName } from "../../lib/diffRendering";
 import { PREFERRED_HIGHLIGHTER } from "../../lib/syntaxHighlighting";
 import { GhosttyTerminalSurface } from "~/terminal/ghostty/surface";
+import { tr } from "~/i18n";
 
 // The font previews are the real surfaces, not lookalikes: the composer's
 // Tiptap editor, the diff panel's file diff, and the Ghostty canvas
@@ -21,7 +22,7 @@ const EMPTY_SKILLS: ReadonlyArray<never> = [];
 // markdown-style file links render as chips, so the preview shows prompt
 // text and pills exactly as the real composer draws them.
 const PROMPT_PREVIEW_TEXT =
-  "Use $frontend-design to fix the flaky test in " +
+  tr("Use $frontend-design to fix the flaky test in ") +
   "[surface.test.ts](apps/web/src/terminal/ghostty/surface.test.ts) and align the header with " +
   "[SettingsPanels.tsx](apps/web/src/components/settings/SettingsPanels.tsx) before shipping.";
 
@@ -39,7 +40,7 @@ export function PromptFontPreview() {
   return (
     <div className="mt-1 mb-2 rounded-lg border border-border bg-background px-3 py-2">
       <ComposerPromptEditor
-        ariaLabel="Prompt font preview"
+        ariaLabel={tr("Prompt font preview")}
         editorRef={editorRef}
         value={prompt}
         cursor={cursor}
@@ -267,7 +268,7 @@ export function TerminalFontPreview({ family, size }: { family: string; size: nu
     <div
       ref={mountRef}
       className="relative mt-1 mb-2 h-52 overflow-hidden rounded-lg border border-border"
-      aria-label="Terminal font preview"
+      aria-label={tr("Terminal font preview")}
     />
   );
 }

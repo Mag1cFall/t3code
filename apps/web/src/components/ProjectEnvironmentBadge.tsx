@@ -3,6 +3,7 @@ import type { EnvironmentId, EnvironmentMachineKind } from "@t3tools/contracts";
 import type { SidebarProjectSnapshot } from "~/sidebarProjectGrouping";
 import { EnvironmentMachineIcon } from "./EnvironmentMachineIcon";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
+import { tr } from "~/i18n";
 
 /**
  * Machine icon for a project picker row whose group has a member on another
@@ -21,7 +22,7 @@ export function ProjectEnvironmentBadge(props: {
   // so sort by label to keep the icon and tooltip stable.
   const remoteMembers = props.group.memberProjects
     .filter((member) => member.environmentId !== props.primaryEnvironmentId)
-    .map((member) => ({ ...member, environmentLabel: member.environmentLabel ?? "Remote" }))
+    .map((member) => ({ ...member, environmentLabel: member.environmentLabel ?? tr("Remote") }))
     .sort((a, b) => a.environmentLabel.localeCompare(b.environmentLabel));
   const first = remoteMembers[0];
   if (!first) return null;
@@ -30,7 +31,7 @@ export function ProjectEnvironmentBadge(props: {
     .filter((label, index, all) => all.indexOf(label) === index)
     .join(", ");
   const alsoHere = remoteMembers.length < props.group.memberProjects.length;
-  const description = `${alsoHere ? "Also on" : "On"} ${labels}`;
+  const description = `${alsoHere ? tr("Also on") : "On"} ${labels}`;
   return (
     <Tooltip>
       <TooltipTrigger

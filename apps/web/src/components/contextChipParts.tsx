@@ -18,6 +18,7 @@ import { Popover, PopoverPopup, PopoverTitle, PopoverTrigger } from "./ui/popove
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
 import { PullRequestLinkPreview } from "./pullRequest/PullRequestLinkPreview";
 import { usePullRequestPreviewTarget } from "~/lib/openPullRequestLink";
+import { tr } from "~/i18n";
 
 /** ContextChip kind for a pull request context in each display state. */
 export const PULL_REQUEST_CHIP_KINDS = {
@@ -77,7 +78,9 @@ export function ContextChipPopover(props: {
           <ContextChip
             kind={props.kind}
             render={<button type="button" />}
-            aria-label={`${props.accessibleLabel}. Show details`}
+            aria-label={tr("{{accessibleLabel}}. Show details", {
+              accessibleLabel: props.accessibleLabel,
+            })}
             data-markdown-copy={props.copyMarkdown}
           />
         }
@@ -110,7 +113,11 @@ export function PullRequestChip(props: {
     <ContextChip
       kind={props.kind}
       render={<button type="button" />}
-      aria-label={`Open ${props.kindLabel} ${props.label}: ${props.metadata.title}`}
+      aria-label={tr("Open {{kindLabel}} {{label}}: {{title}}", {
+        kindLabel: props.kindLabel,
+        label: props.label,
+        title: props.metadata.title,
+      })}
       data-markdown-copy={props.copyMarkdown}
       onClick={(event) => props.onOpen(event, props.metadata.url)}
     >
@@ -188,7 +195,7 @@ export function ImageChipButton({
     <ContextChip
       kind="image"
       render={<button type="button" />}
-      aria-label={`Image attachment, ${name}, ${size}`}
+      aria-label={tr("Image attachment, {{name}}, {{size}}", { name, size })}
       style={{ ...style, ...(accent ? { "--context-chip-accent": accent } : {}) } as CSSProperties}
       {...props}
     >
@@ -296,7 +303,7 @@ export function UnresolvedChip(props: { label: string; tooltip: string; copyMark
       icon={<CircleDashedIcon />}
       label={props.label}
       state="unresolved"
-      aria-label={`Unavailable context, ${props.label}`}
+      aria-label={tr("Unavailable context, {{label}}", { label: props.label })}
       data-markdown-copy={props.copyMarkdown}
       tooltip={props.tooltip}
     />

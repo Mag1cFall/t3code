@@ -22,6 +22,7 @@ import * as Equal from "effect/Equal";
 import * as Cause from "effect/Cause";
 
 import type { ResolvedSettingsScope } from "./settingsScope";
+import { tr } from "~/i18n";
 
 export type ScopedSettingsPatch = ServerSettingsPatch & ClientSettingsPatch;
 
@@ -298,10 +299,14 @@ export function planScopedSettingsPatch(
       : scope.kind === "unavailable"
         ? scope.message
         : unscopableKeys.length > 0
-          ? "This setting is environment-wide and cannot be overridden by a project."
+          ? tr("This setting is environment-wide and cannot be overridden by a project.")
           : isProjectScope
-            ? "Connect the selected checkouts, or update their environments, to save a project override."
-            : `Connect ${scope.kind === "environment" ? scope.label : "an environment"} to save this setting.`;
+            ? tr(
+                "Connect the selected checkouts, or update their environments, to save a project override.",
+              )
+            : tr("Connect {{value}} to save this setting.", {
+                value: scope.kind === "environment" ? scope.label : "an environment",
+              });
   return { clientPatch, hasClientWrite, serverWrites, unavailableReason };
 }
 
@@ -324,7 +329,9 @@ export function planScopedSettingsClear(
     unavailableReason:
       serverWrites.length > 0
         ? null
-        : "Connect the selected checkouts, or update their environments, to reset this override.",
+        : tr(
+            "Connect the selected checkouts, or update their environments, to reset this override.",
+          ),
   };
 }
 
@@ -385,7 +392,7 @@ export function planProjectOverridesClear(
     hasClientWrite: false,
     serverWrites,
     unavailableReason:
-      serverWrites.length > 0 ? null : "Connect the environments to reset these overrides.",
+      serverWrites.length > 0 ? null : tr("Connect the environments to reset these overrides."),
   };
 }
 
@@ -419,7 +426,7 @@ export async function persistScopedSettingsPatch(
         message:
           error instanceof Error
             ? error.message
-            : "The save failed. Try reconnecting and saving again.",
+            : tr("The save failed. Try reconnecting and saving again."),
       },
     ];
   });

@@ -12,6 +12,7 @@ import { cn } from "~/lib/utils";
 import type { EnvironmentPresentation } from "~/state/environments";
 import { isDesktopLocalConnectionTarget } from "~/connection/desktopLocal";
 import { EnvironmentMachineIcon } from "../EnvironmentMachineIcon";
+import { tr } from "~/i18n";
 
 export function formatDesktopSshTarget(target: DesktopSshEnvironmentTarget): string {
   const authority = target.username ? `${target.username}@${target.hostname}` : target.hostname;
@@ -28,7 +29,7 @@ export function environmentTransportLabel(
   activeTarget: ConnectionTarget | null = null,
 ): string {
   const { entry } = environment;
-  if (entry.target._tag === "PrimaryConnectionTarget") return "This machine";
+  if (entry.target._tag === "PrimaryConnectionTarget") return tr("This machine");
   const routes = connectionRoutes(entry);
   if (routes.length > 1) {
     const active =
@@ -50,7 +51,7 @@ export function environmentTransportLabel(
   ) {
     return `SSH ${formatDesktopSshTarget(entry.profile.value.target)}`;
   }
-  return environment.displayUrl ?? "Remote link";
+  return environment.displayUrl ?? tr("Remote link");
 }
 
 /**

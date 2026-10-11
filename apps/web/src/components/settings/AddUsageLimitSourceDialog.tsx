@@ -14,6 +14,7 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { tr } from "~/i18n";
 
 /**
  * Stable per hub and readable in settings.json. Dots and dashes in the host
@@ -92,10 +93,10 @@ export function AddUsageLimitSourceDialog({
     >
       <DialogPopup className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Add a CLIProxyAPI hub</DialogTitle>
+          <DialogTitle>{tr("Add a CLIProxyAPI hub")}</DialogTitle>
           <DialogDescription>
-            Show the quota of every account the hub pools, next to the providers on{" "}
-            {environmentLabel}. The key stays on that server.
+            {tr("Show the quota of every account the hub pools, next to the providers on")}{" "}
+            {tr("{{environmentLabel}}. The key stays on that server.", { environmentLabel })}
           </DialogDescription>
         </DialogHeader>
         <DialogPanel>
@@ -107,7 +108,7 @@ export function AddUsageLimitSourceDialog({
             }}
           >
             <div className="grid gap-1.5">
-              <Label htmlFor="usage-source-url">Hub URL</Label>
+              <Label htmlFor="usage-source-url">{tr("Hub URL")}</Label>
               <Input
                 id="usage-source-url"
                 placeholder="https://hub.example.ts.net:8318"
@@ -117,7 +118,7 @@ export function AddUsageLimitSourceDialog({
               />
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="usage-source-key">Management key</Label>
+              <Label htmlFor="usage-source-key">{tr("Management key")}</Label>
               <Input
                 id="usage-source-key"
                 type="password"
@@ -127,10 +128,10 @@ export function AddUsageLimitSourceDialog({
               />
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="usage-source-label">Label (optional)</Label>
+              <Label htmlFor="usage-source-label">{tr("Label (optional)")}</Label>
               <Input
                 id="usage-source-label"
-                placeholder="Defaults to the hub's host name"
+                placeholder={tr("Defaults to the hub's host name")}
                 value={label}
                 onChange={(event) => setLabel(event.target.value)}
               />
@@ -145,10 +146,10 @@ export function AddUsageLimitSourceDialog({
               onOpenChange(false);
             }}
           >
-            Cancel
+            {tr("Cancel")}
           </Button>
           <Button onClick={save} disabled={!canSave}>
-            Add hub
+            {tr("Add hub")}
           </Button>
         </DialogFooter>
       </DialogPopup>

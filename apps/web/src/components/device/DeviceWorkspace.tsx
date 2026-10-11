@@ -9,6 +9,7 @@ import { DeviceControlsRail } from "./DeviceControlsRail";
 import { DeviceStreamView, type DeviceStreamHandle } from "./DeviceStreamView";
 import { DeviceToolsPanel } from "./DeviceToolsPanel";
 import { useDeviceControls } from "./useDeviceControls";
+import { tr } from "~/i18n";
 
 /** Keyed by environment and device; the screen, quick controls and drawer share the same session. */
 export function DeviceWorkspace(props: {
@@ -65,7 +66,7 @@ export function DeviceWorkspace(props: {
           if (cause instanceof DeviceScreenshotError && cause.status === 401)
             refreshDeviceHubAccess(props.environmentId);
           setScreenshotError(
-            cause instanceof Error ? cause.message : "Screenshot capture failed. Try again.",
+            cause instanceof Error ? cause.message : tr("Screenshot capture failed. Try again."),
           );
         }
       })

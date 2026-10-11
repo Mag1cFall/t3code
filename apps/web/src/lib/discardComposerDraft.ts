@@ -10,6 +10,7 @@ import {
 import { showThreadUndoNotice } from "../hooks/showThreadUndoNotice";
 import * as ThreadUndo from "../hooks/threadUndo";
 import { releaseDraftAttachments } from "./attachmentUploadQueue";
+import { tr } from "~/i18n";
 
 /**
  * Discards a draft's unsent content behind the sidebar undo notice. A new-thread
@@ -37,7 +38,7 @@ export function discardComposerDraft(target: ComposerThreadTarget): void {
   showThreadUndoNotice({
     action: "Discarded",
     claim,
-    failureTitle: "Failed to restore draft",
+    failureTitle: tr("Failed to restore draft"),
     undo: async () => {
       const current = useComposerDraftStore.getState().draftsByThreadKey[key];
       if (current && composerDraftHasUserContent(current)) {

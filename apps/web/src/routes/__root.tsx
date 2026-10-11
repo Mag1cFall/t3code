@@ -84,6 +84,7 @@ import {
 import { getDesktopSnapShotBridge } from "../lib/desktopSnapShot";
 import { installDesktopPasteAsText } from "../lib/desktopPasteAsText";
 import { shouldResumeSnapShotSetupOnStartup } from "../lib/snapShotSetupResume";
+import { tr } from "~/i18n";
 
 export const Route = createRootRoute({
   beforeLoad: async ({ location }) => {
@@ -128,12 +129,14 @@ function RootRouteNotFoundView() {
   return (
     <main className="flex min-h-0 min-w-0 flex-1 items-center justify-center p-6">
       <div className="flex max-w-sm flex-col items-center gap-4 text-center">
-        <h1 className="text-lg font-medium text-foreground">Page not found</h1>
+        <h1 className="text-lg font-medium text-foreground">{tr("Page not found")}</h1>
         <p className="text-sm text-muted-foreground">
-          This link doesn't point to a page in {APP_DISPLAY_NAME}. Go home to choose a project or
-          start a thread.
+          {tr(
+            "This link doesn't point to a page in {{APP_DISPLAY_NAME}}. Go home to choose a project or start a thread.",
+            { APP_DISPLAY_NAME },
+          )}
         </p>
-        <Button render={<Link to="/" replace />}>Go home</Button>
+        <Button render={<Link to="/" replace />}>{tr("Go home")}</Button>
       </div>
     </main>
   );
@@ -395,22 +398,24 @@ function RootRouteErrorView({ error }: ErrorComponentProps) {
     <StandalonePage tone="error">
       <StandalonePageHeader
         eyebrow={APP_DISPLAY_NAME}
-        title="Something went wrong."
+        title={tr("Something went wrong.")}
         description={message}
       />
 
       <div className="mt-5 flex flex-wrap gap-2">
         <Button size="sm" onClick={() => void router.invalidate()}>
-          Try again
+          {tr("Try again")}
         </Button>
         <Button size="sm" variant="outline" onClick={() => window.location.reload()}>
-          Reload app
+          {tr("Reload app")}
         </Button>
         <CopyErrorButton report={report} />
       </div>
 
       <div className="mt-5 overflow-hidden rounded-lg border border-border/70 bg-background/55">
-        <p className="px-3 py-1.5 text-xs font-medium text-muted-foreground">Error report</p>
+        <p className="px-3 py-1.5 text-xs font-medium text-muted-foreground">
+          {tr("Error report")}
+        </p>
         <pre className="max-h-64 overflow-auto border-t border-border/70 bg-background/80 px-3 py-2 text-xs whitespace-pre-wrap text-foreground/85">
           {report}
         </pre>
@@ -426,7 +431,7 @@ function CopyErrorButton({ report }: { report: string }) {
   return (
     <Button size="sm" variant="outline" onClick={() => copyToClipboard(report)}>
       <MorphIcon className={cn(isCopied && "text-success")} icon={isCopied ? Check : Copy} />
-      {isCopied ? "Copied" : "Copy error"}
+      {isCopied ? tr("Copied") : tr("Copy error")}
     </Button>
   );
 }
@@ -440,7 +445,7 @@ function errorMessage(error: unknown): string {
     return error;
   }
 
-  return "An unexpected router error occurred.";
+  return tr("An unexpected router error occurred.");
 }
 
 function errorDetails(error: unknown): string {
@@ -455,7 +460,7 @@ function errorDetails(error: unknown): string {
   try {
     return JSON.stringify(error, null, 2);
   } catch {
-    return "No additional error details are available.";
+    return tr("No additional error details are available.");
   }
 }
 
@@ -476,7 +481,7 @@ function errorReport(error: unknown, pathname: string): string {
   ];
   let cause = error instanceof Error ? error.cause : undefined;
   for (let depth = 0; cause !== undefined && depth < MAX_ERROR_CAUSE_DEPTH; depth += 1) {
-    lines.push("", "Caused by:", errorDetails(cause));
+    lines.push("", tr("Caused by:"), errorDetails(cause));
     cause = cause instanceof Error ? cause.cause : undefined;
   }
   return lines.join("\n");
@@ -565,8 +570,8 @@ function EventRouter({
     if (decision._tag === "Success") {
       toastManager.add({
         type: "success",
-        title: "Keybindings updated",
-        description: "Keybindings configuration reloaded successfully.",
+        title: tr("Keybindings updated"),
+        description: tr("Keybindings configuration reloaded successfully."),
       });
       return;
     }
@@ -574,7 +579,7 @@ function EventRouter({
     toastManager.add(
       stackedThreadToast({
         type: "warning",
-        title: "Invalid keybindings configuration",
+        title: tr("Invalid keybindings configuration"),
         description: (
           <KeybindingsConfigWarning
             message={decision.message}

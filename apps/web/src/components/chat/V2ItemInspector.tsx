@@ -28,6 +28,7 @@ import { RenderErrorBoundary } from "../RenderErrorBoundary";
 import { resolveExternalWebLinkHref } from "./externalLinkContextMenu";
 import type { ExpandedImagePreview } from "./ExpandedImagePreview";
 import { ShellCommandBlock } from "./ShellCommandBlock";
+import { tr } from "~/i18n";
 
 interface V2ItemInspectorProps {
   readonly projectedItem: OrchestrationV2ProjectedTurnItem;
@@ -130,7 +131,7 @@ function useFetchedTurnItem(
         item !== wireItem
           ? null
           : detail.data?.item === null
-            ? "Output is no longer available."
+            ? tr("Output is no longer available.")
             : detail.error,
       empty: fetches && item !== wireItem,
     },
@@ -153,7 +154,7 @@ function ToolOutput(props: ToolOutputState) {
       key={resource.index}
       environmentId={props.environmentId}
       resource={resource}
-      alt="Tool output image"
+      alt={tr("Tool output image")}
       maxHeightRem={16}
       onImageExpand={props.onImageExpand}
     />
@@ -161,11 +162,13 @@ function ToolOutput(props: ToolOutputState) {
   const text = props.output ? (
     <div className="max-h-80 overflow-auto text-muted-foreground">{props.output}</div>
   ) : props.pending ? (
-    <div className="text-muted-foreground italic">Loading output…</div>
+    <div className="text-muted-foreground italic">{tr("Loading output…")}</div>
   ) : props.error ? (
-    <div className="text-destructive">Couldn&apos;t load output: {props.error}</div>
+    <div className="text-destructive">
+      {tr("Couldn't load output: {{error}}", { error: props.error })}
+    </div>
   ) : props.empty && images.length === 0 ? (
-    <div className="text-muted-foreground italic">No output.</div>
+    <div className="text-muted-foreground italic">{tr("No output.")}</div>
   ) : null;
   return (
     <>
@@ -214,7 +217,9 @@ function ToolCallBody(
       {call.argsText ? <StructuredValue value={call.argsText} highlightJson /> : null}
       <ToolOutput {...props} />
       {props.exitCode !== undefined && props.exitCode !== 0 ? (
-        <div className="text-destructive">exit {props.exitCode}</div>
+        <div className="text-destructive">
+          {tr("exit {{exitCode}}", { exitCode: props.exitCode })}
+        </div>
       ) : null}
     </div>
   );
@@ -272,7 +277,7 @@ export const V2ItemInspector = memo(function V2ItemInspector(props: V2ItemInspec
                 variant="outline"
                 onClick={() => props.onOpenTurnDiff(item.runId!, item.fileName)}
               >
-                Open diff
+                {tr("Open diff")}
               </Button>
             ) : null}
           </div>
@@ -338,7 +343,7 @@ export const V2ItemInspector = memo(function V2ItemInspector(props: V2ItemInspec
                   </a>
                 ) : (
                   <p className="font-medium text-foreground">
-                    {result.title ?? result.url ?? "Search result"}
+                    {result.title ?? result.url ?? tr("Search result")}
                   </p>
                 )}
                 {result.snippet ? <p className="text-muted-foreground">{result.snippet}</p> : null}
@@ -371,7 +376,8 @@ export const V2ItemInspector = memo(function V2ItemInspector(props: V2ItemInspec
       {item.type === "checkpoint" ? (
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-muted-foreground">
-            {support.checkpoint?.status ?? item.status} · {item.files.length} files
+            {support.checkpoint?.status ?? item.status}{" "}
+            {tr("· {{length}} files", { length: item.files.length })}
           </span>
           {props.onRollbackCheckpoint && support.checkpoint?.status === "ready" ? (
             <Button
@@ -385,7 +391,7 @@ export const V2ItemInspector = memo(function V2ItemInspector(props: V2ItemInspec
               }
             >
               <RotateCcwIcon className="size-3" />
-              Roll back
+              {tr("Roll back")}
             </Button>
           ) : null}
         </div>
@@ -394,13 +400,13 @@ export const V2ItemInspector = memo(function V2ItemInspector(props: V2ItemInspec
       {item.type === "fork" ? (
         <Button size="xs" variant="outline" onClick={() => props.onOpenThread(item.targetThreadId)}>
           <GitBranchIcon className="size-3" />
-          Open fork
+          {tr("Open fork")}
         </Button>
       ) : null}
 
       {item.type === "subagent" && item.childThreadId !== null ? (
         <Button size="xs" variant="outline" onClick={() => props.onOpenThread(item.childThreadId!)}>
-          Open subagent thread
+          {tr("Open subagent thread")}
         </Button>
       ) : null}
 
@@ -414,7 +420,7 @@ export const V2ItemInspector = memo(function V2ItemInspector(props: V2ItemInspec
           </p>
           {support.contextTransfer ? (
             <p>
-              Transfer {support.contextTransfer.type.replaceAll("_", " ")} ·{" "}
+              {tr("Transfer")} {support.contextTransfer.type.replaceAll("_", " ")} ·{" "}
               {support.contextTransfer.status}
             </p>
           ) : null}

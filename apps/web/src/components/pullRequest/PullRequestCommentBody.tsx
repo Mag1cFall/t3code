@@ -4,6 +4,7 @@ import { cn } from "~/lib/utils";
 import { Button } from "../ui/button";
 import { PullRequestMarkdown } from "./PullRequestMarkdown";
 import { observeResize } from "~/lib/observeResize";
+import { tr } from "~/i18n";
 
 /** Keep the complete markdown intact while limiting long reports to a readable preview. */
 export function PullRequestCommentBody({
@@ -52,7 +53,7 @@ export function PullRequestCommentBody({
             setExpanded(!expanded);
           }}
         >
-          {expanded ? "Show less" : "Show full comment"}
+          {expanded ? tr("Show less") : tr("Show full comment")}
         </Button>
       ) : null}
     </div>

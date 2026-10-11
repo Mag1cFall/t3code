@@ -2,6 +2,7 @@ import {
   connectionStatusText,
   type EnvironmentConnectionPresentation,
 } from "@t3tools/client-runtime/connection";
+import { tr } from "~/i18n";
 
 export interface SavedCloudEnvironmentConnectionPresentation {
   readonly buttonLabel: string;
@@ -20,44 +21,44 @@ export function presentSavedCloudEnvironmentConnection(
   switch (connection.phase) {
     case "connected":
       return {
-        buttonLabel: "Connected",
+        buttonLabel: tr("Connected"),
         statusText: connectionStatusText(connection),
         tone: "connected",
       };
     case "connecting":
       return {
-        buttonLabel: "Connecting…",
+        buttonLabel: tr("Connecting…"),
         statusText: connectionStatusText(connection),
         tone: "connecting",
       };
     case "reconnecting":
       return {
-        buttonLabel: "Reconnecting…",
+        buttonLabel: tr("Reconnecting…"),
         statusText: connectionStatusText(connection),
         tone: "connecting",
       };
     // Not a failure: the machine is fine, this build just cannot talk to it.
     case "unsupported":
       return {
-        buttonLabel: "Client not supported",
+        buttonLabel: tr("Client not supported"),
         statusText: connectionStatusText(connection),
         tone: "idle",
       };
     case "error":
       return {
-        buttonLabel: "Connection failed",
+        buttonLabel: tr("Connection failed"),
         statusText: connectionStatusText(connection),
         tone: "error",
       };
     case "offline":
       return {
-        buttonLabel: "Offline",
+        buttonLabel: tr("Offline"),
         statusText: connectionStatusText(connection),
         tone: "idle",
       };
     case "available":
       return {
-        buttonLabel: "Not connected",
+        buttonLabel: tr("Not connected"),
         statusText: connectionStatusText(connection),
         tone: "idle",
       };

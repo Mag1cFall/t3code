@@ -5,11 +5,12 @@ import { createPortal } from "react-dom";
 
 import { MobileClientsUserProfilePage } from "./MobileClientsUserProfilePage";
 import { T3ConnectUserProfilePage } from "./T3ConnectUserProfilePage";
+import { tr } from "~/i18n";
 
 /** Custom pages in the Clerk account modal, in menu order. */
 export const T3_CONNECT_ACCOUNT_PAGES = [
   {
-    label: "Mobile clients",
+    label: tr("Mobile clients"),
     url: "mobile-clients",
     icon: <SmartphoneIcon className="size-4" />,
     content: <MobileClientsUserProfilePage />,

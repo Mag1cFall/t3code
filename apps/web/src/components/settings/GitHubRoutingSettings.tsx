@@ -15,11 +15,12 @@ import { toastManager } from "../ui/toast";
 import { EnvironmentRow, environmentTransportLabel } from "./EnvironmentRow";
 import { FoldedSettingsSection } from "./FoldedSettingsSection";
 import { searchableSetting } from "./settingsSearch";
+import { tr } from "~/i18n";
 
 const options: ReadonlyArray<{ value: GitHubRoutingPermission; label: string }> = [
-  { value: "off", label: "Off" },
-  { value: "read", label: "Read PRs" },
-  { value: "read-write", label: "Read and act" },
+  { value: "off", label: tr("Off") },
+  { value: "read", label: tr("Read PRs") },
+  { value: "read-write", label: tr("Read and act") },
 ];
 
 const summaryLabels = { "read-write": "read and act", read: "read PRs" } as const;
@@ -69,13 +70,13 @@ export function GitHubRoutingSettings({
             label: environment.label,
             permission: gitHubRoutingPermissionFor(environment.entry, permissions),
           })),
-        ) ?? "Off"
+        ) ?? tr("Off")
       }
     >
       <p className="px-3 py-2.5 text-xs text-muted-foreground sm:px-4">
-        Machines you trust here can read PR data through each other's GitHub access. Enable both
-        machines. Read and act may use broader permissions than the machine that owns them. This
-        applies only to this device.
+        {tr(
+          "Machines you trust here can read PR data through each other's GitHub access. Enable both machines. Read and act may use broader permissions than the machine that owns them. This applies only to this device.",
+        )}
       </p>
       {environments.map((environment) => (
         <EnvironmentRow
@@ -99,7 +100,7 @@ export function GitHubRoutingSettings({
                   if (result._tag === "Failure")
                     toastManager.add({
                       type: "error",
-                      title: "Could not save GitHub routing permission",
+                      title: tr("Could not save GitHub routing permission"),
                     });
                 },
               );
@@ -108,7 +109,7 @@ export function GitHubRoutingSettings({
             <SelectTrigger
               size="xs"
               className="w-32"
-              aria-label={`${environment.label} GitHub routing`}
+              aria-label={tr("{{label}} GitHub routing", { label: environment.label })}
             >
               <SelectValue />
             </SelectTrigger>

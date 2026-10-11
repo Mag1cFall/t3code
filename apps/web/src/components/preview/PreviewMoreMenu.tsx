@@ -19,14 +19,15 @@ import {
   MenuTrigger,
 } from "~/components/ui/menu";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "~/components/ui/tooltip";
+import { tr } from "~/i18n";
 
 const COLOR_SCHEME_OPTIONS: ReadonlyArray<{
   value: DesktopPreviewColorScheme;
   label: string;
 }> = [
-  { value: "system", label: "System" },
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
+  { value: "system", label: tr("System") },
+  { value: "light", label: tr("Light") },
+  { value: "dark", label: tr("Dark") },
 ];
 
 /**
@@ -73,13 +74,15 @@ const MenuTriggerButton = () => (
     <TooltipTrigger
       render={
         <MenuTrigger
-          render={<Button variant="ghost" size="icon-xs" type="button" aria-label="Preview menu" />}
+          render={
+            <Button variant="ghost" size="icon-xs" type="button" aria-label={tr("Preview menu")} />
+          }
         />
       }
     >
       <MoreVertical />
     </TooltipTrigger>
-    <TooltipPopup>More</TooltipPopup>
+    <TooltipPopup>{tr("More")}</TooltipPopup>
   </Tooltip>
 );
 
@@ -102,26 +105,26 @@ export function PreviewMoreMenu({
       <MenuTriggerButton />
       <MenuPopup align="end" sideOffset={6}>
         <MenuItem onClick={actions.hardReload} disabled={disabled}>
-          Hard reload
+          {tr("Hard reload")}
         </MenuItem>
         {actions.openDevTools ? (
           <MenuItem onClick={actions.openDevTools} disabled={disabled}>
-            Open DevTools
+            {tr("Open DevTools")}
           </MenuItem>
         ) : null}
         {actions.toggleNativePictureInPicture ? (
           <MenuItem onClick={actions.toggleNativePictureInPicture} disabled={disabled}>
             {nativePictureInPicture
-              ? "Close separate preview window"
-              : "Open separate preview window"}
+              ? tr("Close separate preview window")
+              : tr("Open separate preview window")}
           </MenuItem>
         ) : null}
         {move ? <MenuItem onClick={move.onMove}>{move.label}</MenuItem> : null}
         <MenuItem onClick={onToggleDeviceToolbar} disabled={disabled}>
-          {deviceToolbarVisible ? "Hide device toolbar" : "Show device toolbar"}
+          {deviceToolbarVisible ? tr("Hide device toolbar") : tr("Show device toolbar")}
         </MenuItem>
         <MenuSub>
-          <MenuSubTrigger disabled={disabled}>Appearance</MenuSubTrigger>
+          <MenuSubTrigger disabled={disabled}>{tr("Appearance")}</MenuSubTrigger>
           <MenuSubPopup>
             <MenuRadioGroup
               value={colorScheme}
@@ -146,14 +149,14 @@ export function PreviewMoreMenu({
           className="justify-between"
           disabled={disabled}
         >
-          <span>Zoom</span>
+          <span>{tr("Zoom")}</span>
           <span className="flex items-center gap-1">
             <Button
               variant="outline"
               size="icon-xs"
               type="button"
               onClick={actions.zoomOut}
-              aria-label="Zoom out"
+              aria-label={tr("Zoom out")}
               disabled={disabled}
             >
               <Minus />
@@ -166,7 +169,7 @@ export function PreviewMoreMenu({
               size="icon-xs"
               type="button"
               onClick={actions.zoomIn}
-              aria-label="Zoom in"
+              aria-label={tr("Zoom in")}
               disabled={disabled}
             >
               <PlusIcon />
@@ -176,7 +179,7 @@ export function PreviewMoreMenu({
               size="icon-xs"
               type="button"
               onClick={actions.resetZoom}
-              aria-label="Reset zoom"
+              aria-label={tr("Reset zoom")}
               disabled={disabled}
             >
               <RotateCcw />
@@ -195,11 +198,13 @@ export function PreviewMoreMenu({
             // Truncation needs a block box: `text-overflow` on an inline child
             // never applies and a long name would push the popup past its width.
             <MenuGroupLabel className="max-w-64">
-              <span className="block truncate">Profile: {profileName}</span>
+              <span className="block truncate">
+                {tr("Profile: {{profileName}}", { profileName })}
+              </span>
             </MenuGroupLabel>
           ) : null}
-          <MenuItem onClick={actions.clearCookies}>Clear cookies</MenuItem>
-          <MenuItem onClick={actions.clearCache}>Clear cache</MenuItem>
+          <MenuItem onClick={actions.clearCookies}>{tr("Clear cookies")}</MenuItem>
+          <MenuItem onClick={actions.clearCache}>{tr("Clear cache")}</MenuItem>
         </MenuGroup>
       </MenuPopup>
     </Menu>

@@ -20,6 +20,7 @@ import {
 } from "./guideRunStore";
 import { stepTourPosition, stopFilePaths } from "./guideTour.logic";
 import { useGuideDiffFiles } from "./useGuideDiffFiles";
+import { tr } from "~/i18n";
 
 /**
  * The guide as a tour: a rail of stops beside the stop being read. Progress is kept per guide
@@ -128,11 +129,15 @@ export function GuideTour({
           {banner}
           {diff.error !== null ? (
             <p className="text-xs text-muted-foreground">
-              The diff could not be loaded, so excerpts are missing: {diff.error}
+              {tr("The diff could not be loaded, so excerpts are missing: {{error}}", {
+                error: diff.error,
+              })}
             </p>
           ) : null}
           {stop === null ? (
-            <p className="text-sm text-muted-foreground">This change has no files to tour.</p>
+            <p className="text-sm text-muted-foreground">
+              {tr("This change has no files to tour.")}
+            </p>
           ) : (
             <GuideStop
               key={position}

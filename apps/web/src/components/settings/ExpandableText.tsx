@@ -2,6 +2,7 @@ import { InlineButton } from "../ui/button";
 import { useId, useState } from "react";
 
 import { cn } from "../../lib/utils";
+import { tr } from "~/i18n";
 
 /**
  * Long error text clamped to a few lines with a toggle to reveal the rest.
@@ -11,7 +12,7 @@ export function ExpandableText({
   text,
   className,
   collapsedClassName = "line-clamp-3",
-  expandLabel = "Show full error",
+  expandLabel = tr("Show full error"),
 }: {
   text: string;
   className?: string;
@@ -41,7 +42,7 @@ export function ExpandableText({
           className="mt-1"
           onClick={() => setExpanded((value) => !value)}
         >
-          {expanded ? "Show less" : expandLabel}
+          {expanded ? tr("Show less") : expandLabel}
         </InlineButton>
       ) : null}
     </div>

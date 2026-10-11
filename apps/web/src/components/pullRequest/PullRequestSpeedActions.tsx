@@ -12,6 +12,7 @@ import {
   usePullRequestActionRunner,
   usePullRequestDefaultMergeMethodResolver,
 } from "./usePullRequestActions";
+import { tr } from "~/i18n";
 
 type PullRequestSpeedActionEntry = Pick<
   EnvironmentPullRequestEntry,
@@ -81,7 +82,7 @@ export function PullRequestSpeedActions<Entry extends PullRequestSpeedActionEntr
       className="shrink-0 items-center gap-1 pr-3"
       style={{ display: visible || busy ? "flex" : "none" }}
       role="group"
-      aria-label={`Quick actions for pull request #${entry.number}`}
+      aria-label={tr("Quick actions for pull request #{{number}}", { number: entry.number })}
       data-pull-request-action-pending={actionPending || closing}
     >
       {actions.map((action) => {
@@ -110,10 +111,10 @@ export function PullRequestSpeedActions<Entry extends PullRequestSpeedActionEntr
             </TooltipTrigger>
             <TooltipPopup>
               {action === "merge" && entry.stack
-                ? "Open this pull request to merge its stack"
+                ? tr("Open this pull request to merge its stack")
                 : action === "close" && onCloseSweepStart
-                  ? "Close immediately, or drag across rows to close several"
-                  : `${label} immediately`}
+                  ? tr("Close immediately, or drag across rows to close several")
+                  : tr("{{label}} immediately", { label })}
             </TooltipPopup>
           </Tooltip>
         );
@@ -123,8 +124,8 @@ export function PullRequestSpeedActions<Entry extends PullRequestSpeedActionEntr
 }
 
 const ACTIONS = {
-  close: { label: "Close", Icon: PullRequestGlyph.closed },
-  merge: { label: "Merge", Icon: PullRequestGlyph.merged },
-  ready: { label: "Ready for review", Icon: PullRequestGlyph.pullRequest },
-  reopen: { label: "Reopen", Icon: PullRequestGlyph.reopen },
+  close: { label: tr("Close"), Icon: PullRequestGlyph.closed },
+  merge: { label: tr("Merge"), Icon: PullRequestGlyph.merged },
+  ready: { label: tr("Ready for review"), Icon: PullRequestGlyph.pullRequest },
+  reopen: { label: tr("Reopen"), Icon: PullRequestGlyph.reopen },
 } as const;

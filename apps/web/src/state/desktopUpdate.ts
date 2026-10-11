@@ -6,6 +6,7 @@ import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as AsyncResult from "effect/reactivity/AsyncResult";
 import { Atom } from "effect/reactivity";
+import { tr } from "~/i18n";
 
 type DesktopUpdateBridge = Pick<DesktopBridge, "getUpdateState" | "onUpdateState">;
 
@@ -19,7 +20,9 @@ export class DesktopUpdateStateReadError extends Schema.TaggedError<DesktopUpdat
   },
 ) {
   override get message(): string {
-    return `Failed to read the initial desktop update state after ${this.attemptCount} attempts.`;
+    return tr("Failed to read the initial desktop update state after {{attemptCount}} attempts.", {
+      attemptCount: this.attemptCount,
+    });
   }
 }
 

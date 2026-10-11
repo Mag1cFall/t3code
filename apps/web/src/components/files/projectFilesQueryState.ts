@@ -16,6 +16,7 @@ import { useFilesystemReadAccess } from "~/state/filesystem";
 import { projectEnvironment } from "~/state/projects";
 import { useProjectPathSearch } from "~/state/queries";
 import { executeAtomQuery } from "@t3tools/client-runtime/state/runtime";
+import { tr } from "~/i18n";
 
 const EMPTY_PROJECT_FILE_PATH = "";
 const EMPTY_PROJECT_ENTRIES_QUERY_ATOM = Atom.make(
@@ -182,7 +183,7 @@ function failureCause<A>(result: AsyncResult.AsyncResult<A, unknown>): unknown {
 
 function errorMessage(cause: unknown): string | null {
   if (cause === null) return null;
-  return cause instanceof Error ? cause.message : "Workspace query failed.";
+  return cause instanceof Error ? cause.message : tr("Workspace query failed.");
 }
 
 const isProjectReadFileError = Schema.is(ProjectReadFileError);
@@ -206,7 +207,7 @@ export function useProjectEntriesQuery(
       ? null
       : canReadFiles
         ? errorMessage(failureCause(result))
-        : (fileAccess.error ?? "This connection cannot read host files."),
+        : (fileAccess.error ?? tr("This connection cannot read host files.")),
     isPending: fileAccess.isPending || result.waiting,
     refresh,
   };
@@ -280,7 +281,7 @@ export function useProjectFileQuery(
         ? null
         : canReadFiles
           ? errorMessage(cause)
-          : (fileAccess.error ?? "This connection cannot read host files."),
+          : (fileAccess.error ?? tr("This connection cannot read host files.")),
     isPending: isQueryEnabled && (fileAccess.isPending || result.waiting),
     readError,
     isNotFile: readError?.failure === "path_not_file",

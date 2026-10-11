@@ -7,6 +7,7 @@ import {
 } from "~/lib/assistantTextSelection";
 import { toastManager } from "../ui/toast";
 import { observeResize } from "~/lib/observeResize";
+import { tr } from "~/i18n";
 
 const CITATION_PULSE_DURATION_MS = 650;
 // The second pulse settles into a held highlight so late glances still find the quote.
@@ -199,8 +200,8 @@ export function observeAssistantCitationSource({
             request.onComplete();
             toastManager.add({
               type: "warning",
-              title: "Could not open the cited response",
-              description: "Click the citation to try again.",
+              title: tr("Could not open the cited response"),
+              description: tr("Click the citation to try again."),
             });
           },
         );
@@ -213,8 +214,8 @@ export function observeAssistantCitationSource({
       if (!range) {
         toastManager.add({
           type: "warning",
-          title: "The quoted text has changed",
-          description: "Showing the source response. The saved quote is unchanged.",
+          title: tr("The quoted text has changed"),
+          description: tr("Showing the source response. The saved quote is unchanged."),
         });
       }
     }

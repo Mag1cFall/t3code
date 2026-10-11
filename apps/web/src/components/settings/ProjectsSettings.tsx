@@ -4,6 +4,7 @@ import { ProjectSettingsPanel } from "./ProjectSettingsPanel";
 import { useSettingsScope } from "./SettingsScopeContext";
 import { SettingsScopeNotice } from "./SettingsScopeNotice";
 import { SettingsPageContainer } from "./settingsLayout";
+import { tr } from "~/i18n";
 
 /** Project identity and checkout management for the selected project. */
 export function ProjectsSettings() {
@@ -28,7 +29,7 @@ export function ProjectsSettings() {
         </SettingsPageContainer>
       ) : (
         <SettingsScopeNotice target="project">
-          Choose a project to manage its name, icon, checkouts and actions.
+          {tr("Choose a project to manage its name, icon, checkouts and actions.")}
         </SettingsScopeNotice>
       )}
     </div>
