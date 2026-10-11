@@ -38,4 +38,9 @@ by the permission mode. See [ACP Registry permissions](./providers-acp.md#permis
 Antigravity can still send native approval requests in **Full access**. It only offers remembered
 approvals for actions that support them.
 
+OMP offers **Supervised**, **Auto-accept edits**, and **Full access**, enforced by its native
+approval policy. Read-only tools can proceed in Supervised; Auto-accept edits also permits
+write-tier tools. OMP's **Allow** and **Deny** decisions apply to the current request.
+See [OMP permissions](./providers-omp.md#permission-modes) for profile-specific policies.
+
 See the [provider guides](./install.md#providers) for setup and provider-specific limits.

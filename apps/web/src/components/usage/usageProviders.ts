@@ -46,6 +46,11 @@ export const PROVIDER_PRESENTATION = {
     color: "#4d9f8a",
     driverKind: ProviderDriverKind.make("pi"),
   },
+  omp: {
+    label: "OMP",
+    color: "#b78a48",
+    driverKind: ProviderDriverKind.make("omp"),
+  },
 } satisfies Record<UsageProviderKind, UsageProviderPresentation>;
 
 /** Stable provider reading order across charts, summaries, tables, and hover rows. */

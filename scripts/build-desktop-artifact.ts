@@ -3061,11 +3061,15 @@ export const packWindowsServerAsar = Effect.fn("packWindowsServerAsar")(function
     }
     unpackGlobs.push(`**/${posixPath}`);
   }
+  const sourceGlob = input.sourceDir
+    .split(path.sep)
+    .join("/")
+    .replace(/[\\*?[\]{}(),]/g, "\\$&");
   yield* Effect.tryPromise({
     try: () =>
       createPackageWithOptions(input.sourceDir, input.asarPath, {
         dot: true,
-        unpack: `{${unpackGlobs.join(",")}}`,
+        unpack: `{${unpackGlobs.map((glob) => `${sourceGlob}/${glob}`).join(",")}}`,
         // glob 13 (via @electron/asar 4) matches `ignore` relative to `cwd`,
         // not against the absolute paths it crawls, so anchor it at the source.
         globOptions: {

@@ -466,7 +466,12 @@ export function ThreadRelationshipsPanel(props: {
                 agent &&
                 (agent.origin === "app_owned" ||
                   (agent.origin === "provider_native" &&
-                    agent.driver === "claudeAgent" &&
+                    projection?.providerSessions.some(
+                      (session) =>
+                        session.driver === agent.driver &&
+                        session.providerInstanceId === agent.providerInstanceId &&
+                        session.capabilities.subagents.supportsNativeSubagentStop === true,
+                    ) &&
                     agent.runId != null &&
                     agent.nativeTaskRef?.strength === "strong" &&
                     agent.nativeTaskRef.nativeId !== null &&

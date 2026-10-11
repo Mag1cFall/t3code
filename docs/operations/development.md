@@ -143,6 +143,16 @@ DMGs default to the host architecture. Use `--arch` to choose another target and
 to retain packaging files for inspection. Run `vp run dist:desktop:artifact --help` for other
 options.
 
+To package an existing Windows x64 desktop build as a ZIP:
+
+```sh
+vp run dist:desktop:artifact --platform win --target zip --arch x64 --skip-build
+```
+
+`--skip-build` requires a completed `vp run build:desktop`. Extract the ZIP from `release/` into
+`release/desktop/` and run its desktop `.exe`. For artifacts that support automatic updates,
+`T3CODE_DESKTOP_UPDATE_REPOSITORY=owner/repo` selects the GitHub update source.
+
 ### Linux AppImage prerequisites
 
 Build on Linux because the browser-secret helper links against the host's libsecret. Install

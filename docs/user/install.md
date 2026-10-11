@@ -143,7 +143,11 @@ computer.
 | OpenCode    | Install [OpenCode](https://opencode.ai), then run `opencode auth login`.                                                                                  |
 | Antigravity | Install and sign in with Google from T3 Code's provider settings.                                                                                         |
 | Pi          | Install [Pi](./providers-pi.md#set-up-pi) with Node.js 22.19 or newer, then run `pi` and `/login`.                                                        |
+| OMP         | [Set up OMP](./providers-omp.md#set-up-omp) 18.8.5 or newer.                                                                                              |
 | Muse Code   | Install [Muse Code](https://dev.meta.ai/docs/muse-code) on the server, run `muse login`, then enable it in Settings → Providers.                          |
+
+OMP uses the native profile selected in its **Profile** setting. Leave it empty to use OMP's
+current default profile. See [OMP](./providers-omp.md) for models, sign-in, and permission modes.
 
 Provider CLIs must be on the server's `PATH`. If T3 Code cannot find one, set its
 **Binary path** in provider settings, especially when using a version manager.

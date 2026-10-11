@@ -290,6 +290,7 @@ export const ClaudeProviderCapabilitiesV2 = {
     emitsSubagentLifecycle: true,
     canWaitForSubagents: false,
     canCloseSubagents: false,
+    supportsNativeSubagentStop: true,
     canForkSubagentThread: false,
   },
   context: {

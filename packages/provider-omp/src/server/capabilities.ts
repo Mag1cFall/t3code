@@ -1,0 +1,97 @@
+import { ProviderDriverKind, type OrchestrationV2ProviderCapabilities } from "@t3tools/contracts";
+
+export const OMP_PROVIDER = ProviderDriverKind.make("omp");
+
+// OMP_CAPABILITIES 描述原生 RPC 适配器向编排器提供的能力
+export const OMP_CAPABILITIES = {
+  runtimePolicy: { enforcement: "native" },
+  sessions: {
+    supportsMultipleProviderThreadsPerSession: false,
+    supportsModelSwitchInSession: true,
+    supportsProviderSwitchingViaHandoff: true,
+    supportsRuntimeModeSwitchInSession: false,
+    pendingRequestsSurviveRestart: false,
+  },
+  threads: {
+    canCreateEmptyThread: true,
+    canReadThreadSnapshot: true,
+    canRollbackThread: true,
+    canForkThread: true,
+    canForkFromTurn: true,
+    canForkFromSubagentThread: true,
+    exposesNativeThreadId: true,
+  },
+  turns: {
+    exposesNativeTurnId: true,
+    emitsTurnStarted: true,
+    emitsTurnCompleted: true,
+    supportsInterrupt: true,
+    supportsActiveSteering: true,
+    supportsSteeringByInterruptRestart: false,
+    supportsQueuedMessages: true,
+    terminalStatusQuality: "strong",
+  },
+  streaming: {
+    streamsAssistantText: true,
+    streamsReasoning: true,
+    streamsToolOutput: true,
+    streamsPlanText: false,
+    emitsMessageCompleted: true,
+  },
+  tools: {
+    exposesToolItemIds: true,
+    emitsToolStarted: true,
+    emitsToolCompleted: true,
+    emitsToolOutput: true,
+    supportsMcpTools: true,
+    supportsDynamicToolCallbacks: false,
+  },
+  approvals: {
+    supportsCommandApproval: true,
+    supportsFileReadApproval: true,
+    supportsFileChangeApproval: true,
+    supportsApplyPatchApproval: true,
+    approvalsHaveNativeRequestIds: true,
+    approvalCallbacksAreLiveOnly: true,
+    approvalsCanOriginateFromSubagents: false,
+  },
+  planning: {
+    emitsPlanUpdated: false,
+    emitsTodoList: true,
+    emitsProposedPlan: false,
+    supportsStructuredQuestions: true,
+    planDeltasHaveItemIds: false,
+  },
+  subagents: {
+    supportsSubagents: true,
+    exposesSubagentThreadIds: true,
+    emitsSubagentLifecycle: true,
+    canWaitForSubagents: false,
+    canCloseSubagents: false,
+    supportsNativeSubagentStop: true,
+    canForkSubagentThread: true,
+  },
+  context: {
+    acceptsSystemContext: false,
+    acceptsDeveloperContext: false,
+    acceptsSyntheticUserContext: true,
+    canGenerateSummaries: false,
+    canConsumeHandoffSummaries: true,
+    supportsDeltaHandoff: true,
+    supportsFullThreadHandoff: true,
+    maxRecommendedHandoffChars: null,
+  },
+  checkpointing: {
+    appCanCheckpointFilesystem: true,
+    supportsNestedCheckpointScopes: false,
+    providerCanRollbackConversation: true,
+    providerRollbackReturnsSnapshot: true,
+    providerCanReadConversationSnapshot: true,
+  },
+  identity: {
+    nativeThreadIds: "strong",
+    nativeTurnIds: "strong",
+    nativeItemIds: "strong",
+    nativeRequestIds: "strong",
+  },
+} satisfies OrchestrationV2ProviderCapabilities;

@@ -21,7 +21,7 @@ import * as SqlClient from "effect/sql/SqlClient";
 import * as TestClock from "effect/testing/TestClock";
 
 import * as SqlitePersistence from "../persistence/Sqlite.ts";
-import { CLAUDE_PROVIDER } from "./Adapters/ClaudeAdapterV2.ts";
+import { CLAUDE_PROVIDER, ClaudeProviderCapabilitiesV2 } from "./Adapters/ClaudeAdapterV2.ts";
 import { CodexProviderCapabilitiesV2 } from "./Adapters/CodexAdapterV2.ts";
 import { OrchestrationEffectRequestV2 } from "./EffectOutbox.ts";
 import * as Orchestrator from "./Orchestrator.ts";
@@ -624,6 +624,24 @@ it.effect(
       const providerThread = before.providerThreads.find(
         (thread) => thread.id === run.providerThreadId,
       )!;
+      yield* projections.apply({
+        id: EventId.make("event:native-child-stop:provider-session"),
+        type: "provider-session.attached",
+        threadId,
+        occurredAt: now,
+        payload: {
+          id: ProviderSessionId.make("session:native-child-stop"),
+          driver: CLAUDE_PROVIDER,
+          providerInstanceId: ProviderInstanceId.make("claudeAgent"),
+          status: "ready",
+          cwd: "/workspace",
+          model: "default",
+          capabilities: ClaudeProviderCapabilitiesV2,
+          createdAt: now,
+          updatedAt: now,
+          lastError: null,
+        },
+      });
       yield* projections.apply({
         id: EventId.make("event:native-child-stop:provider-thread"),
         type: "provider-thread.updated",

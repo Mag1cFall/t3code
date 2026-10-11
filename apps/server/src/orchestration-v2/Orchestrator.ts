@@ -8949,6 +8949,7 @@ const makeOrchestrator = Effect.fn("orchestrationV2.Orchestrator.layer")(functio
       const projection = yield* loadProjectionForCommand(command, [
         "runs",
         "subagents",
+        "providerSessions",
         "providerThreads",
         "providerTurns",
       ]);
@@ -8960,7 +8961,6 @@ const makeOrchestrator = Effect.fn("orchestrationV2.Orchestrator.layer")(functio
         subagent === undefined ||
         subagent.runId !== command.runId ||
         subagent.origin !== "provider_native" ||
-        subagent.driver !== "claudeAgent" ||
         subagent.nativeTaskRef?.strength !== "strong" ||
         subagent.nativeTaskRef.nativeId === null
       ) {
@@ -8990,6 +8990,16 @@ const makeOrchestrator = Effect.fn("orchestrationV2.Orchestrator.layer")(functio
         });
       }
       const providerSessionId = providerThread.providerSessionId;
+      const providerSession = projection.providerSessions.find(
+        (candidate) => candidate.id === providerSessionId,
+      );
+      if (providerSession?.capabilities.subagents.supportsNativeSubagentStop !== true) {
+        return yield* new OrchestratorDispatchError({
+          commandId: command.commandId,
+          commandType: command.type,
+          cause: "The provider does not support stopping native subagents.",
+        });
+      }
       const nativeTaskId = subagent.nativeTaskRef.nativeId;
       const now = yield* DateTime.now;
       // Record the request with its effect; the provider notification supplies the outcome.

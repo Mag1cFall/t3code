@@ -269,6 +269,8 @@ export const OrchestrationV2SubagentCapabilities = Schema.Struct({
   emitsSubagentLifecycle: Schema.Boolean,
   canWaitForSubagents: Schema.Boolean,
   canCloseSubagents: Schema.Boolean,
+  // supportsNativeSubagentStop 表示宿主可通过所属运行时停止单个原生任务
+  supportsNativeSubagentStop: Schema.optional(Schema.Boolean),
   canForkSubagentThread: Schema.Boolean,
 });
 export type OrchestrationV2SubagentCapabilities = typeof OrchestrationV2SubagentCapabilities.Type;

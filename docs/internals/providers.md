@@ -36,6 +36,12 @@ Forks use Pi's CLI in the destination directory because RPC session switching re
 session's cwd. Provider switches still use portable handoff summaries.
 See the [adapter](../../packages/provider-pi/src/server/adapter.ts).
 
+OMP runtime instructions can exceed Windows command-line limits when launched through a `.cmd`
+shim. Pass them through a UTF-8 file using `--append-system-prompt`, and keep the file within the
+provider session's resource scope.
+Native child continuation can return a different session file while the parent process retains
+write ownership. The returned native reference identifies subsequent resumes.
+
 Antigravity separates account profiles per instance while sharing installed executables across the
 environment. It forces file-based credential storage because the native macOS keychain entry would
 otherwise be shared across instances. The launch environment removes ambient Google credentials,

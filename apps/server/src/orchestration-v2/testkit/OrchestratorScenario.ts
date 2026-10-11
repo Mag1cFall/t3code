@@ -109,6 +109,7 @@ export interface OrchestratorV2Scenario {
   readonly commands: ReadonlyArray<OrchestrationV2Command>;
   readonly steps?: ReadonlyArray<OrchestratorV2ScenarioStep>;
   readonly projectionThreadIds?: ReadonlyArray<ThreadId>;
+  readonly waitDeadlineMs?: number;
 }
 
 export interface OrchestratorV2ScenarioResult {
@@ -223,7 +224,8 @@ const SCENARIO_WAIT_ATTEMPTS = 10_000;
 // burns at full speed on slow runners. A wait is exhausted only once BOTH
 // the iteration budget and this wall-clock deadline are spent.
 const SCENARIO_WAIT_DEADLINE_MS = 60_000;
-const scenarioWaitDeadline = () => performance.now() + SCENARIO_WAIT_DEADLINE_MS;
+const scenarioWaitDeadline = (durationMs = SCENARIO_WAIT_DEADLINE_MS) =>
+  performance.now() + durationMs;
 const scenarioWaitExhausted = (attemptsRemaining: number, deadlineAt: number) =>
   attemptsRemaining <= 0 && performance.now() >= deadlineAt;
 
@@ -299,7 +301,7 @@ export function runOrchestratorV2Scenario(
       const waitForPendingRuntimeRequest = (
         threadId: ThreadId,
         attemptsRemaining = SCENARIO_WAIT_ATTEMPTS,
-        deadlineAt = scenarioWaitDeadline(),
+        deadlineAt = scenarioWaitDeadline(scenario.waitDeadlineMs),
       ): Effect.Effect<
         OrchestrationV2RuntimeRequest,
         Orchestrator.OrchestratorV2Error | OrchestratorV2ScenarioStepError,
@@ -325,7 +327,7 @@ export function runOrchestratorV2Scenario(
       const waitForThreadIdle = (
         threadId: ThreadId,
         attemptsRemaining = SCENARIO_WAIT_ATTEMPTS,
-        deadlineAt = scenarioWaitDeadline(),
+        deadlineAt = scenarioWaitDeadline(scenario.waitDeadlineMs),
       ): Effect.Effect<
         void,
         Orchestrator.OrchestratorV2Error | OrchestratorV2ScenarioStepError,
@@ -359,7 +361,7 @@ export function runOrchestratorV2Scenario(
       const waitForNoBackgroundWork = (
         threadId: ThreadId,
         attemptsRemaining = SCENARIO_WAIT_ATTEMPTS,
-        deadlineAt = scenarioWaitDeadline(),
+        deadlineAt = scenarioWaitDeadline(scenario.waitDeadlineMs),
       ): Effect.Effect<
         void,
         Orchestrator.OrchestratorV2Error | OrchestratorV2ScenarioStepError,
@@ -384,7 +386,7 @@ export function runOrchestratorV2Scenario(
         threadId: ThreadId,
         runId: OrchestrationV2Run["id"],
         attemptsRemaining = SCENARIO_WAIT_ATTEMPTS,
-        deadlineAt = scenarioWaitDeadline(),
+        deadlineAt = scenarioWaitDeadline(scenario.waitDeadlineMs),
       ): Effect.Effect<
         void,
         Orchestrator.OrchestratorV2Error | OrchestratorV2ScenarioStepError,
@@ -417,7 +419,7 @@ export function runOrchestratorV2Scenario(
         runId: OrchestrationV2Run["id"],
         status: OrchestrationV2Run["status"],
         attemptsRemaining = SCENARIO_WAIT_ATTEMPTS,
-        deadlineAt = scenarioWaitDeadline(),
+        deadlineAt = scenarioWaitDeadline(scenario.waitDeadlineMs),
       ): Effect.Effect<
         void,
         Orchestrator.OrchestratorV2Error | OrchestratorV2ScenarioStepError,
@@ -450,7 +452,7 @@ export function runOrchestratorV2Scenario(
         runId: OrchestrationV2Run["id"],
         itemType: OrchestrationV2TurnItem["type"],
         attemptsRemaining = SCENARIO_WAIT_ATTEMPTS,
-        deadlineAt = scenarioWaitDeadline(),
+        deadlineAt = scenarioWaitDeadline(scenario.waitDeadlineMs),
       ): Effect.Effect<
         void,
         Orchestrator.OrchestratorV2Error | OrchestratorV2ScenarioStepError,
@@ -581,7 +583,9 @@ export function runOrchestratorV2Scenario(
           const armed = yield* Effect.promise(() =>
             gate.waitForFinishArmed(consumedFinishReceipts),
           ).pipe(
-            Effect.timeoutOption(Duration.millis(SCENARIO_WAIT_DEADLINE_MS)),
+            Effect.timeoutOption(
+              Duration.millis(scenario.waitDeadlineMs ?? SCENARIO_WAIT_DEADLINE_MS),
+            ),
             Effect.provideService(Clock.Clock, Clock.Clock.defaultValue()),
           );
           if (Option.isNone(armed)) {

@@ -155,6 +155,10 @@ packages. Use `bun run record:codex-replay -- --scenario <name>` for Codex app-s
 and `bun run record:claude-replay -- --scenario <name>` for Claude Agent SDK transcripts. Use
 `pnpm --filter t3 record:cursor-replay --scenario <name>` for Cursor Agent SDK transcripts.
 
+Use `vp run --filter t3 record:omp-replay --scenario simple,multi_turn` for OMP RPC transcripts.
+The scenario option accepts one name or a comma-separated set. Raw recordings and the isolated
+native profile stay in `.t3/omp-recordings`; only normalized, redacted transcripts belong in fixtures.
+
 ## Contract Test Levels
 
 Recommended levels:
