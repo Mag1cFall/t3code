@@ -1,7 +1,7 @@
 /**
  * AgentSessionScanner - discovery of projects a user already works on.
  *
- * Claude Code and Codex both keep a per-session transcript on disk, and each
+ * Claude Code, Codex, and OMP each keep a per-session transcript on disk, and each
  * transcript records the directory the session ran in. Reading those `cwd`
  * values gives us the set of directories worth offering as projects during
  * onboarding, without asking the user to browse the filesystem.
@@ -51,6 +51,9 @@ import * as ServerConfig from "../config.ts";
 import * as ProjectStore from "../orchestration-v2/ProjectStore.ts";
 import { resolveCodexHomeLayout } from "../provider/Drivers/CodexHomeLayout.ts";
 import { expandHomePath } from "@t3tools/provider-core/server/pathExpansion";
+import { mergeProviderInstanceEnvironment } from "@t3tools/provider-core/server/instanceEnvironment";
+import { OmpSettings } from "@t3tools/provider-omp/settings";
+import { ompNativeDirectories } from "@t3tools/provider-omp/server/usage";
 import * as ServerSettings from "../serverSettings.ts";
 import {
   createTranscriptJsonReader,
@@ -82,7 +85,6 @@ const MAX_METADATA_BYTES_PER_SOURCE = 64 * 1024 * 1024;
 const MAX_METADATA_OPERATIONS_PER_SOURCE = MAX_TRANSCRIPTS_PER_SOURCE * 4;
 const MAX_METADATA_RECORDS_PER_SOURCE = 100_000;
 const MAX_METADATA_RECORDS_PER_TRANSCRIPT = 1_000;
-const RECENT_THREAD_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
 /**
  * Large tool results (especially screenshots) can make an otherwise ordinary
  * Codex transcript several GiB. Streaming field selection avoids allocating
@@ -112,6 +114,10 @@ const CodexTurnMetadata = Schema.Struct({
 
 const TranscriptRecord = Schema.Struct({
   type: Schema.optional(Schema.String),
+  id: Schema.optional(Schema.String),
+  parentId: Schema.optional(Schema.NullOr(Schema.String)),
+  title: Schema.optional(Schema.String),
+  model: Schema.optional(Schema.String),
   timestamp: Schema.optional(Schema.String),
   cwd: Schema.optional(Schema.String),
   sessionId: Schema.optional(Schema.String),
@@ -137,6 +143,7 @@ const TranscriptRecord = Schema.Struct({
 
 const decodeClaudeSettings = Schema.decodeUnknownOption(ClaudeSettings);
 const decodeCodexSettings = Schema.decodeUnknownOption(CodexSettings);
+const decodeOmpSettings = Schema.decodeUnknownOption(OmpSettings);
 const decodeTranscriptRecord = Schema.decodeUnknownOption(Schema.fromJsonString(TranscriptRecord));
 const decodeTranscriptValue = Schema.decodeUnknownOption(TranscriptRecord);
 const selectTranscriptPath = createTranscriptJsonSelector(TranscriptRecord);
@@ -183,7 +190,7 @@ export class AgentSessionScanner extends Context.Service<
   AgentSessionScanner,
   {
     /**
-     * Discover every directory the configured Claude and Codex homes have run
+     * Discover every directory the configured Claude, Codex, and OMP homes have run
      * a session in. Candidates are returned newest-first; the client decides
      * which ones to import and how far back to look. Fails with the contract
      * error directly — there is no server-local context worth wrapping.
@@ -295,10 +302,78 @@ export function parseAgentSessionTranscript(
   return parseAgentSessionRecords(input, records);
 }
 
+// parseOmpRecords 从最新条目沿父节点回溯，只导入 OMP 会话树的当前分支
+function parseOmpRecords(
+  input: AgentSessionTranscriptMetadata,
+  records: ReadonlyArray<DecodedTranscriptRecord>,
+): AgentSessionThread | null {
+  const fallbackTimestamp = DateTime.formatIso(DateTime.makeUnsafe(input.lastActiveAtMs));
+  let providerSessionId = "";
+  let title: string | null = null;
+  const entries = new Map<string, DecodedTranscriptRecord>();
+  let leafId: string | undefined;
+  for (const record of records) {
+    if (record.type === "session" || record.type === "title") {
+      if (record.type === "session" && record.id?.trim()) providerSessionId = record.id.trim();
+      if (record.title?.trim()) title = record.title.trim();
+      continue;
+    }
+    if (record.id === undefined) continue;
+    entries.set(record.id, record);
+    leafId = record.id;
+  }
+  const branch: Array<DecodedTranscriptRecord> = [];
+  for (let id = leafId; id !== undefined;) {
+    const record = entries.get(id);
+    if (record === undefined) break;
+    entries.delete(id);
+    branch.push(record);
+    id = record.parentId ?? undefined;
+  }
+  branch.reverse();
+
+  let model: string | null = null;
+  const messages: Array<AgentSessionThreadMessage> = [];
+  for (const record of branch) {
+    if (record.type === "model_change" && record.model?.trim()) {
+      model = record.model.trim();
+      continue;
+    }
+    const role = record.message?.role;
+    if (record.type !== "message" || (role !== "user" && role !== "assistant")) continue;
+    const text = extractText(record.message?.content);
+    if (text.length === 0) continue;
+    messages.push({
+      role,
+      text,
+      createdAt: normalizeTimestamp(record.timestamp, fallbackTimestamp),
+    });
+  }
+  const firstUserMessage = messages.find((message) => message.role === "user");
+  if (providerSessionId.length === 0 || firstUserMessage === undefined) return null;
+  const newestMessages = messages.slice(-MAX_IMPORTED_MESSAGES);
+  const retainedMessages = newestMessages.includes(firstUserMessage)
+    ? newestMessages
+    : [firstUserMessage, ...messages.slice(-(MAX_IMPORTED_MESSAGES - 1))];
+  const derivedTitle = firstUserMessage.text.split("\n")[0]?.slice(0, 100).trim();
+
+  return {
+    source: input.source,
+    providerInstanceId: input.providerInstanceId,
+    providerSessionId,
+    title: title ?? (derivedTitle && derivedTitle.length > 0 ? derivedTitle : "Imported thread"),
+    model,
+    createdAt: retainedMessages[0]?.createdAt ?? fallbackTimestamp,
+    updatedAt: fallbackTimestamp,
+    messages: retainedMessages,
+  };
+}
+
 function parseAgentSessionRecords(
   input: AgentSessionTranscriptMetadata,
   records: ReadonlyArray<DecodedTranscriptRecord>,
 ): AgentSessionThread | null {
+  if (input.source === "omp") return parseOmpRecords(input, records);
   const fallbackTimestamp = DateTime.formatIso(DateTime.makeUnsafe(input.lastActiveAtMs));
   // Claude filenames are session IDs. Codex rollout filenames include extra
   // timestamp text, so only transcript metadata can provide a resumable ID.
@@ -516,6 +591,8 @@ function shouldRetainDecodedRecord(
   record: DecodedTranscriptRecord,
 ): boolean {
   if (extractDecodedCwd(record) !== null) return true;
+  // OMP 需要每个带 id 的条目来重建分支链
+  if (source === "omp") return record.type === "title" || record.id !== undefined;
   if (source === "claudeAgent") {
     return (
       record.type === "user" ||
@@ -921,57 +998,61 @@ export const make = Effect.gen(function* () {
     return path.join(homeDir, ".claude");
   };
 
-  const discoverClaudeTranscripts = Effect.fn("AgentSessionScanner.discoverClaudeTranscripts")(
-    function* (homePath: string, providerInstanceId: ProviderInstanceId, operationBudget: number) {
-      const projectsDir = path.join(homePath, "projects");
-      let operationsRemaining = operationBudget;
-      let truncated = false;
-      const readDirectory = (directory: string) => {
-        if (operationsRemaining <= 0) {
-          truncated = true;
-          return Effect.succeed<ReadonlyArray<string>>([]);
-        }
-        operationsRemaining -= 1;
-        return listDirectory(directory);
-      };
-      const projectDirectories = yield* readDirectory(projectsDir);
-      const transcripts: Array<TranscriptCandidate> = [];
+  // discoverDirectoryTranscripts 读取按工作目录分组的一级子目录中的会话文件，Claude 与 OMP 共用
+  const discoverDirectoryTranscripts = Effect.fn(
+    "AgentSessionScanner.discoverDirectoryTranscripts",
+  )(function* (
+    projectsDir: string,
+    providerInstanceId: ProviderInstanceId,
+    operationBudget: number,
+  ) {
+    let operationsRemaining = operationBudget;
+    let truncated = false;
+    const readDirectory = (directory: string) => {
+      if (operationsRemaining <= 0) {
+        truncated = true;
+        return Effect.succeed<ReadonlyArray<string>>([]);
+      }
+      operationsRemaining -= 1;
+      return listDirectory(directory);
+    };
+    const projectDirectories = yield* readDirectory(projectsDir);
+    const transcripts: Array<TranscriptCandidate> = [];
 
-      for (const projectDirectory of projectDirectories) {
+    for (const projectDirectory of projectDirectories) {
+      if (operationsRemaining <= 0) {
+        truncated = true;
+        break;
+      }
+      const directory = path.join(projectsDir, projectDirectory);
+      const directoryTranscripts = (yield* readDirectory(directory))
+        .filter((entry) => entry.endsWith(".jsonl"))
+        .map((entry) => path.join(directory, entry));
+
+      for (const filePath of directoryTranscripts) {
         if (operationsRemaining <= 0) {
           truncated = true;
           break;
         }
-        const directory = path.join(projectsDir, projectDirectory);
-        const directoryTranscripts = (yield* readDirectory(directory))
-          .filter((entry) => entry.endsWith(".jsonl"))
-          .map((entry) => path.join(directory, entry));
-
-        for (const filePath of directoryTranscripts) {
-          if (operationsRemaining <= 0) {
-            truncated = true;
-            break;
-          }
-          operationsRemaining -= 1;
-          const stats = yield* statOption(filePath);
-          if (
-            Option.isNone(stats) ||
-            stats.value.type !== "File" ||
-            Option.isNone(stats.value.mtime)
-          ) {
-            continue;
-          }
-          transcripts.push({
-            filePath,
-            mtimeMs: stats.value.mtime.value.getTime(),
-            providerInstanceId,
-            size: Number(stats.value.size),
-          });
+        operationsRemaining -= 1;
+        const stats = yield* statOption(filePath);
+        if (
+          Option.isNone(stats) ||
+          stats.value.type !== "File" ||
+          Option.isNone(stats.value.mtime)
+        ) {
+          continue;
         }
+        transcripts.push({
+          filePath,
+          mtimeMs: stats.value.mtime.value.getTime(),
+          providerInstanceId,
+          size: Number(stats.value.size),
+        });
       }
-      return { transcripts, truncated };
-    },
-  );
+    }
+    return { transcripts, truncated };
+  });
 
   const discoverCodexTranscripts = Effect.fn("AgentSessionScanner.discoverCodexTranscripts")(
     function* (homePath: string, providerInstanceId: ProviderInstanceId, operationBudget: number) {
@@ -1090,7 +1171,7 @@ export const make = Effect.gen(function* () {
     const raw: Array<RawCandidate> = [];
     let truncated = false;
 
-    for (const source of ["claudeAgent", "codex"] as const) {
+    for (const source of ["claudeAgent", "codex", "omp"] as const) {
       const instances: Array<{
         readonly instanceId: ProviderInstanceId;
         readonly config: ProviderInstanceConfig;
@@ -1130,7 +1211,18 @@ export const make = Effect.gen(function* () {
           hostEnvironment[homeVariable];
 
         let homePath: string;
-        if (source === "claudeAgent") {
+        if (source === "omp") {
+          const config = decodeOmpSettings(instance.config ?? {});
+          if (Option.isNone(config)) continue;
+          const environment = yield* mergeProviderInstanceEnvironment(
+            instance.environment,
+            hostEnvironment,
+          );
+          homePath = (yield* ompNativeDirectories(config.value, environment).pipe(
+            Effect.provideService(FileSystem.FileSystem, fileSystem),
+            Effect.provideService(Path.Path, path),
+          )).sessionDir;
+        } else if (source === "claudeAgent") {
           const config = decodeClaudeSettings(instance.config ?? {});
           if (Option.isNone(config)) continue;
           homePath = resolveClaudeConfigDir(config.value.homePath, environmentHome);
@@ -1166,9 +1258,13 @@ export const make = Effect.gen(function* () {
           truncated = true;
           continue;
         }
-        const discovered = yield* source === "claudeAgent"
-          ? discoverClaudeTranscripts(home.homePath, home.providerInstanceId, operationBudget)
-          : discoverCodexTranscripts(home.homePath, home.providerInstanceId, operationBudget);
+        const discovered = yield* source === "codex"
+          ? discoverCodexTranscripts(home.homePath, home.providerInstanceId, operationBudget)
+          : discoverDirectoryTranscripts(
+              source === "claudeAgent" ? path.join(home.homePath, "projects") : home.homePath,
+              home.providerInstanceId,
+              operationBudget,
+            );
         truncated ||= discovered.truncated;
         transcriptCandidates.push(...discovered.transcripts);
       }
@@ -1333,7 +1429,6 @@ export const make = Effect.gen(function* () {
     if (isExcludedProjectPath(root) || isExcludedProjectPath(realRoot)) return Stream.empty;
     const rootIdentity = yield* directoryIdentity(root);
     const nowMs = DateTime.toEpochMillis(yield* DateTime.now);
-    const cutoffMs = nowMs - RECENT_THREAD_WINDOW_MS;
 
     const candidates = cachedCandidates ?? (yield* collectCandidates()).candidates;
     cachedCandidates = candidates;
@@ -1349,11 +1444,7 @@ export const make = Effect.gen(function* () {
       if ((yield* directoryIdentity(resolved)) !== rootIdentity) continue;
 
       for (const transcript of candidate.transcripts) {
-        if (
-          transcript.mtimeMs === null ||
-          transcript.mtimeMs < cutoffMs ||
-          transcript.mtimeMs > nowMs
-        ) {
+        if (transcript.mtimeMs === null || transcript.mtimeMs > nowMs) {
           continue;
         }
         eligibleTranscripts.push({

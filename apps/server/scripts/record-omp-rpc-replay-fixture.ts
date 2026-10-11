@@ -317,7 +317,7 @@ const record = Effect.gen(function* () {
             commands: materialized.commands,
             steps: materialized.steps,
             projectionThreadIds: materialized.projectionThreadIds,
-            ...(nested ? { waitDeadlineMs: 180_000 } : {}),
+            waitDeadlineMs: 180_000,
             runtimePolicyOverride: { ...variant.runtimePolicyOverride, cwd: workspace },
           },
           {

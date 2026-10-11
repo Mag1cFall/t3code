@@ -37,6 +37,9 @@ Threads use native OMP session files for resume, rollback, and same-instance for
 creates an independent conversation through the selected message in the destination workspace.
 Switching providers uses portable conversation context.
 
+The welcome wizard imports existing OMP conversations for enabled OMP instances. Continuing an
+imported conversation resumes its native session file, so OMP keeps its full context.
+
 Native subagents appear in the shared subagent view, and each child's thread shows its activity.
 The Stop control targets the selected task while the rest of the run continues.
 

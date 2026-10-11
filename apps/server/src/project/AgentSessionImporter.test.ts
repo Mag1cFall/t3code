@@ -145,3 +145,84 @@ it.effect("imports messages once and preserves the provider native resume bindin
     expect(recorded).toHaveLength(2);
   }).pipe(Effect.provide(layerTest));
 });
+
+it.effect("binds an imported OMP thread to its native session file", () => {
+  const ompInstanceId = ProviderInstanceId.make("omp");
+  const sessionFile = "/home/user/.omp/agent/sessions/--workspace--/omp-session.jsonl";
+  const ompThreadId = ThreadId.make(`import:${ompInstanceId}:omp-session`);
+  const writes: Array<ReadonlyArray<OrchestrationV2DomainEvent>> = [];
+  const upserts: Array<unknown> = [];
+  const scanner = AgentSessionScanner.AgentSessionScanner.of({
+    scan: Effect.die("unused"),
+    recentThreads: () =>
+      Stream.succeed({
+        _tag: "Importable",
+        source: {
+          provider: "omp",
+          providerInstanceId: ompInstanceId,
+          providerSessionId: "omp-session",
+          filePath: sessionFile,
+          size: 100,
+          mtimeMs: 2,
+          device: 3,
+          inode: 4,
+          birthtimeMs: 1,
+        },
+        thread: {
+          source: "omp",
+          providerInstanceId: ompInstanceId,
+          providerSessionId: "omp-session",
+          title: "Imported thread",
+          model: "openai-codex/gpt-5.6-sol",
+          createdAt: "2026-09-01T10:00:00.000Z",
+          updatedAt: "2026-09-01T10:01:00.000Z",
+          messages: [{ role: "user", text: "Fix it", createdAt: "2026-09-01T10:00:00.000Z" }],
+        },
+      }),
+  });
+  const layerTest = AgentSessionImporter.layer.pipe(
+    Layer.provide(
+      Layer.mergeAll(
+        Layer.succeed(AgentSessionScanner.AgentSessionScanner, scanner),
+        Layer.mock(ProjectService.ProjectService)({
+          getById: () =>
+            Effect.succeed(
+              Option.some({ id: projectId, workspaceRoot: "/workspace/project" } as never),
+            ),
+        }),
+        Layer.mock(Orchestrator.OrchestratorV2)({
+          getThreadRecords: () =>
+            Effect.fail(new Orchestrator.OrchestratorProjectionError({ threadId: ompThreadId })),
+        }),
+        Layer.mock(EventSink.EventSinkV2)({
+          write: (input) => Effect.sync(() => (writes.push(input.events), [])),
+        }),
+        Layer.mock(ProviderSessionRuntime.ProviderSessionRuntimeRepository)({
+          list: () => Effect.succeed([]),
+          upsert: (input) => Effect.sync(() => void upserts.push(input)),
+          recordImportedTranscript: () => Effect.void,
+        }),
+        IdAllocator.layer,
+      ),
+    ),
+  );
+
+  return Effect.gen(function* () {
+    const importer = yield* AgentSessionImporter.AgentSessionImporter;
+    expect(yield* importer.importRecentAgentThreads({ projectId })).toEqual({
+      importedCount: 1,
+      skippedCount: 0,
+    });
+    const providerThread = writes[0]?.find((event) => event.type === "provider-thread.updated");
+    expect(providerThread?.payload).toMatchObject({
+      appThreadId: ompThreadId,
+      nativeThreadRef: { driver: "omp", nativeId: sessionFile, strength: "strong" },
+    });
+    expect(upserts).toEqual([
+      expect.objectContaining({
+        threadId: ompThreadId,
+        resumeCursor: { threadId: ompThreadId, resume: sessionFile },
+      }),
+    ]);
+  }).pipe(Effect.provide(layerTest));
+});

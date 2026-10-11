@@ -267,6 +267,8 @@ const make = Effect.gen(function* () {
 
           const driver = ProviderDriverKind.make(thread.source);
           const model = thread.model ?? DEFAULT_MODEL_BY_PROVIDER[driver] ?? DEFAULT_MODEL;
+          // OMP 按会话文件路径续接原生会话
+          const nativeId = thread.source === "omp" ? source.filePath : thread.providerSessionId;
           const providerThreadId = idAllocator.derive.providerThread({
             driver,
             nativeThreadId: thread.providerSessionId,
@@ -318,7 +320,7 @@ const make = Effect.gen(function* () {
             ownerNodeId: null,
             nativeThreadRef: {
               driver,
-              nativeId: thread.providerSessionId,
+              nativeId,
               strength: "strong",
             },
             nativeConversationHeadRef: null,
@@ -344,7 +346,7 @@ const make = Effect.gen(function* () {
               resumeCursor:
                 thread.source === "codex"
                   ? { threadId: thread.providerSessionId }
-                  : { threadId, resume: thread.providerSessionId },
+                  : { threadId, resume: nativeId },
               runtimePayload: { cwd: project.workspaceRoot },
             },
             { onConflict: "ignore" },

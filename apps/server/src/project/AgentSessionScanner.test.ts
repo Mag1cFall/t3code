@@ -1402,7 +1402,7 @@ it.layer(NodeServices.layer)("AgentSessionScanner", (it) => {
         }),
     );
 
-    it.effect("imports recent Claude and Codex sessions for the selected project only", () =>
+    it.effect("imports Claude and Codex sessions of any age for the selected project only", () =>
       Effect.gen(function* () {
         const path = yield* Path.Path;
         const nowMs = Date.parse("2026-08-24T12:00:00.000Z");
@@ -1482,10 +1482,128 @@ it.layer(NodeServices.layer)("AgentSessionScanner", (it) => {
         expect(threads.map((thread) => thread.providerSessionId)).toEqual([
           "codex-recent",
           "claude-recent",
+          "claude-old",
         ]);
         expect(threads.map((thread) => thread.messages.map((message) => message.text))).toEqual([
           ["Review this code", "Looks good"],
           ["Fix the project", "Done"],
+          ["Fix the project", "Done"],
+        ]);
+      }),
+    );
+
+    it.effect("imports the current branch of OMP sessions from an enabled instance", () =>
+      Effect.gen(function* () {
+        const path = yield* Path.Path;
+        const nowMs = Date.parse("2026-08-24T12:00:00.000Z");
+        yield* TestClock.setTime(nowMs);
+        const claudeHomePath = yield* makeTempDir("t3code-claude-home-");
+        const codexHomePath = yield* makeTempDir("t3code-codex-home-");
+        const ompAgentDir = yield* makeTempDir("t3code-omp-agent-");
+        const workspace = yield* makeTempDir("t3code-workspace-");
+        const sessionDirectory = path.join(ompAgentDir, "sessions", "--workspace--");
+        const sessionFile = path.join(
+          sessionDirectory,
+          "2026-08-24T10-00-00-000Z_omp-session.jsonl",
+        );
+        yield* writeTranscript({
+          filePath: sessionFile,
+          contents: [
+            { type: "title", v: 1, title: "Build repair" },
+            { type: "session", version: 3, id: "omp-session", cwd: workspace },
+            { type: "model_change", id: "a", parentId: null, model: "openai-codex/gpt-5.6-sol" },
+            {
+              type: "message",
+              id: "b",
+              parentId: "a",
+              timestamp: "2026-08-24T10:00:00.000Z",
+              message: { role: "user", content: [{ type: "text", text: "Fix the build" }] },
+            },
+            {
+              type: "message",
+              id: "c",
+              parentId: "b",
+              message: { role: "assistant", content: [{ type: "text", text: "Abandoned answer" }] },
+            },
+            {
+              type: "message",
+              id: "d",
+              parentId: "b",
+              timestamp: "2026-08-24T10:02:00.000Z",
+              message: {
+                role: "assistant",
+                content: [
+                  { type: "thinking", thinking: "Checking" },
+                  { type: "text", text: "Build fixed" },
+                ],
+              },
+            },
+            {
+              type: "message",
+              id: "e",
+              parentId: "d",
+              message: { role: "toolResult", content: [{ type: "text", text: "tool output" }] },
+            },
+          ]
+            .map((record) => encodeTranscriptRecord(record))
+            .join("\n"),
+          mtimeMs: nowMs - 60 * 60 * 1000,
+        });
+        yield* writeTranscript({
+          filePath: path.join(
+            sessionDirectory,
+            "2026-08-24T10-00-00-000Z_omp-session",
+            "0-Child.jsonl",
+          ),
+          contents: encodeTranscriptRecord({ type: "session", id: "child", cwd: workspace }),
+          mtimeMs: nowMs - 60 * 60 * 1000,
+        });
+        const providerInstances = {
+          [ProviderInstanceId.make("omp")]: {
+            driver: ProviderDriverKind.make("omp"),
+            enabled: true,
+            environment: [{ name: "PI_CODING_AGENT_DIR", value: ompAgentDir, sensitive: false }],
+            config: {},
+          },
+        };
+
+        const scan = yield* runScan({ claudeHomePath, codexHomePath, providerInstances });
+        expect(
+          scan.candidates.map((candidate) => ({
+            path: candidate.path,
+            sources: candidate.sources,
+            threadCount: candidate.threadCount,
+          })),
+        ).toEqual([{ path: workspace, sources: ["omp"], threadCount: 1 }]);
+
+        const outcomes = yield* runRecentThreadOutcomes({
+          claudeHomePath,
+          codexHomePath,
+          providerInstances,
+          workspaceRoot: workspace,
+        });
+        expect(
+          outcomes.flatMap((outcome) =>
+            outcome._tag === "Importable"
+              ? [
+                  {
+                    filePath: outcome.source.filePath,
+                    providerSessionId: outcome.thread.providerSessionId,
+                    title: outcome.thread.title,
+                    model: outcome.thread.model,
+                    messages: outcome.thread.messages.map((message) => message.text),
+                  },
+                ]
+              : [],
+          ),
+        ).toEqual([
+          {
+            filePath: sessionFile,
+            providerSessionId: "omp-session",
+            title: "Build repair",
+            model: "openai-codex/gpt-5.6-sol",
+            messages: ["Fix the build", "Build fixed"],
+          },
         ]);
       }),
     );

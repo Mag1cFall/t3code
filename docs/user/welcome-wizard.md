@@ -47,7 +47,7 @@ terminal metadata while the terminal process can use them.
 
 ## Import your projects
 
-T3 Code finds directories that Claude Code or Codex has used. Git repositories
+T3 Code finds directories that Claude Code, Codex, or an enabled OMP instance has used. Git repositories
 are listed first, newest activity on top. When the remote is on GitHub, the
 group shows the repository as `owner/name`. Clones with the same remote share
 one group. Directories that are not git repositories sit under "Other folders".
@@ -61,15 +61,16 @@ offered.
 A large or malformed history can reach the scan limit. T3 Code keeps the
 projects it found and warns when projects or conversations may be missing.
 
-Imported projects include Codex and Claude conversations active within the last
-30 days. You can continue those conversations in T3 Code.
+Imported projects include their Codex, Claude, and OMP conversations. You can continue
+those conversations in T3 Code.
 
 Conversation import is best effort. T3 Code keeps the first user prompt and the
 newest remaining visible user and assistant messages, with 200 messages total.
 It omits tool activity and attachments. For Codex, it omits generated setup
 context only when a canonical user event and a valid shared turn ID identify the
 same user turn. Ambiguous legacy or response-only context stays in the imported
-conversation so T3 Code does not remove user text. It reads one conversation at
+conversation so T3 Code does not remove user text. For OMP, it imports the current
+branch of each conversation. It reads one conversation at
 a time and skips files larger than 16 MiB. It ignores malformed records and skips
 unreadable or unparseable conversations.
 
